@@ -5,36 +5,23 @@ import {
   act,
   cleanup,
   fireEvent,
-  render,
   screen,
   waitFor,
   within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  FeedbackClarificationStatus,
-  type FeedbackClarificationStatus as FeedbackClarificationStatusValue,
-} from "@invessiv/common/constants/crm/feedback-clarification-statuses";
 import { FeedbackItemKind } from "@invessiv/common/constants/crm/feedback-item-kinds";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { PortalFeedbackErrorCode } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
 import { UploadQueueItemStatus } from "@invessiv/common/constants/files/upload-queue-item-status";
-import type { PortalFeedbackItemDto } from "@invessiv/common/contracts/portal/portal-feedback-item.dto";
-import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
-import type { PortalProjectFeedbackDto } from "@invessiv/common/contracts/portal/portal-project-feedback.dto";
-import {
-  getPortalFeedbackDictionary,
-  getPortalFilesDictionary,
-} from "@/i18n/dictionaries/portal";
-import { FeedbackPageView } from "./feedback-page-view";
+import { getPortalFeedbackDictionary } from "@/i18n/dictionaries/portal";
 
 const mocks = vi.hoisted(() => ({
   refresh: vi.fn(),
   saveDraft: vi.fn(),
   submit: vi.fn(),
   approve: vi.fn(),
-  answerClarification: vi.fn(),
   uploadActive: false,
   cancelUpload: vi.fn(),
 }));
@@ -51,7 +38,6 @@ vi.mock("@/client/portal/portal-feedback-api-service", () => ({
     approve: mocks.approve,
     attachFile: vi.fn(),
     detachFile: vi.fn(),
-    answerClarification: mocks.answerClarification,
   },
 }));
 vi.mock("@/hooks/shared/use-upload-queue", () => ({
@@ -80,69 +66,12 @@ vi.mock("@/hooks/shared/use-upload-queue", () => ({
 }));
 
 const content = getPortalFeedbackDictionary("en");
-const filesContent = getPortalFilesDictionary("en");
 
-function round(overrides: Partial<PortalFeedbackRoundDto> = {}) {
-  return {
-    id: "round-1",
-    roundNumber: 1,
-    status: FeedbackRoundStatus.Open,
-    previewUrl: "https://preview.example.test",
-    handoverNote: "First complete version",
-    dueOn: "2026-10-14",
-    areaOptions: ["Home", "Contact"],
-    draftUpdatedAt: null,
-    draftUpdatedByName: null,
-    submittedAt: null,
-    customerNotice: null,
-    completedAt: null,
-    approvedAt: null,
-    items: [],
-    version: 1,
-    ...overrides,
-  } satisfies PortalFeedbackRoundDto;
-}
-
-function feedback(
-  overrides: Partial<PortalProjectFeedbackDto> = {},
-): PortalProjectFeedbackDto {
-  return {
-    projectId: "project-1",
-    projectTitle: "Relaunch",
-    quota: {
-      included: 2,
-      used: 1,
-      remaining: 1,
-      activeRoundNumber: 1,
-      approvedRoundNumber: null,
-    },
-    activeRound: round(),
-    history: [],
-    canSubmit: true,
-    canAttach: false,
-    contact: null,
-    ...overrides,
-  };
-}
-
-function renderView(
-  dto: PortalProjectFeedbackDto = feedback(),
-  canUpload = false,
-) {
-  return render(
-    <FeedbackPageView
-      canUpload={canUpload}
-      cockpitHref={null}
-      content={content}
-      customerId="customer-1"
-      dashboardHref="/en/portal/customer-1"
-      feedback={dto}
-      filesContent={filesContent}
-      locale="en"
-      messagesHref="/en/portal/customer-1?chat=open"
-    />,
-  );
-}
+import {
+  portalFeedbackRound as round,
+  portalProjectFeedback as feedback,
+} from "@/test/fixtures/portal-feedback";
+import { renderPortalFeedbackView as renderView } from "@/test/portal/render-portal-feedback-view";
 
 function textareas() {
   return screen.getAllByRole("textbox");
@@ -945,364 +874,6 @@ describe("FeedbackPageView", () => {
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("link", { name: content.states.exhausted.chatLink }),
-    ).not.toBeInTheDocument();
-  });
-});
-
-describe("FeedbackPageView clarifications", () => {
-  function question(
-    id: string,
-    status: FeedbackClarificationStatusValue = FeedbackClarificationStatus.Open,
-  ) {
-    return {
-      id,
-      status,
-      question: `Question ${id}`,
-      requestedAt: "2026-10-01T10:00:00.000Z",
-      answer: status === FeedbackClarificationStatus.Answered ? "Done" : null,
-      answeredAt:
-        status === FeedbackClarificationStatus.Answered
-          ? "2026-10-02T10:00:00.000Z"
-          : null,
-      closeNote:
-        status === FeedbackClarificationStatus.Closed ? "Settled" : null,
-      closedAt:
-        status === FeedbackClarificationStatus.Closed
-          ? "2026-10-02T10:00:00.000Z"
-          : null,
-    };
-  }
-
-  function questionedItem(
-    id: string,
-    position: number,
-    clarifications = [question(`q-${id}`)],
-    version = 2,
-  ): PortalFeedbackItemDto {
-    return {
-      id,
-      version,
-      clarifications,
-      position,
-      areaLabel: null,
-      kind: null,
-      body: `Point ${id}`,
-      result: null,
-      resultNote: null,
-      attachments: [],
-    };
-  }
-
-  function questioned(
-    status: FeedbackRoundStatus = FeedbackRoundStatus.InProgress,
-    items: PortalFeedbackItemDto[] = [
-      questionedItem("a", 0),
-      questionedItem("b", 1),
-      questionedItem("c", 2, []),
-    ],
-    canSubmit = true,
-  ) {
-    return feedback({
-      canSubmit,
-      activeRound: round({
-        status,
-        submittedAt: "2026-09-30T10:00:00.000Z",
-        items,
-      }),
-    });
-  }
-
-  function answerField(number: number) {
-    return screen.getByRole("textbox", {
-      name: new RegExp(`Your answer to point ${number}`),
-    });
-  }
-
-  function staleField(number: number) {
-    return screen.getByRole("textbox", {
-      name: new RegExp(
-        `Unsent answer to an earlier question on point ${number}`,
-      ),
-    });
-  }
-
-  function sendButtons() {
-    return screen.getAllByRole("button", {
-      name: content.clarifications.answer.submit,
-    });
-  }
-
-  beforeEach(() => {
-    mocks.refresh.mockReset();
-    mocks.answerClarification.mockReset();
-  });
-  afterEach(cleanup);
-
-  it.each([
-    FeedbackRoundStatus.Submitted,
-    FeedbackRoundStatus.InDiscussion,
-    FeedbackRoundStatus.InProgress,
-  ])(
-    "offers the answer form on open questions while the round is %s",
-    (status) => {
-      renderView(questioned(status));
-      expect(answerField(1)).toBeInTheDocument();
-      expect(answerField(2)).toBeInTheDocument();
-      expect(sendButtons()).toHaveLength(2);
-    },
-  );
-
-  it("shows the thread without a form to readers, the owner view and finished questions", () => {
-    renderView(questioned(FeedbackRoundStatus.InProgress, undefined, false));
-    expect(
-      screen.getByRole("region", { name: "Questions about point 1" }),
-    ).toBeInTheDocument();
-    expect(screen.queryAllByRole("textbox")).toHaveLength(0);
-    // Nobody here can answer, so nothing asks this viewer to.
-    expect(
-      screen.getByText(content.clarifications.noticeHintReadOnly),
-    ).toBeInTheDocument();
-    expect(
-      screen.getAllByText(content.clarifications.thread.statusOpen).length,
-    ).toBeGreaterThan(0);
-    expect(
-      screen.queryByText(content.clarifications.statusWaiting),
-    ).not.toBeInTheDocument();
-    cleanup();
-
-    renderView(
-      questioned(FeedbackRoundStatus.InProgress, [
-        questionedItem("a", 0, [
-          question("q1", FeedbackClarificationStatus.Closed),
-        ]),
-      ]),
-    );
-    expect(screen.getByText("Settled")).toBeInTheDocument();
-    expect(
-      screen.getByText(content.clarifications.thread.statusClosed),
-    ).toBeInTheDocument();
-    expect(screen.queryAllByRole("textbox")).toHaveLength(0);
-  });
-
-  it("names the open questions and jumps to the item heading", () => {
-    renderView(questioned());
-    expect(
-      screen.getByRole("heading", { name: "We have 2 questions for you" }),
-    ).toBeInTheDocument();
-    const jumps = within(
-      screen.getByRole("navigation", {
-        name: content.clarifications.jumpLabel,
-      }),
-    ).getAllByRole("link");
-    expect(jumps.map((link) => link.textContent)).toEqual([
-      "Point 1",
-      "Point 2",
-    ]);
-    fireEvent.click(jumps[1]);
-    expect(document.getElementById("feedback-item-b")).toHaveFocus();
-  });
-
-  it("refuses an empty or too long answer without sending", async () => {
-    renderView(questioned());
-    fireEvent.click(sendButtons()[0]);
-    expect(
-      await screen.findByText(content.clarifications.answer.required),
-    ).toBeInTheDocument();
-    fireEvent.change(answerField(1), { target: { value: "x".repeat(2001) } });
-    fireEvent.click(sendButtons()[0]);
-    expect(
-      await screen.findByText(/Your answer is too long/),
-    ).toBeInTheDocument();
-    expect(mocks.answerClarification).not.toHaveBeenCalled();
-  });
-
-  it("sends the answer, keeps the other draft and announces it on the item", async () => {
-    mocks.answerClarification.mockResolvedValue({
-      ok: true,
-      item: questionedItem(
-        "a",
-        0,
-        [question("q-a", FeedbackClarificationStatus.Answered)],
-        3,
-      ),
-    });
-    renderView(questioned());
-    fireEvent.change(answerField(2), { target: { value: "Draft on b" } });
-    fireEvent.change(answerField(1), { target: { value: "  The dark one  " } });
-    fireEvent.click(sendButtons()[0]);
-
-    await waitFor(() =>
-      expect(mocks.answerClarification).toHaveBeenCalledWith(
-        "customer-1",
-        { roundId: "round-1", itemId: "a", clarificationId: "q-a" },
-        { commandId: expect.any(String), version: 2, answer: "The dark one" },
-      ),
-    );
-    await waitFor(() => expect(mocks.refresh).toHaveBeenCalled());
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "Your answer to point 1 is sent.",
-    );
-    expect(document.getElementById("feedback-item-a")).toHaveFocus();
-    expect(screen.getAllByRole("textbox")).toHaveLength(1);
-    expect(answerField(2)).toHaveValue("Draft on b");
-  });
-
-  it("keeps the text on a version conflict and sends the retry as a new action", async () => {
-    mocks.answerClarification
-      .mockResolvedValueOnce({
-        ok: false,
-        code: ConcurrencyErrorCode.VersionConflict,
-        current: questionedItem("a", 0, [question("q-a")], 5),
-      })
-      .mockResolvedValueOnce({
-        ok: false,
-        code: PortalFeedbackErrorCode.Unavailable,
-      })
-      .mockResolvedValueOnce({
-        ok: false,
-        code: PortalFeedbackErrorCode.Unavailable,
-      });
-    renderView(questioned());
-    fireEvent.change(answerField(1), { target: { value: "Blue" } });
-    fireEvent.click(sendButtons()[0]);
-    expect(
-      await screen.findByText(content.clarifications.answer.conflict),
-    ).toBeInTheDocument();
-    expect(answerField(1)).toHaveValue("Blue");
-
-    fireEvent.click(sendButtons()[0]);
-    await waitFor(() =>
-      expect(mocks.answerClarification).toHaveBeenCalledTimes(2),
-    );
-    expect(
-      await screen.findByText(content.errors.unavailable),
-    ).toBeInTheDocument();
-    fireEvent.click(sendButtons()[0]);
-    await waitFor(() =>
-      expect(mocks.answerClarification).toHaveBeenCalledTimes(3),
-    );
-    const [first, second, third] = mocks.answerClarification.mock.calls.map(
-      ([, , request]) => request,
-    );
-    expect(second.commandId).not.toBe(first.commandId);
-    expect(second.version).toBe(5);
-    expect(third.commandId).toBe(second.commandId);
-  });
-
-  it("blocks a question that closed meanwhile and keeps the text", async () => {
-    mocks.answerClarification.mockResolvedValue({
-      ok: false,
-      code: PortalFeedbackErrorCode.ClarificationNotOpen,
-      current: questionedItem(
-        "a",
-        0,
-        [question("q-a", FeedbackClarificationStatus.Closed)],
-        3,
-      ),
-    });
-    renderView(questioned());
-    fireEvent.change(answerField(1), { target: { value: "Too late" } });
-    fireEvent.click(sendButtons()[0]);
-    expect(
-      await screen.findByText(content.clarifications.answer.notOpen),
-    ).toBeInTheDocument();
-    expect(staleField(1)).toHaveValue("Too late");
-    expect(staleField(1)).toHaveAttribute("readonly");
-    expect(sendButtons()).toHaveLength(1);
-    expect(mocks.refresh).toHaveBeenCalled();
-
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: content.clarifications.answer.discard,
-      }),
-    );
-    expect(
-      screen.queryByText(content.clarifications.answer.notOpen),
-    ).not.toBeInTheDocument();
-    expect(screen.getByText("Settled")).toBeInTheDocument();
-  });
-
-  it.each([
-    FeedbackClarificationStatus.Closed,
-    FeedbackClarificationStatus.Answered,
-  ])(
-    "keeps the draft visible when a version conflict returns a question that is %s",
-    async (status) => {
-      mocks.answerClarification.mockResolvedValue({
-        ok: false,
-        code: ConcurrencyErrorCode.VersionConflict,
-        current: questionedItem(
-          "a",
-          0,
-          [question("q-a", status), question("new-q")],
-          3,
-        ),
-      });
-      renderView(questioned());
-      fireEvent.change(answerField(1), { target: { value: "My old answer" } });
-      fireEvent.click(sendButtons()[0]);
-      expect(
-        await screen.findByText(content.clarifications.answer.notOpen),
-      ).toBeVisible();
-      // The kept draft and the form for the newer question carry different names.
-      expect(staleField(1)).toHaveValue("My old answer");
-      expect(staleField(1)).toHaveAttribute("readonly");
-      expect(answerField(1)).toHaveValue("");
-      expect(answerField(1)).not.toHaveAttribute("readonly");
-      expect(mocks.answerClarification).toHaveBeenCalledOnce();
-    },
-  );
-
-  it("keeps another item's draft visible when the answer refresh brings a closed question", async () => {
-    mocks.answerClarification.mockResolvedValue({
-      ok: true,
-      item: questionedItem(
-        "a",
-        0,
-        [question("q-a", FeedbackClarificationStatus.Answered)],
-        3,
-      ),
-    });
-    const { rerender } = renderView(questioned());
-    fireEvent.change(answerField(2), { target: { value: "Draft on b" } });
-    fireEvent.change(answerField(1), { target: { value: "Answer on a" } });
-    fireEvent.click(sendButtons()[0]);
-    await waitFor(() => expect(mocks.refresh).toHaveBeenCalled());
-    rerender(
-      <FeedbackPageView
-        canUpload={false}
-        cockpitHref={null}
-        content={content}
-        customerId="customer-1"
-        dashboardHref="/en/portal/customer-1"
-        feedback={questioned(FeedbackRoundStatus.InProgress, [
-          questionedItem(
-            "a",
-            0,
-            [question("q-a", FeedbackClarificationStatus.Answered)],
-            3,
-          ),
-          questionedItem(
-            "b",
-            1,
-            [question("q-b", FeedbackClarificationStatus.Closed)],
-            3,
-          ),
-        ])}
-        filesContent={filesContent}
-        locale="en"
-        messagesHref={null}
-      />,
-    );
-    expect(staleField(2)).toHaveValue("Draft on b");
-    expect(staleField(2)).toHaveAttribute("readonly");
-    expect(
-      screen.getByText(content.clarifications.answer.notOpen),
-    ).toBeVisible();
-    expect(
-      screen.queryByRole("button", {
-        name: content.clarifications.answer.submit,
-      }),
     ).not.toBeInTheDocument();
   });
 });

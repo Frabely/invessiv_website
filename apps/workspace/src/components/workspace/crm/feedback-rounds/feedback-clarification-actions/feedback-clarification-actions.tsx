@@ -18,6 +18,8 @@ type FeedbackClarificationActionsProps = {
   content: CrmFeedbackRoundsDictionary;
   item: FeedbackRoundItemDto;
   number: number;
+  editable?: boolean;
+  onCurrentAction?: (current: FeedbackRoundItemDto) => void;
   onAnnounceAction: (message: string) => void;
   /** The row keeps the focus on this action across the refresh after a write. */
   buttonRef: Ref<HTMLButtonElement>;
@@ -33,6 +35,8 @@ export function FeedbackClarificationActions({
   content,
   item,
   number,
+  editable = true,
+  onCurrentAction,
   onAnnounceAction,
   buttonRef,
   onSavedAction,
@@ -56,29 +60,34 @@ export function FeedbackClarificationActions({
   }
 
   const { resultNotice, ...askTexts } = texts.askDialog;
+  if (!editable && !asking && !closingId) return null;
 
   return (
     <div className={styles.actions}>
-      <ButtonControl
-        aria-label={formatMessage(open ? texts.closeNamed : texts.askNamed, {
-          number,
-        })}
-        onClick={openDialog}
-        ref={buttonRef}
-        type="button"
-        variant="ghost"
-      >
-        <FontAwesomeIcon
-          aria-hidden="true"
-          icon={open ? faXmark : faCircleQuestion}
-        />
-        {open ? texts.close : texts.ask}
-      </ButtonControl>
+      {editable ? (
+        <ButtonControl
+          aria-label={formatMessage(open ? texts.closeNamed : texts.askNamed, {
+            number,
+          })}
+          onClick={openDialog}
+          ref={buttonRef}
+          type="button"
+          variant="ghost"
+        >
+          <FontAwesomeIcon
+            aria-hidden="true"
+            icon={open ? faXmark : faCircleQuestion}
+          />
+          {open ? texts.close : texts.ask}
+        </ButtonControl>
+      ) : null}
       {closingId ? (
         <FeedbackTextDialog<FeedbackRoundItemDto>
           common={content.textDialog}
           errorMessage={errorMessage}
           initial={item}
+          locked={!editable}
+          onCurrentAction={onCurrentAction}
           onCloseAction={() => setClosingId(null)}
           onSavedAction={(entity) =>
             saved(content.announcements.clarificationClosed, entity)
@@ -88,7 +97,11 @@ export function FeedbackClarificationActions({
             // After a conflict the current item may show the question finished; no request then.
             findOpenFeedbackClarification(current.clarifications)?.id !==
             closingId
-              ? { ok: false, code: FeedbackRoundErrorCode.ClarificationNotOpen }
+              ? {
+                  ok: false,
+                  code: FeedbackRoundErrorCode.ClarificationNotOpen,
+                  current,
+                }
               : feedbackRoundsApiService.closeClarification(
                   current.id,
                   closingId,
@@ -106,10 +119,12 @@ export function FeedbackClarificationActions({
           common={content.textDialog}
           errorMessage={errorMessage}
           initial={item}
-          notice={
-            item.result
+          locked={!editable}
+          onCurrentAction={onCurrentAction}
+          notice={(current) =>
+            current.result
               ? formatMessage(resultNotice, {
-                  result: content.result.choices[item.result],
+                  result: content.result.choices[current.result],
                 })
               : undefined
           }
@@ -120,7 +135,11 @@ export function FeedbackClarificationActions({
           required
           send={async (current, question, commandId) =>
             findOpenFeedbackClarification(current.clarifications)
-              ? { ok: false, code: FeedbackRoundErrorCode.ClarificationOpen }
+              ? {
+                  ok: false,
+                  code: FeedbackRoundErrorCode.ClarificationOpen,
+                  current,
+                }
               : feedbackRoundsApiService.askClarification(current.id, {
                   commandId,
                   version: current.version,

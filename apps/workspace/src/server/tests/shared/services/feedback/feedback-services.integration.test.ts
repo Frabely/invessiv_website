@@ -384,6 +384,23 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         },
       ]);
       expect(list[1].attachments).toEqual([]);
+      const otherItemFile = await attachFile(target, second);
+      const pointAttachments = await feedbackRoundItemService.loadAttachments(
+        f.database(),
+        first,
+        sql`${files.id} <> ${hidden}`,
+      );
+      expect(pointAttachments.map((file) => file.id)).toEqual([shown]);
+      expect(pointAttachments).not.toContainEqual(
+        expect.objectContaining({ id: otherItemFile }),
+      );
+      expect(
+        await feedbackRoundItemService.loadAttachments(
+          f.database(),
+          first,
+          sql`FALSE`,
+        ),
+      ).toEqual([]);
     });
 
     it("moves the project behind the approved round and leaves a round at the end alone", async () => {

@@ -3,6 +3,8 @@ import {
   FeedbackRoundErrorCode,
 } from "@invessiv/common/constants/crm/errors/feedback-round-error-codes";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { AskFeedbackItemClarificationRequestDto } from "@invessiv/common/contracts/crm/ask-feedback-item-clarification-request.dto";
 import type { CloseFeedbackItemClarificationRequestDto } from "@invessiv/common/contracts/crm/close-feedback-item-clarification-request.dto";
 import type { ChangeFeedbackRoundStatusRequestDto } from "@invessiv/common/contracts/crm/change-feedback-round-status-request.dto";
@@ -14,6 +16,7 @@ import type { SetFeedbackItemResultRequestDto } from "@invessiv/common/contracts
 import { versionedJsonMutationService } from "@/client/shared/versioned-json-mutation-service";
 import type { VersionedJsonMutationResult } from "@/common/contracts/client/versioned-json-mutation-result";
 import type { HandOverFeedbackRoundClientResult } from "@/common/contracts/crm/feedback-round-client-result";
+import type { FeedbackItemClientResult } from "@/common/contracts/crm/feedback-item-client-result";
 import {
   crmFeedbackItemClarificationCloseEndpoint,
   crmFeedbackItemClarificationsEndpoint,
@@ -67,30 +70,45 @@ function changeStatus(
 }
 
 /** Result, question and closure all answer with the whole item, a 409 with the current one. */
-function mutateItem(
+async function mutateItem(
   url: string,
   method: HttpMethod,
   request: unknown,
-): Promise<
-  VersionedJsonMutationResult<FeedbackRoundItemDto, FeedbackRoundErrorCode>
-> {
-  return mutate(
-    url,
-    method,
-    request,
-    (payload) => (isItem(payload) ? payload : null),
+): Promise<FeedbackItemClientResult> {
+  const response = await send(url, method, request);
+  if (!response) return { ok: false, code: FeedbackRoundErrorCode.Internal };
+  if (response.ok && isItem(response.payload))
+    return { ok: true, value: response.payload };
+  const conflict = versionedJsonMutationService.readVersionConflict(
+    response,
     isItem,
+  );
+  if (conflict)
+    return {
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      current: conflict,
+    };
+  const code = readErrorCode(
+    response.payload,
     FEEDBACK_ROUND_ERROR_CODE_VALUES,
     FeedbackRoundErrorCode.Internal,
   );
+  if (
+    response.status === HttpResponseCode.Conflict &&
+    (code === FeedbackRoundErrorCode.ClarificationOpen ||
+      code === FeedbackRoundErrorCode.ClarificationNotOpen) &&
+    isRecord(response.payload) &&
+    isItem(response.payload.current)
+  )
+    return { ok: false, code, current: response.payload.current };
+  return { ok: false, code };
 }
 
 function setItemResult(
   itemId: string,
   request: SetFeedbackItemResultRequestDto,
-): Promise<
-  VersionedJsonMutationResult<FeedbackRoundItemDto, FeedbackRoundErrorCode>
-> {
+): Promise<FeedbackItemClientResult> {
   return mutateItem(
     crmFeedbackItemResultEndpoint(itemId),
     HttpMethod.Patch,
@@ -101,9 +119,7 @@ function setItemResult(
 function askClarification(
   itemId: string,
   request: AskFeedbackItemClarificationRequestDto,
-): Promise<
-  VersionedJsonMutationResult<FeedbackRoundItemDto, FeedbackRoundErrorCode>
-> {
+): Promise<FeedbackItemClientResult> {
   return mutateItem(
     crmFeedbackItemClarificationsEndpoint(itemId),
     HttpMethod.Post,
@@ -115,9 +131,7 @@ function closeClarification(
   itemId: string,
   clarificationId: string,
   request: CloseFeedbackItemClarificationRequestDto,
-): Promise<
-  VersionedJsonMutationResult<FeedbackRoundItemDto, FeedbackRoundErrorCode>
-> {
+): Promise<FeedbackItemClientResult> {
   return mutateItem(
     crmFeedbackItemClarificationCloseEndpoint(itemId, clarificationId),
     HttpMethod.Post,

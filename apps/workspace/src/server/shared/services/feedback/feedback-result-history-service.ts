@@ -1,7 +1,7 @@
 import "server-only";
 
 import { randomUUID } from "node:crypto";
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray } from "drizzle-orm";
 import type { FeedbackItemResult } from "@invessiv/common/constants/crm/feedback-item-results";
 import { FeedbackResultActorSide as A } from "@invessiv/common/constants/crm/feedback-result-actor-sides";
 import { FeedbackResultHistoryEventKind as K } from "@invessiv/common/constants/crm/feedback-result-history-event-kinds";
@@ -54,11 +54,20 @@ async function recordChange(
     return;
   if (stored.result !== null) {
     const [existing] = await tx
-      .select({ id: history.id })
+      .select()
       .from(history)
       .where(eq(history.item_id, stored.id))
+      .orderBy(desc(history.item_version))
       .limit(1);
-    if (!existing) {
+    // Older deployments can write results while retaining an earlier history. Versions alone
+    // cannot identify that gap: answers and position changes also increment the item version.
+    const snapshotRecorded =
+      existing &&
+      existing.result === stored.result &&
+      existing.result_note === stored.result_note &&
+      existing.result_set_by_member_id === stored.result_set_by_member_id &&
+      existing.result_set_at?.getTime() === stored.result_set_at?.getTime();
+    if (!snapshotRecorded) {
       if (!stored.result_set_at || !stored.result_set_by_member_id)
         throw new FeedbackResultBaselineMissingError();
       await tx.insert(history).values({

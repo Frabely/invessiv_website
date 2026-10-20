@@ -2,6 +2,7 @@ import { expect, type Page, test } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 import { portalPathFor } from "@/lib/auth/routes";
+import { captureThemeViewports } from "./support/capture-theme-viewports";
 import {
   type PortalE2eFixture,
   portalE2ePaths,
@@ -280,31 +281,15 @@ test.describe.serial("portal feedback", () => {
       await expect(
         page.getByText("Zurückgesetzt auf Noch offen", { exact: true }),
       ).toBeVisible();
-      for (const theme of ["dark", "light"]) {
-        await page.evaluate((value) => {
-          document.documentElement.dataset.theme = value;
-        }, theme);
-        for (const viewport of [
-          { width: 1440, height: 1000 },
-          { width: 390, height: 844 },
-        ]) {
-          await page.setViewportSize(viewport);
+      await captureThemeViewports(
+        page,
+        testInfo,
+        "feedback-result-history",
+        async () => {
           await history.scrollIntoViewIfNeeded();
           await expect(history).toBeVisible();
-          expect(
-            await page.evaluate(
-              () => document.documentElement.scrollWidth <= window.innerWidth,
-            ),
-          ).toBe(true);
-          // Kept as artifacts for the manual visual review; only the overflow check above asserts.
-          await page.screenshot({
-            path: testInfo.outputPath(
-              `feedback-result-history-${theme}-${viewport.width}.png`,
-            ),
-          });
-        }
-      }
-      await page.setViewportSize({ width: 1440, height: 1000 });
+        },
+      );
       await page
         .getByRole("button", { name: "Ergebnis für Punkt 1: Noch offen" })
         .click();
@@ -449,29 +434,7 @@ test.describe.serial("portal feedback", () => {
         .getByRole("link", { name: "Punkt 1" })
         .click();
       await expect(b.locator(`#feedback-item-${itemId}:focus`)).toHaveCount(1);
-      for (const theme of ["dark", "light"]) {
-        await b.evaluate((value) => {
-          document.documentElement.dataset.theme = value;
-        }, theme);
-        for (const viewport of [
-          { width: 1440, height: 1000 },
-          { width: 390, height: 844 },
-        ]) {
-          await b.setViewportSize(viewport);
-          expect(
-            await b.evaluate(
-              () => document.documentElement.scrollWidth <= window.innerWidth,
-            ),
-          ).toBe(true);
-          // Kept as artifacts for the manual visual review; only the overflow check above asserts.
-          await b.screenshot({
-            path: testInfo.outputPath(
-              `portal-clarification-${theme}-${viewport.width}.png`,
-            ),
-          });
-        }
-      }
-      await b.setViewportSize({ width: 1440, height: 1000 });
+      await captureThemeViewports(b, testInfo, "portal-clarification");
       const answered = b.waitForResponse(
         (response) =>
           response.url().includes(`/items/${itemId}/clarifications/`) &&

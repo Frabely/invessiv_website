@@ -71,11 +71,16 @@ der eigene Upload“ bleiben in den getrennten Handlern (`portalFileService` bzw
   der Ergebnishistorie. Jeder Ergebnis-Schreibpfad ruft `recordChange` unter Punktsperre und in derselben
   Transaktion auf, einschließlich der automatischen Rücknahme beim Bearbeiten eines zurückgegebenen Entwurfs.
   Ausgangsstände entstehen erst bei der ersten tatsächlichen Änderung; No-ops schreiben nichts.
+  Nach einer Historisierungslücke (Rollback auf einen alten Ergebnisschreiber) wird der aktuelle Ergebnis-Snapshot
+  mit dem letzten Historieneintrag verglichen: Ergebnis, Begründung, Bearbeiter und Ergebniszeitpunkt. Weicht er ab,
+  wird vor der nächsten Änderung ein weiterer Ausgangsstand gesichert. Eine reine Versionslücke reicht dafür nicht.
   Nur interne Leser laden den Verlauf über `loadByItems`; Portal-DTOs und Portal-Konflikte enthalten ihn nie.
   Zeile → DTO übernimmt `feedback-result-history-mapping-service.ts` hier im Ordner; der Service importiert nichts
   aus `server/workspace/**`.
 
 `services/feedback/` hält die Bausteine, die Portal- und Workspace-Handler der Feedbackrunden (Task 59–61) teilen.
+Punkt-Schreibantworten laden sichtbare Anhänge gezielt über `feedbackRoundItemService.loadAttachments`;
+die Sichtbarkeitsbedingung bleibt beim jeweiligen Aufrufer. Sie laden dafür nicht sämtliche Punkte der Runde.
 Übergänge, Sperren, Rechte und Fehlercodes entscheidet der Handler seiner Welt anhand von `canTransition`
 (`@invessiv/common/patterns/crm/feedback-round-state`); die Services setzen nur die Nebenwirkungen in derselben
 Transaktion um.

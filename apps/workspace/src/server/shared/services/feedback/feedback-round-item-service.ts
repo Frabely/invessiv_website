@@ -25,6 +25,20 @@ const positionConstraint = sql.identifier(
   FeedbackRoundItemsConstraintName.RoundPositionUnique,
 );
 
+/** The caller supplies visibility; an item command never needs to reload the other points. */
+async function loadAttachments(
+  reader: ContactDatabaseReader,
+  itemId: string,
+  visibility: SQL,
+) {
+  const rows = await reader
+    .select()
+    .from(files)
+    .where(and(eq(files.feedback_item_id, itemId), visibility))
+    .orderBy(asc(files.created_at), asc(files.id));
+  return rows.map(feedbackMappingService.toAttachmentDto);
+}
+
 /**
  * Items and attachments of several rounds in one query. `visibility` is the caller's file filter
  * (portal release or internal scope); an attachment outside it is left out entirely.
@@ -215,6 +229,7 @@ async function replaceDraftItems(
 }
 
 export const feedbackRoundItemService = {
+  loadAttachments,
   loadByRound,
   replaceDraftItems,
 } as const;

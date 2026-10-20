@@ -32,6 +32,94 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     ) => changeFeedbackRoundStatus(roundId, input, f.member());
     beforeAll(() => f.setup(), 60_000);
     afterAll(() => f.cleanup(), 60_000);
+
+    it.each([
+      FeedbackItemResult.Implemented,
+      FeedbackItemResult.NotImplemented,
+    ])(
+      "captures the observed %s snapshot after a rollback gap even when history already exists",
+      async (result) => {
+        const {
+          itemIds: [itemId],
+        } = await submittedRound(["Point"]);
+        await setFeedbackItemResult(
+          itemId,
+          {
+            version: 1,
+            result: FeedbackItemResult.Implemented,
+            resultNote: "Before rollback",
+          },
+          f.member(),
+        );
+        // The old writer advances the version and replaces result metadata without recording history.
+        const legacyAt = new Date("2026-10-01T12:00:00.000Z");
+        await f
+          .database()
+          .update(feedbackRoundItems)
+          .set({
+            version: 3,
+            result,
+            result_note: "Written during rollback",
+            result_set_by_member_id: f.member().workspaceMemberId,
+            result_set_at: legacyAt,
+          })
+          .where(eq(feedbackRoundItems.id, itemId));
+        const reset = await setFeedbackItemResult(
+          itemId,
+          { version: 3, result: null },
+          f.member(),
+        );
+        expect(reset).toMatchObject({
+          ok: true,
+          item: {
+            version: 4,
+            resultHistory: [
+              { kind: K.Set, itemVersion: 2, resultNote: "Before rollback" },
+              {
+                kind: K.Baseline,
+                itemVersion: 3,
+                result,
+                resultNote: "Written during rollback",
+                occurredAt: legacyAt.toISOString(),
+              },
+              { kind: K.Reset, itemVersion: 4, result: null },
+            ],
+          },
+        });
+      },
+    );
+
+    it("does not add a baseline when only non-result item versions changed", async () => {
+      const {
+        itemIds: [itemId],
+      } = await submittedRound(["Point"]);
+      await setFeedbackItemResult(
+        itemId,
+        { version: 1, result: FeedbackItemResult.Implemented },
+        f.member(),
+      );
+      await f
+        .database()
+        .update(feedbackRoundItems)
+        .set({ version: 4 })
+        .where(eq(feedbackRoundItems.id, itemId));
+      const reset = await setFeedbackItemResult(
+        itemId,
+        { version: 4, result: null },
+        f.member(),
+      );
+      expect(reset).toMatchObject({
+        ok: true,
+        item: {
+          resultHistory: [
+            { kind: K.Set, itemVersion: 2 },
+            { kind: K.Reset, itemVersion: 5 },
+          ],
+        },
+      });
+      expect(reset.ok && reset.item.resultHistory).toHaveLength(2);
+    });
+
     it.each(Object.values(FeedbackItemResult))(
       "resets %s with one legacy baseline and keeps the old explanation",
       async (result) => {

@@ -60,7 +60,7 @@ function requiresNote(result: FeedbackItemResultValue): boolean {
  */
 export function FeedbackItemRow({
   content,
-  item,
+  item: listedItem,
   number,
   locale,
   editable,
@@ -69,6 +69,11 @@ export function FeedbackItemRow({
   attachments,
 }: FeedbackItemRowProps) {
   const router = useRouter();
+  const [latest, setLatest] = useState<FeedbackRoundItemDto | null>(null);
+  const item =
+    latest && latest.id === listedItem.id && latest.version > listedItem.version
+      ? latest
+      : listedItem;
   const texts = content.result;
   const [pending, setPending] = useState<{
     result: FeedbackItemResultValue | null;
@@ -76,7 +81,7 @@ export function FeedbackItemRow({
   } | null>(null);
   const [noteFor, setNoteFor] = useState<FeedbackItemResultValue | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // Asking or closing moves the action between the thread and the row; the focus follows it.
+  // Keep the action and its dialogs mounted while the question changes behind them.
   const actionFocus = useFocusAfterVersion<HTMLButtonElement>(item.version);
   const awaitingClarification =
     getFeedbackItemProcessingState(item) ===
@@ -130,16 +135,18 @@ export function FeedbackItemRow({
     else void saveImmediateResult(result);
   }
 
-  const clarificationActions = editable ? (
+  const clarificationActions = (
     <FeedbackClarificationActions
       buttonRef={actionFocus.ref}
       content={content}
       item={item}
+      editable={editable}
+      onCurrentAction={setLatest}
       number={number}
       onAnnounceAction={onAnnounceAction}
       onSavedAction={(saved) => actionFocus.focusAfter(saved.version)}
     />
-  ) : null;
+  );
 
   const itemContent = (
     <FeedbackReadOnlyItemContent
@@ -176,9 +183,7 @@ export function FeedbackItemRow({
         showLess: content.detail.showLess,
       }}
       locale={locale}
-    >
-      {awaitingClarification ? clarificationActions : null}
-    </FeedbackClarificationThread>
+    />
   );
 
   const resultHistory = (
@@ -258,7 +263,7 @@ export function FeedbackItemRow({
           ) : null}
         </div>
       ) : null}
-      {awaitingClarification ? null : clarificationActions}
+      {clarificationActions}
       {resultHistory}
       {error ? (
         <p className={styles.error} role="alert">
@@ -272,6 +277,8 @@ export function FeedbackItemRow({
             content.processingErrors[feedbackProcessingError(code)]
           }
           initial={item}
+          locked={!editable}
+          onCurrentAction={setLatest}
           initialText={item.result === noteFor ? (item.resultNote ?? "") : ""}
           onCloseAction={() => setNoteFor(null)}
           onSavedAction={() => announceSaved(noteFor)}

@@ -141,6 +141,24 @@ describe("useFeedbackClarificationAnswers", () => {
     );
   });
 
+  it("locks the draft and refreshes when the round was completed meanwhile", async () => {
+    mocks.answerClarification.mockResolvedValue({
+      ok: false,
+      code: PortalFeedbackErrorCode.Locked,
+    });
+    const { hook } = setup();
+    act(() => hook.result.current.change("a", "q-a", "Kept answer"));
+    await act(() => hook.result.current.submit(item("a"), "q-a"));
+    expect(hook.result.current.draftFor("q-a")).toMatchObject({
+      text: "Kept answer",
+      busy: false,
+      locked: true,
+    });
+    expect(mocks.refresh).toHaveBeenCalledOnce();
+    await act(() => hook.result.current.submit(item("a"), "q-a"));
+    expect(mocks.answerClarification).toHaveBeenCalledOnce();
+  });
+
   it("keeps the pending answer immutable and blocks another submit until it finishes", async () => {
     let resolveAnswer!: (value: {
       ok: false;

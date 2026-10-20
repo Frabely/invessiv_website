@@ -315,6 +315,9 @@ ursprüngliche Request-Punktversion hinzu. Alle Ereignisarten und Akteurseiten w
 - Ein Eintrag beschreibt den **Folgezustand** des aktiven Ergebnisses; `reset` enthält leere Ergebnisfelder.
   Der vorherige Zustand ist durch den vorausgehenden Eintrag erhalten. Gibt es für einen bereits bewerteten Punkt
   noch keinen Verlauf, wird dessen Ausgangsstand vor der ersten Änderung in derselben Transaktion ergänzt.
+  Nach einem Rollback mit zwischenzeitlichen Ergebnisänderungen wird auch bei bestehendem Verlauf ein neuer
+  Ausgangsstand gesichert, wenn der letzte Snapshot vom aktuellen Ergebnis einschließlich Begründung,
+  Bearbeiter oder Ergebniszeitpunkt abweicht. Reine Versionslücken ohne Ergebnisänderung erzeugen keine Baseline.
 - Eindeutigkeit je `(item_id, item_version)` verhindert doppelte Ausgangsstände/Ereignisse. Punktversionen im
   Verlauf dürfen Lücken haben, weil etwa Antwort- oder Anhangsaktionen kein Ergebnis ändern.
 - Nur eine tatsächliche Änderung des Ergebnisses oder seiner Begründung erzeugt ein neues Ereignis. Identische

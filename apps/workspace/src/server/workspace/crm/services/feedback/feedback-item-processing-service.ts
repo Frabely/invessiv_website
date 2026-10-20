@@ -81,18 +81,15 @@ async function loadItemDto(
   item: FeedbackRoundItemRow,
   actor: WorkspaceActor,
 ): Promise<FeedbackRoundItemDto> {
-  const [items, history, questions] = await Promise.all([
-    feedbackRoundItemService.loadByRound(
+  const [attachments, history, questions] = await Promise.all([
+    feedbackRoundItemService.loadAttachments(
       reader,
-      [item.round_id],
+      item.id,
       fileAccessService.readableCondition(actor),
     ),
     feedbackResultHistoryService.loadByItems(reader, [item.id]),
     feedbackClarificationService.loadInternalByItems(reader, [item.id]),
   ]);
-  const attachments =
-    items.get(item.round_id)?.find((loaded) => loaded.item.id === item.id)
-      ?.attachments ?? [];
   return feedbackRoundMappingService.toItemDto(
     { item, attachments },
     history.get(item.id) ?? [],

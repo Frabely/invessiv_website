@@ -187,7 +187,10 @@ export function useFeedbackClarificationAnswers(
       return;
     }
     // Without read access the refusal carries no current item; the refreshed page brings it.
-    if (result.code === PortalFeedbackErrorCode.ClarificationNotOpen) {
+    if (
+      result.code === PortalFeedbackErrorCode.ClarificationNotOpen ||
+      result.code === PortalFeedbackErrorCode.Locked
+    ) {
       update(clarificationId, (previous) => ({
         ...locked(previous),
         code: result.code,

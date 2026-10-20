@@ -117,9 +117,12 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
   wechselt mit jeder Textänderung und nach einem Konflikt. Bei vorhandenem Ergebnis nennt der Fragedialog dessen
   Rücknahme. Den Verlauf zeigt der geteilte `FeedbackClarificationThread` (`components/shared/feedback/`) mit
   aufgelösten Namen. Bei offener Rückfrage ist das Ergebnis-Select gesperrt, zeigt „Rückfrage“ und nennt den Grund.
-  Nach Stellen oder Schließen liegt der Fokus auf der Aktion, die am Punkt danach erscheint
-  (`useFocusAfterVersion`, `src/hooks/shared/`: wartet auf die gespeicherte Version, weil die Aktion dabei an eine
-  andere Stelle der Zeile wandert). Der Dialog hält die Frage fest, für die er geöffnet wurde; ein Refresh dahinter
+  Aktionskomponente und Dialoge bleiben an einer festen Stelle der Punktzeile gemountet, auch wenn eine Frage
+  beantwortet wird oder die Runde während eines offenen Dialogs abgeschlossen wird. Nach Stellen oder Schließen
+  liegt der Fokus auf der Aktion am Punkt (`useFocusAfterVersion`, `src/hooks/shared/`: wartet auf die gespeicherte
+  Version). Fachliche Konflikte mit aktuellem Punkt werden wie Versionskonflikte in die sichtbare Zeile übernommen;
+  der Rücknahmehinweis verwendet denselben Stand wie der nächste Request. Während des Requests ist das Textfeld
+  schreibgeschützt; eine gesperrte Runde erhält den Entwurf und sperrt das Absenden. Der Dialog hält die Frage fest, für die er geöffnet wurde; ein Refresh dahinter
   macht aus „Schließen“ nie „Stellen“, und zeigt der Konflikt die Frage erledigt, geht kein zweiter Request raus.
   Die offene Rückfrage eines Punkts liefert überall `findOpenFeedbackClarification` (`@invessiv/common`).
 - **Zählen nur über `summarizeFeedbackProcessing`** (`common/patterns/crm/`, auf `getFeedbackItemProcessingState`):

@@ -10,7 +10,7 @@ import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 import { CustomerHourPurchasesConstraintName as P } from "@invessiv/db/constraint-names/crm/customer-hour-purchases-constraint-names";
 import { ProjectHourAllocationsConstraintName as A } from "@invessiv/db/constraint-names/crm/project-hour-allocations-constraint-names";
 import { ProjectTimeEntriesConstraintName as E } from "@invessiv/db/constraint-names/crm/project-time-entries-constraint-names";
-import type { CredentialSmokeContext as SmokeContext } from "./credential-checks";
+import type { CrmSmokeContext as SmokeContext } from "./contracts/crm-smoke-context";
 
 type PurchaseArgs = {
   customerId: string;

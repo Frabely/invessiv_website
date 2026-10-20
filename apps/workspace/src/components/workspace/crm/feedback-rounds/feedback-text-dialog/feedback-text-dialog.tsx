@@ -1,35 +1,30 @@
 import { type ReactNode, type SubmitEvent, useId, useState } from "react";
-import type { FeedbackRoundErrorCode } from "@invessiv/common/constants/crm/errors/feedback-round-error-codes";
+import { FeedbackRoundErrorCode } from "@invessiv/common/constants/crm/errors/feedback-round-error-codes";
+import { useRouter } from "next/navigation";
 import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { FormDialog, FormField } from "@invessiv/ui";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import type { VersionedJsonMutationResult } from "@/common/contracts/client/versioned-json-mutation-result";
+import type { FeedbackTextDialogDictionary } from "@/common/contracts/crm/feedback-text-dialog-dictionary";
+import type { FeedbackTextDialogTexts } from "@/common/contracts/crm/feedback-text-dialog-texts";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
-import type { CrmFeedbackRoundsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import styles from "./feedback-text-dialog.module.css";
 
-type TextDialogKey =
-  | "title"
-  | "description"
-  | "label"
-  | "hint"
-  | "placeholder"
-  | "submit"
-  | "submitting"
-  | "required"
-  | "conflict";
-
 export type FeedbackTextDialogProps<TEntity> = {
-  common: CrmFeedbackRoundsDictionary["textDialog"];
-  texts: Record<TextDialogKey, string>;
+  common: FeedbackTextDialogDictionary;
+  texts: FeedbackTextDialogTexts;
   /** The entity whose version the write sends; a conflict replaces it with the current one. */
   initial: TEntity;
   initialText?: string;
   required: boolean;
+  /** A refreshed round can lock the action while its unsent text stays visible. */
+  locked?: boolean;
   /** A consequence the team should know before sending, shown above the field. */
-  notice?: string;
+  notice?: (current: TEntity) => string | undefined;
+  /** Publishes the conflict snapshot to the visible row without replacing the draft. */
+  onCurrentAction?: (current: TEntity) => void;
   /** Shows the text the way the customer will read it. */
   preview?: (text: string) => ReactNode;
   errorMessage: (code: FeedbackRoundErrorCode) => string;
@@ -41,7 +36,13 @@ export type FeedbackTextDialogProps<TEntity> = {
     current: TEntity,
     text: string,
     commandId: string,
-  ) => Promise<VersionedJsonMutationResult<TEntity, FeedbackRoundErrorCode>>;
+  ) => Promise<
+    VersionedJsonMutationResult<
+      TEntity,
+      FeedbackRoundErrorCode,
+      FeedbackRoundErrorCode
+    >
+  >;
   onCloseAction: () => void;
   onSavedAction: (saved: TEntity) => void;
 };
@@ -56,13 +57,16 @@ export function FeedbackTextDialog<TEntity>({
   initial,
   initialText = "",
   required,
+  locked = false,
   notice,
+  onCurrentAction,
   preview,
   errorMessage,
   send,
   onCloseAction,
   onSavedAction,
 }: FeedbackTextDialogProps<TEntity>) {
+  const router = useRouter();
   const formId = useId();
   const [text, setText] = useState(initialText);
   const [commandId, setCommandId] = useState(() => crypto.randomUUID());
@@ -70,12 +74,22 @@ export function FeedbackTextDialog<TEntity>({
   const mutation = useVersionedMutation<TEntity, FeedbackRoundErrorCode>(
     initial,
     onCloseAction,
-    { onConflictAction: () => setCommandId(crypto.randomUUID()) },
+    {
+      onConflictAction: (current) => {
+        setCommandId(crypto.randomUUID());
+        onCurrentAction?.(current);
+        router.refresh();
+      },
+      onErrorAction: (code) => {
+        if (code === FeedbackRoundErrorCode.RoundLocked) router.refresh();
+      },
+    },
   );
+  const currentNotice = notice?.(mutation.current);
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (mutation.isSubmitting) return;
+    if (mutation.isSubmitting || locked) return;
     const trimmed = text.trim();
     setMissing(required && trimmed === "");
     if (required && trimmed === "") return;
@@ -97,6 +111,7 @@ export function FeedbackTextDialog<TEntity>({
       onCloseAction={mutation.close}
       submitLabel={texts.submit}
       submittingLabel={texts.submitting}
+      submitDisabled={locked}
       title={texts.title}
     >
       <form
@@ -105,9 +120,9 @@ export function FeedbackTextDialog<TEntity>({
         noValidate
         onSubmit={handleSubmit}
       >
-        {notice ? (
+        {currentNotice ? (
           <p className={styles.message} data-tone={DialogMessageTone.Info}>
-            {notice}
+            {currentNotice}
           </p>
         ) : null}
         <FormField
@@ -125,9 +140,11 @@ export function FeedbackTextDialog<TEntity>({
           label={texts.label}
           required={required}
           textareaProps={{
+            readOnly: mutation.isSubmitting || locked,
             maxLength: FEEDBACK_LIMITS.noteMaxLength,
             name: "feedback-customer-text",
             onChange: (event) => {
+              if (mutation.isSubmitting || locked) return;
               setText(event.target.value);
               // A changed text is a new action; only an unchanged retry may reuse the id.
               setCommandId(crypto.randomUUID());

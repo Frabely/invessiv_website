@@ -221,17 +221,14 @@ async function loadItemDto(
   round: FeedbackRoundRow,
   item: FeedbackRoundItemRow,
 ): Promise<PortalFeedbackItemDto> {
-  const [items, questions] = await Promise.all([
-    feedbackRoundItemService.loadByRound(
+  const [attachments, questions] = await Promise.all([
+    feedbackRoundItemService.loadAttachments(
       reader,
-      [round.id],
+      item.id,
       portalFileService.visibleCondition(actor),
     ),
     feedbackClarificationService.loadByItems(reader, [item.id]),
   ]);
-  const attachments =
-    items.get(round.id)?.find((entry) => entry.item.id === item.id)
-      ?.attachments ?? [];
   return portalFeedbackMappingService.toItemDto(
     { item, attachments },
     (RESULT_VISIBLE_FEEDBACK_ROUND_STATUS_VALUES as readonly string[]).includes(

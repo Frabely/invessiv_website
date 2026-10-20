@@ -135,7 +135,7 @@ function renderDetail(
 ) {
   const onHandOverNextAction = vi.fn();
   const onAnnounceAction = vi.fn();
-  render(
+  const view = (detail: FeedbackRoundDto) => (
     <FeedbackRoundDetail
       backHref="/en/crm"
       canReadFiles
@@ -150,9 +150,14 @@ function renderDetail(
       onHandOverNextAction={onHandOverNextAction}
       processSteps={["Design", "Development"]}
       round={detail}
-    />,
+    />
   );
-  return { onHandOverNextAction, onAnnounceAction };
+  const rendered = render(view(detail));
+  return {
+    onHandOverNextAction,
+    onAnnounceAction,
+    rerender: (next: FeedbackRoundDto) => rendered.rerender(view(next)),
+  };
 }
 
 beforeEach(() => {
@@ -424,6 +429,173 @@ describe("FeedbackRoundDetail processing", () => {
 });
 
 describe("FeedbackRoundDetail clarifications", () => {
+  it("preserves the close draft and original target across answered, new-question and locked refreshes", async () => {
+    const original = clarification("q");
+    const answered = clarification("q", {
+      status: FeedbackClarificationStatus.Answered,
+      answer: "Use the header",
+      answeredAt: "2026-10-02T10:00:00.000Z",
+    });
+    const { rerender } = renderDetail(
+      round({ items: [item("a", { clarifications: [original] })] }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Close question (item 1)" }),
+    );
+    const dialog = screen.getByRole("dialog");
+    fireEvent.change(within(dialog).getByRole("textbox"), {
+      target: { value: "Settled by phone" },
+    });
+    const refreshed = item("a", {
+      version: 3,
+      clarifications: [answered, clarification("new")],
+    });
+    rerender(
+      round({ items: [item("a", { version: 2, clarifications: [answered] })] }),
+    );
+    expect(dialog).toBeInTheDocument();
+    expect(within(dialog).getByRole("textbox")).toHaveValue("Settled by phone");
+    rerender(round({ items: [refreshed] }));
+    mocks.closeClarification.mockResolvedValue({
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      current: refreshed,
+    });
+    fireEvent.submit(dialog.querySelector("form")!);
+    await within(dialog).findByText(content.clarification.closeDialog.conflict);
+    expect(mocks.closeClarification).toHaveBeenCalledWith(
+      "a",
+      "q",
+      expect.anything(),
+    );
+    fireEvent.submit(dialog.querySelector("form")!);
+    await within(dialog).findByText(content.processingErrors.changed);
+    expect(mocks.closeClarification).toHaveBeenCalledOnce();
+    rerender(
+      round({ status: FeedbackRoundStatus.Completed, items: [refreshed] }),
+    );
+    expect(within(dialog).getByRole("textbox")).toHaveValue("Settled by phone");
+    expect(within(dialog).getByRole("textbox")).toHaveAttribute("readonly");
+    expect(
+      within(dialog).getByRole("button", {
+        name: content.clarification.closeDialog.submit,
+      }),
+    ).toBeDisabled();
+  });
+
+  it.each([
+    ConcurrencyErrorCode.VersionConflict,
+    FeedbackRoundErrorCode.ClarificationNotOpen,
+  ])(
+    "shows the answered point from a %s conflict without discarding the close draft",
+    async (code) => {
+      mocks.closeClarification.mockResolvedValue({
+        ok: false,
+        code,
+        current: item("a", {
+          version: 2,
+          clarifications: [
+            clarification("q", {
+              status: FeedbackClarificationStatus.Answered,
+              answer: "Use the header",
+              answeredAt: "2026-10-02T10:00:00.000Z",
+            }),
+          ],
+        }),
+      });
+      renderDetail(
+        round({ items: [item("a", { clarifications: [clarification("q")] })] }),
+      );
+      fireEvent.click(
+        screen.getByRole("button", { name: "Close question (item 1)" }),
+      );
+      const dialog = screen.getByRole("dialog");
+      fireEvent.change(within(dialog).getByRole("textbox"), {
+        target: { value: "My unsent note" },
+      });
+      fireEvent.submit(dialog.querySelector("form")!);
+      await screen.findByText("Use the header");
+      expect(within(dialog).getByRole("textbox")).toHaveValue("My unsent note");
+      expect(mocks.router.refresh).toHaveBeenCalled();
+      fireEvent.submit(dialog.querySelector("form")!);
+      await within(dialog).findByText(content.processingErrors.changed);
+      expect(mocks.closeClarification).toHaveBeenCalledOnce();
+    },
+  );
+
+  it.each([
+    FeedbackItemResult.Implemented,
+    FeedbackItemResult.AdditionalService,
+  ])(
+    "updates the withdrawal notice to the conflicted result %s before retrying",
+    async (result) => {
+      mocks.askClarification
+        .mockResolvedValueOnce({
+          ok: false,
+          code: ConcurrencyErrorCode.VersionConflict,
+          current: item("a", {
+            version: 2,
+            result,
+            resultNote: "New explanation",
+          }),
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          code: FeedbackRoundErrorCode.Internal,
+        });
+      renderDetail(round({ items: [item("a")] }));
+      fireEvent.click(
+        screen.getByRole("button", { name: "Ask a question (item 1)" }),
+      );
+      const dialog = screen.getByRole("dialog");
+      fireEvent.change(within(dialog).getByRole("textbox"), {
+        target: { value: "Which blue?" },
+      });
+      fireEvent.submit(dialog.querySelector("form")!);
+      await within(dialog).findByText(
+        `The result “${content.result.choices[result]}” is withdrawn and stays in the result history.`,
+      );
+      fireEvent.submit(dialog.querySelector("form")!);
+      await waitFor(() =>
+        expect(mocks.askClarification).toHaveBeenCalledTimes(2),
+      );
+      expect(mocks.askClarification.mock.calls[1][1]).toMatchObject({
+        version: 2,
+        question: "Which blue?",
+      });
+      expect(mocks.askClarification.mock.calls[1][1].commandId).not.toBe(
+        mocks.askClarification.mock.calls[0][1].commandId,
+      );
+    },
+  );
+
+  it("keeps a pending internal draft immutable and refreshes a locked-round refusal", async () => {
+    let finish!: (value: {
+      ok: false;
+      code: typeof FeedbackRoundErrorCode.RoundLocked;
+    }) => void;
+    mocks.askClarification.mockReturnValue(
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+    );
+    renderDetail(round({ items: [item("a")] }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ask a question (item 1)" }),
+    );
+    const dialog = screen.getByRole("dialog");
+    const field = within(dialog).getByRole("textbox");
+    fireEvent.change(field, { target: { value: "Sent text" } });
+    fireEvent.submit(dialog.querySelector("form")!);
+    expect(field).toHaveAttribute("readonly");
+    fireEvent.change(field, { target: { value: "Unsent edit" } });
+    expect(field).toHaveValue("Sent text");
+    finish({ ok: false, code: FeedbackRoundErrorCode.RoundLocked });
+    await within(dialog).findByText(content.processingErrors.locked);
+    expect(field).toHaveValue("Sent text");
+    expect(mocks.router.refresh).toHaveBeenCalled();
+  });
+
   it("asks a question on a rated item and names the withdrawn result", async () => {
     mocks.askClarification.mockResolvedValue({
       ok: true,
@@ -560,7 +732,7 @@ describe("FeedbackRoundDetail clarifications", () => {
     ).not.toBeInTheDocument();
 
     fireEvent.click(
-      within(thread).getByRole("button", {
+      screen.getByRole("button", {
         name: "Close question (item 1)",
       }),
     );

@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { FeedbackRoundErrorCode } from "@invessiv/common/constants/crm/errors/feedback-round-error-codes";
 import { feedbackRoundsApiService } from "@/client/crm/feedback-rounds-api-service";
 
 const ROUND_ID = "55555555-5555-4555-8555-555555555555";
@@ -52,5 +53,35 @@ describe("feedbackRoundsApiService.markRead", () => {
     await expect(
       feedbackRoundsApiService.markRead(ROUND_ID, REQUEST),
     ).resolves.toBe(false);
+  });
+});
+
+describe("feedbackRoundsApiService clarification conflicts", () => {
+  afterEach(() => vi.unstubAllGlobals());
+  it.each([
+    FeedbackRoundErrorCode.ClarificationOpen,
+    FeedbackRoundErrorCode.ClarificationNotOpen,
+  ])("preserves the current point and the domain code %s", async (code) => {
+    const current = {
+      id: "item",
+      version: 4,
+      result: null,
+      clarifications: [],
+    };
+    respondWith(HttpResponseCode.Conflict, { error: code, current });
+    const request = { commandId: crypto.randomUUID(), version: 3 };
+    await expect(
+      feedbackRoundsApiService.askClarification("item", {
+        ...request,
+        question: "Which?",
+      }),
+    ).resolves.toEqual({ ok: false, code, current });
+    respondWith(HttpResponseCode.Conflict, { error: code, current });
+    await expect(
+      feedbackRoundsApiService.closeClarification("item", "question", {
+        ...request,
+        note: "Settled",
+      }),
+    ).resolves.toEqual({ ok: false, code, current });
   });
 });

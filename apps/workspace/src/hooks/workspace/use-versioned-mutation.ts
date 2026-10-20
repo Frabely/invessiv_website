@@ -12,6 +12,7 @@ type VersionedMutationOutcome<TEntity, TCode extends string> =
       code: typeof ConcurrencyErrorCode.VersionConflict;
       current: TEntity;
     }
+  | { ok: false; code: TCode; current: TEntity }
   | { ok: false; code: TCode };
 
 /**
@@ -23,6 +24,7 @@ export function useVersionedMutation<TEntity, TCode extends string>(
   onCloseAction: () => void,
   options?: {
     onConflictAction?: (current: TEntity) => Promise<void> | void;
+    onErrorAction?: (code: TCode) => Promise<void> | void;
   },
 ) {
   const router = useRouter();
@@ -62,10 +64,13 @@ export function useVersionedMutation<TEntity, TCode extends string>(
     if ("current" in outcome) {
       setCurrent(outcome.current);
       await options?.onConflictAction?.(outcome.current);
-      setHasConflict(true);
+      if (outcome.code === ConcurrencyErrorCode.VersionConflict)
+        setHasConflict(true);
+      else setErrorCode(outcome.code);
       return;
     }
     setErrorCode(outcome.code);
+    await options?.onErrorAction?.(outcome.code);
   }
 
   return { close, current, errorCode, hasConflict, isSubmitting, submit };
