@@ -1,7 +1,8 @@
 # Paket L – Vorschaubilder in Dateilisten (Portal und CRM)
 
 Stand: 21.10.2026. Folgt auf [Paket K](../done/26-portal-dateien-layout/K-portal-files-layout.md). Umgesetzt auf
-`feat/portal-file-thumbnails`, mit Nacharbeiten aus dem Branch-Review. Dev-DB hat `0061`.
+`feat/portal-file-thumbnails` und nach `master` gemerged. Temporäre Backfill-Hilfen sind auf Nutzerwunsch entfernt;
+Migration `0061` bleibt erhalten.
 
 ## Nacharbeiten aus dem Review (21.10.2026)
 
@@ -12,47 +13,18 @@ Stand: 21.10.2026. Folgt auf [Paket K](../done/26-portal-dateien-layout/K-portal
   HEIC, SVG und andere nicht unterstützte Formate lösen keine Nachladeversuche aus.
 - Auch der erste DB-Read der automatischen Erzeugung fällt unter die kontrollierte Fehlerbehandlung.
 - Die reine Zieldefinition liegt in `packages/common/src/constants/database/database-target.ts`.
-- Dev und Preview dürfen denselben Blob-Store verwenden. Eine bekannte Production-DB oder ein bekannter
-  Production-Store wird für diese Ziele abgelehnt; direkte und gepoolte Neon-Adressen gelten als dieselbe DB.
-- Das Backfill-Skript liest ausschließlich die ausdrücklich gewählte `.env.<ziel>.local` an Root/App bzw.
-  `DATABASE_URL_<ZIEL>`. Widersprüchliche DB-Zuordnungen werden abgelehnt; eine allgemeine `DATABASE_URL` oder
-  `.env.local` ist kein Fallback. Für den DB-Sicherheitsvergleich muss die Production-DB explizit bekannt sein.
-  Store-ID und passende OIDC-/Read-Write-Zugangsdaten müssen in der Zieldatei stehen. Die normalen DB-Skripte
-  behalten ihre bisherige Ladefunktion; nur das temporäre Backfill nutzt die strengere Prüfung.
-- In einer tatsächlichen Vercel-Umgebung (`VERCEL=1`) muss `VERCEL_ENV` exakt zum angeforderten Ziel passen.
-  Dort werden die deployten DB-/Storage-Werte dieser Umgebung verwendet. Lokal ausschließlich in Vercel
-  hinterlegte Prod-Werte müssen zuerst ausdrücklich für Production bereitgestellt werden; ohne diese bricht
-  der lokale Prod-Lauf ab. Eine lokale Prüfung bestätigt keine erfolgreich ausgeführten früheren Prod-Backfills.
-- Nur die Konfiguration prüfen, ohne DB-/Storage-Zugriff:
-  `pnpm --filter @invessiv/workspace files:backfill-thumbnails <development|preview|production> --check`.
-  Dies prüft die Zuordnung, nicht die Gültigkeit oder Laufzeit eines OIDC-Tokens.
+- Explizite Read-Write-Tokens haben im Storage-Adapter Vorrang vor automatisch erkannten OIDC-Anmeldungen.
+  Ohne Read-Write-Token bleibt die OIDC-Anmeldung über das SDK erhalten.
 
-## Einmaliger Backfill und Aufräumen nach dem Master-Merge
+## Einmaliger Backfill und Cleanup
 
-Das Backfill-Skript ist ein temporäres Hilfsmittel für bestehende Bilder. Nach dem Merge auf `master`
-und dem erfolgreichen Nachziehen aller benötigten Umgebungen wird es in einem separaten Cleanup entfernt.
-Neue Uploads erzeugen ihre Vorschaubilder automatisch.
+Die temporären Backfill-Hilfen wurden am 21.10.2026 auf Nutzerwunsch entfernt: Skript, Konfigurationshelfer samt
+Tests, Package-Command, App-DevDependency `tsx` und die Batch-Methode im Thumbnail-Service. Die Zielwahl der normalen
+DB-Skripte liegt wieder in `packages/db/scripts/database-target.ts`; deren Verhalten bleibt erhalten.
 
-- [x] Development: Migration ausgeführt, 15 Vorschaubilder erzeugt, 0 Fehler (21.10.2026).
-- [ ] Preview nach Deployment/Migration nachziehen, sofern dort bestehende Bilder liegen:
-      `pnpm --filter @invessiv/workspace files:backfill-thumbnails preview`.
-- [ ] Production nach Master-Merge, Deployment und Migration nachziehen:
-      `pnpm --filter @invessiv/workspace files:backfill-thumbnails production`.
-      Lesender Check am 21.10.2026: In der ausdrücklich konfigurierten Production-DB fehlen die Spalte
-      `thumbnail_key` und die Registrierung von `0061` noch. Production-Storage ist laut Nutzer nur in Vercel
-      konfiguriert; der lokale Prod-Konfigurationscheck bricht deshalb erwartungsgemäß vor jedem Zugriff ab.
-- [ ] Ergebnis je Umgebung prüfen: `Failed: 0`, Vorschaubilder in Dateiliste und Portal-Widget sichtbar.
-      Fehlgeschlagene Dateien vor dem Cleanup erneut nachziehen; vorhandene Vorschaubilder werden übersprungen.
-- [ ] Danach `apps/workspace/scripts/files-backfill-thumbnails.ts` löschen.
-- [ ] Auch `apps/workspace/scripts/configure-thumbnail-backfill-environment.ts` und dessen Test entfernen.
-- [ ] Den Eintrag `files:backfill-thumbnails` aus `apps/workspace/package.json` entfernen.
-- [ ] Die DevDependency `tsx` aus diesem App-Paket entfernen, sofern sie weiterhin ausschließlich für das
-      Backfill-Skript verwendet wird; Lockfile aktualisieren. `tsx` im DB-Paket bleibt bestehen.
-- [ ] Die nur für den Backfill benötigte Methode `fileThumbnailService.backfillMissing` samt ausschließlich
-      dafür benötigten Helfern, Imports und Tests entfernen; zugehörige Backfill-Verweise in der Doku bereinigen.
-
-`sharp`, die automatische Erzeugung für neue Uploads, `thumbnail_key` und die bereits gespeicherten
-Vorschaubilder bleiben bestehen. Das Löschen des Hilfsskripts löscht keine Bilddateien.
+Neue Uploads erzeugen ihre Vorschaubilder automatisch. `sharp`, Migration `0061`, `thumbnail_key` und bereits
+gespeicherte Vorschauen bleiben bestehen. Der Cleanup führt keine DB-Migration aus und verändert keine Blob-Objekte.
+Er bestätigt keinen separat ausgeführten Deployment- oder Backfill-Lauf.
 
 ## Abweichungen in der Umsetzung (Entscheidungen 20.10.2026)
 
@@ -71,10 +43,6 @@ thumbnail_key IS NULL/gleich` statt `updateVersioned`. Sonst liefe ein Bearbeite
   Anlegen, Abschluss und Konfliktantwort liefern `null`.
 - **Kein Bereinigungsjob vorhanden:** `remove` löscht Vorschau und Original; eine als verwaist markierte Zeile behält
   beide Schlüssel für einen späteren Lauf.
-- **Skript:** `pnpm --filter @invessiv/workspace files:backfill-thumbnails <development|preview|production>` über
-  `fileThumbnailService.backfillMissing`. Die Zielwahl liegt dafür jetzt in `@invessiv/db/core/database-target`
-  (`packages/db/scripts/database-target.ts` exportiert sie weiter). Das Entfernen verwaister `.thumb.webp`-Objekte
-  ist nicht gebaut.
 - `sharp` liest Stream-Eingaben ohnehin komplett ein; der Service puffert das Original deshalb direkt.
 
 ## Ziel
@@ -93,7 +61,7 @@ und die CRM-Dateiliste über die gemeinsame `FileThumbnail`-Darstellung.
 - Sinnvoll ist deshalb eine **serverseitig erzeugte Kleinversion**: maximal 160 px lange Kante, WebP, Qualität 70.
   Die kleinen Vorschaubilder werden zusätzlich erst beim Hineinscrollen geladen
   (`loading="lazy"`).
-- Dafür braucht es eine Migration, einen Speicher-Schreibweg, eine Bildbibliothek und ein Nachzieh-Skript. Diese
+- Dafür braucht es eine Migration, einen Speicher-Schreibweg, eine Bildbibliothek und eine einmalige Bestandsnacharbeit. Diese
   Backend-Änderung soll als eigener PR prüfbar sein.
 
 ## Umfang
@@ -149,11 +117,7 @@ und die CRM-Dateiliste über die gemeinsame `FileThumbnail`-Darstellung.
 
 ### 6. Bestand nachziehen
 
-- Skript `apps/workspace/scripts/files-backfill-thumbnails.ts`: Es verarbeitet bereitstehende Bilddateien ohne
-  `thumbnail_key` in Blöcken von 20 und nutzt dabei denselben Service.
-  - Es ist idempotent und kann jederzeit erneut laufen.
-  - Konsolenausgabe ist Englisch.
-  - Es wird über ein `package.json`-Script gestartet.
+Die einmalige Backfill-Implementierung ist nach dem Cleanup entfernt. Neue Uploads nutzen weiterhin den gemeinsamen Thumbnail-Service.
 
 ## Nicht im Umfang
 
@@ -175,10 +139,10 @@ und die CRM-Dateiliste über die gemeinsame `FileThumbnail`-Darstellung.
 ## Risiko und Rollback
 
 - Die Spalte ist nullable, die UI fällt ohne Wert auf das Symbol zurück. Ein Rollback des Codes braucht keine
-  Datenmigration. Das Backfill-Skript erzeugt ausschließlich fehlende Vorschauen und entfernt keine verwaisten
+  Datenmigration. Die Thumbnail-Erzeugung entfernt keine bereits verwaisten
   Objekte; ein solcher Bereinigungsjob ist nicht umgesetzt.
 - Laufzeit und Speicher: `sharp` dekodiert ein 40-MB-JPEG in der Function. Das passiert über `after()` außerhalb der
-  Antwortzeit. Bei Problemen läuft die Erzeugung nur noch über das Skript.
+  Antwortzeit. Bei Fehlern bleibt die Datei ohne Vorschau nutzbar; Datei-ID und Fehlercode werden protokolliert.
 - **Env:** keine neuen Variablen. Der bestehende Blob-Token deckt `put` ab.
 
 ## Reihenfolge (kleine PRs)
@@ -186,4 +150,4 @@ und die CRM-Dateiliste über die gemeinsame `FileThumbnail`-Darstellung.
 1. Storage `put` und Migration `thumbnail_key`.
 2. `file-thumbnail-service` mit Hook in beide Complete-Handler.
 3. DTO-Feld, Mapper und UI-Zeile.
-4. Panel-Platzhalter und Nachzieh-Skript.
+4. Panel-Platzhalter und einmalige Bestandsnacharbeit (temporäre Hilfen anschließend entfernt).

@@ -195,36 +195,6 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(await memory.adapter.head(row.storage_key!)).toBeNull();
     });
 
-    it("backfills missing previews in batches and finds nothing on a second run", async () => {
-      // Earlier cases leave previewless photos whose bytes lived in another in-memory store.
-      await f
-        .database()
-        .delete(files)
-        .where(eq(files.customer_id, f.customerId));
-      const first = await completedPhoto("Bestand 1.jpg");
-      const second = await completedPhoto("Bestand 2.jpg");
-      const broken = await completedPhoto("Kaputt.jpg");
-      memory.seed(
-        broken.storage_key!,
-        new TextEncoder().encode("x"),
-        "image/jpeg",
-      );
-      vi.spyOn(console, "error").mockImplementation(() => {});
-      const scope = { customerIds: [f.customerId] };
-
-      const run = await fileThumbnailService.backfillMissing(2, scope);
-
-      expect(run).toEqual({ created: 2, skipped: 0, failed: 1 });
-      for (const id of [first.id, second.id])
-        expect((await reload(id)).thumbnail_key).not.toBeNull();
-      expect((await reload(broken.id)).thumbnail_key).toBeNull();
-      expect(await fileThumbnailService.backfillMissing(2, scope)).toEqual({
-        created: 0,
-        skipped: 0,
-        failed: 1,
-      });
-    });
-
     it("drops a preview whose file disappeared while it was rendered", async () => {
       const pending = await completedPhoto();
       const put = memory.adapter.put.bind(memory.adapter);

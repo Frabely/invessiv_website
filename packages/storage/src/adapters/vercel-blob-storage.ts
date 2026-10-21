@@ -30,6 +30,9 @@ const BLOB_OPERATION = {
 } as const;
 
 export function createVercelBlobStorage(): StorageAdapter {
+  // Explicit credentials must win over OIDC auto-discovered from a local Vercel project.
+  const readWriteToken = process.env.BLOB_READ_WRITE_TOKEN?.trim();
+  const auth = readWriteToken ? { token: readWriteToken } : {};
   let cached: Awaited<ReturnType<typeof issueSignedToken>> | undefined;
   let issuing: ReturnType<typeof issueSignedToken> | undefined;
 
@@ -40,6 +43,7 @@ export function createVercelBlobStorage(): StorageAdapter {
       issuing = (async () => {
         try {
           const value = await issueSignedToken({
+            ...auth,
             operations: [BLOB_OPERATION.Get, BLOB_OPERATION.Put],
             validUntil: Date.now() + 3_600_000,
           });
@@ -185,7 +189,7 @@ export function createVercelBlobStorage(): StorageAdapter {
       validateKey(key);
       return safe(
         async () => {
-          const metadata = await head(key);
+          const metadata = await head(key, auth);
           if (
             !new URL(metadata.url).hostname.endsWith(
               ".private.blob.vercel-storage.com",
@@ -281,6 +285,7 @@ export function createVercelBlobStorage(): StorageAdapter {
       // Overwrite keeps a regenerated object idempotent when the previous DB write was lost.
       await safe(() =>
         put(key, Buffer.from(body), {
+          ...auth,
           access: "private",
           addRandomSuffix: false,
           allowOverwrite: true,
@@ -292,7 +297,7 @@ export function createVercelBlobStorage(): StorageAdapter {
     async delete(key) {
       validateKey(key);
       return safe(
-        () => del(key),
+        () => del(key, auth),
         () => undefined,
       );
     },

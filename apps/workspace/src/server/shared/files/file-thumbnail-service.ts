@@ -1,15 +1,5 @@
 import "server-only";
-import {
-  and,
-  asc,
-  eq,
-  gt,
-  inArray,
-  isNotNull,
-  isNull,
-  or,
-  type SQL,
-} from "drizzle-orm";
+import { and, eq, isNull, or } from "drizzle-orm";
 import { after } from "next/server";
 import sharp from "sharp";
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
@@ -124,7 +114,7 @@ async function generate(fileId: string): Promise<FileThumbnailOutcome> {
     if (!key || !(await attach(row, key))) return FileThumbnailOutcome.Skipped;
     return FileThumbnailOutcome.Created;
   } catch (error) {
-    // The file name is PII; the id is enough to retry through the backfill script.
+    // The file name is PII; log only the id and a stable error code.
     console.error("[files] thumbnail generation failed", {
       fileId,
       code: error instanceof StorageError ? error.code : RENDER_FAILED,
@@ -200,62 +190,12 @@ async function signUrl(
   return (await signUrls([row], adapter)).get(row.id) ?? null;
 }
 
-/** The SQL twin of `isEligible`; both read the same extension list. */
-function missingCondition(): SQL {
-  return and(
-    eq(files.source, FileSource.Upload),
-    eq(files.status, FileStatus.Ready),
-    eq(files.asset_kind, AssetKind.Image),
-    isNull(files.orphaned_at),
-    isNull(files.thumbnail_key),
-    isNotNull(files.storage_key),
-    inArray(files.extension, [...FILE_THUMBNAIL_EXTENSIONS]),
-  )!;
-}
-
-/**
- * Creates the missing previews through the same path as an upload. Pages by id, so a file that
- * keeps failing is tried once per run; a rerun picks up exactly what is still missing. Files are
- * processed one at a time to keep the memory of a 40 MB decode bounded.
- */
-async function backfillMissing(
-  batchSize: number,
-  scope: { customerIds?: readonly string[] } = {},
-): Promise<Record<FileThumbnailOutcome, number>> {
-  const counts = {
-    [FileThumbnailOutcome.Created]: 0,
-    [FileThumbnailOutcome.Skipped]: 0,
-    [FileThumbnailOutcome.Failed]: 0,
-  };
-  let cursor: string | null = null;
-  for (;;) {
-    const batch: { id: string }[] = await getDrizzleDatabaseClient()
-      .select({ id: files.id })
-      .from(files)
-      .where(
-        and(
-          missingCondition(),
-          scope.customerIds
-            ? inArray(files.customer_id, [...scope.customerIds])
-            : undefined,
-          cursor ? gt(files.id, cursor) : undefined,
-        ),
-      )
-      .orderBy(asc(files.id))
-      .limit(batchSize);
-    for (const { id } of batch) counts[await generate(id)] += 1;
-    if (batch.length < batchSize) return counts;
-    cursor = batch[batch.length - 1].id;
-  }
-}
-
 /** Runs after the response, so the uploader never waits for image processing. */
 function schedule(fileId: string): void {
   after(() => generate(fileId));
 }
 
 export const fileThumbnailService = {
-  backfillMissing,
   create,
   generate,
   schedule,

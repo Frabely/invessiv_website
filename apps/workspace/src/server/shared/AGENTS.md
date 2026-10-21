@@ -49,8 +49,7 @@ Plan: `apps/workspace/plans/crm/26-portal-dateien-layout/L-file-thumbnails.md`.
 
 - `files/file-thumbnail-service.ts` ist der einzige Weg zu `files.thumbnail_key`: `create` (PNG/JPG/WebP →
   160 px WebP über `sharp`, EXIF fällt weg), `generate` (lädt, erzeugt, hängt an; wirft nie, loggt nur Datei-ID und
-  Code), `schedule` (`after()` in beiden Complete-Handlern, nach dem Commit), `signUrls`/`signUrl` und
-  `backfillMissing` (Skript `files:backfill-thumbnails`).
+  Code), `schedule` (`after()` in beiden Complete-Handlern, nach dem Commit) und `signUrls`/`signUrl`.
 - **`thumbnail_key` ist eine technische Spalte:** geschrieben ohne `updateVersioned`, ohne Versions- und
   `updated_at`-Sprung, damit ein Bearbeiten kurz nach dem Upload nie in einen fremden Konflikt läuft. Der Schreibweg
   prüft Zeile, `storage_key`, `ready` und „nicht verwaist“ im `WHERE`; findet er nichts, löscht er das Objekt.

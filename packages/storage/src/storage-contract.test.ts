@@ -380,6 +380,37 @@ describe("Vercel private adapter", () => {
     vi.stubEnv("BLOB_READ_WRITE_TOKEN", "test-only");
     expect(createStorage()).toHaveProperty("readRange");
   });
+  it("uses the explicit read-write token for every SDK operation despite unrelated OIDC credentials", async () => {
+    vi.stubEnv("BLOB_READ_WRITE_TOKEN", "explicit-target-test-token");
+    vi.stubEnv("VERCEL_OIDC_TOKEN", "unrelated-development-test-token");
+    const adapter = createVercelBlobStorage();
+    state.issue.mockImplementation(async (options) => {
+      if (options.token !== "explicit-target-test-token")
+        throw new Error("Unexpected OIDC authentication");
+      return {
+        delegationToken: "secret",
+        clientSigningToken: "secret",
+        validUntil: Date.now() + 3_600_000,
+      };
+    });
+
+    await adapter.put(key, bytes, { contentType, cacheMaxAgeSeconds: 60 });
+    await adapter.head(key);
+    expect(await new Response(await adapter.openReadStream(key)).text()).toBe(
+      "hello storage",
+    );
+    await adapter.delete(key);
+
+    const auth = { token: "explicit-target-test-token" };
+    expect(state.issue).toHaveBeenCalledWith(expect.objectContaining(auth));
+    expect(state.put).toHaveBeenCalledWith(
+      key,
+      expect.any(Buffer),
+      expect.objectContaining(auth),
+    );
+    expect(state.head).toHaveBeenCalledWith(key, auth);
+    expect(state.del).toHaveBeenCalledWith(key, auth);
+  });
   it("delegates upload signing to the SDK without an OIDC environment token", async () => {
     vi.stubEnv("STORAGE_PROVIDER", "vercel-blob");
     vi.stubEnv("BLOB_READ_WRITE_TOKEN", "");
