@@ -1,6 +1,30 @@
 # Paket L – Vorschaubilder in Dateilisten (Portal und CRM)
 
-Stand: 17.10.2026. Folgt auf [Paket K](../done/26-portal-dateien-layout/K-portal-files-layout.md) und ist noch nicht umgesetzt.
+Stand: 20.10.2026. Folgt auf [Paket K](../done/26-portal-dateien-layout/K-portal-files-layout.md). Umgesetzt auf
+`feat/portal-file-thumbnails`, ungecommittet, im Review. Dev-DB hat `0061`.
+
+## Abweichungen in der Umsetzung (Entscheidungen 20.10.2026)
+
+- **160 px statt 480 px** (Performance): Die Zeile zeigt 36 px, 160 px reichen bis 3x-Dichte. Eine Seite mit 25 Zeilen
+  liegt so unter 200 KB. Im Panel wirkt die Vorschau bis zum Original kurz weich; sie ist dort leicht weichgezeichnet.
+- **Stabile URLs für den Browser-Cache:** `signUrls` rundet den Ablauf auf ein 2-Minuten-Raster (Restlaufzeit 3–5 min,
+  TTL unverändert). Das Objekt trägt ein Jahr `Cache-Control`, die Download-URL nutzt den CDN-Cache
+  (`StorageDownloadOptions.cacheable`). Der Schlüssel hängt am unveränderlichen Original.
+- **`thumbnail_key` ohne Versionssprung:** technisches `UPDATE … WHERE id, storage_key, ready, nicht verwaist,
+thumbnail_key IS NULL/gleich` statt `updateVersioned`. Sonst liefe ein Bearbeiten direkt nach dem Upload in einen
+  unnötigen 409. Ist die Zeile inzwischen weg, löscht der Service das Objekt wieder.
+- **Gemeinsame `FileThumbnail`** in `packages/ui`: `FileEntryRow` (CRM, Dashboard-Widget) und die Portal-Tabelle
+  (`PortalFileTableRow`, seit Paket M) nutzen sie. Größe wie das Typ-Symbol (2.25rem), damit Namen bündig bleiben.
+- **`put` überschreibt** (`allowOverwrite: true`), damit ein erneuter Lauf nach verlorenem DB-Write nicht scheitert.
+- **Schreibantworten:** `updateFile` signiert die Vorschau mit (der Client ersetzt die Zeile durch die Antwort);
+  Anlegen, Abschluss und Konfliktantwort liefern `null`.
+- **Kein Bereinigungsjob vorhanden:** `remove` löscht Vorschau und Original; eine als verwaist markierte Zeile behält
+  beide Schlüssel für einen späteren Lauf.
+- **Skript:** `pnpm --filter @invessiv/workspace files:backfill-thumbnails <development|preview|production>` über
+  `fileThumbnailService.backfillMissing`. Die Zielwahl liegt dafür jetzt in `@invessiv/db/core/database-target`
+  (`packages/db/scripts/database-target.ts` exportiert sie weiter). Das Entfernen verwaister `.thumb.webp`-Objekte
+  ist nicht gebaut.
+- `sharp` liest Stream-Eingaben ohnehin komplett ein; der Service puffert das Original deshalb direkt.
 
 ## Ziel
 

@@ -14,7 +14,7 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl } from "../../button/button";
 import { CheckboxControl } from "../../checkbox-control/checkbox-control";
 import { FileEntryMeta } from "../file-entry-meta/file-entry-meta";
-import { FileKindIcon } from "../file-kind-icon/file-kind-icon";
+import { FileThumbnail } from "../file-thumbnail/file-thumbnail";
 import styles from "./file-entry-row.module.css";
 
 export type FileEntryRowProps<TFile extends FileEntryItem> = {
@@ -86,7 +86,11 @@ export function FileEntryRow<TFile extends FileEntryItem>({
         ) : null}
       </span>
       <span className={styles.icon}>
-        <FileKindIcon assetKind={file.assetKind} extension={file.extension} />
+        <FileThumbnail
+          assetKind={file.assetKind}
+          extension={file.extension}
+          thumbnailUrl={file.thumbnailUrl}
+        />
       </span>
       <div className={styles.identity}>
         {linkUrl ? (

@@ -9,6 +9,8 @@ import type { UpdateFileRequestDto } from "@invessiv/common/contracts/files/upda
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { files } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import { fileThumbnailService } from "@/server/shared/files/file-thumbnail-service";
+import { storageService } from "@/server/shared/files/storage-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 import { fileSchemas } from "../services/files/file-schemas";
 import { fileAccessService } from "../services/files/file-access-service";
@@ -66,13 +68,18 @@ export async function updateFile(
         ? { visible_to_customer: data.visibleToCustomer }
         : {}),
     };
+    // Signed up front: the client replaces its row with this DTO and would otherwise lose the preview.
+    const thumbnailUrl = await fileThumbnailService.signUrl(
+      storageService.getAdapter(),
+      row,
+    );
     const write = await updateVersioned({
       tx,
       table: files,
       id,
       expectedVersion: data.version,
       patch,
-      toDto: fileMappingService.toDto,
+      toDto: (current) => fileMappingService.toDto(current, thumbnailUrl),
     });
     if (!write.ok) throw new Error("Locked file disappeared during update");
     await fileActivityService.recordChanges(

@@ -46,6 +46,6 @@ export async function createPortalFileLink(
       portalActivityActor(actor),
       ActivityType.Created,
     );
-    return { ok: true, value: portalFileMappingService.toDto(row, null) };
+    return { ok: true, value: portalFileMappingService.toDto(row, null, null) };
   });
 }

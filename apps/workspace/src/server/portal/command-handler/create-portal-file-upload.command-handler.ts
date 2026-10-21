@@ -55,7 +55,7 @@ export async function createPortalFileUpload(
     return {
       ok: true,
       value: {
-        file: portalFileMappingService.toDto(issued.value.row, null),
+        file: portalFileMappingService.toDto(issued.value.row, null, null),
         ticket: issued.value.ticket,
       },
     };

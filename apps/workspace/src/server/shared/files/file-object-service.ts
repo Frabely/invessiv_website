@@ -165,13 +165,18 @@ async function issueUpload(
   return { ok: true, value: { row, ticket } };
 }
 
-/** Called only while holding the file row lock. Retains the key when storage is unavailable. */
+/**
+ * Called only while holding the file row lock. Retains the keys when storage is unavailable.
+ * The preview goes first: a retry after a partial failure still finds the original's key.
+ */
 async function remove(
   tx: ContactDatabaseTransaction,
   row: FileRow,
 ): Promise<boolean> {
   if (row.storage_key) {
     try {
+      if (row.thumbnail_key)
+        await storageService.getAdapter().delete(row.thumbnail_key);
       await storageService.getAdapter().delete(row.storage_key);
     } catch {
       const marked = await updateVersioned({

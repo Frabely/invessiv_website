@@ -8,6 +8,7 @@ import { FileListLoadStatus } from "./file-list-load-status";
 import { FILES_PAGE_SIZE } from "./files-page-size";
 import { FileApiPath } from "./file-api-paths";
 import { FILE_ACTIVITY_ENTITY } from "./file-activity-metadata";
+import { FileThumbnailOutcome } from "./file-thumbnail-outcome";
 
 describe("shared files constants", () => {
   it("keeps the activity entity stable for existing timeline entries", () => {
@@ -40,5 +41,14 @@ describe("shared files constants", () => {
     expect(MAX_ARCHIVE_FILES).toBe(100);
     expect(MAX_ARCHIVE_BYTES).toBe(300 * 1024 * 1024);
     expect(ARCHIVE_TIME_BUDGET_MS).toBe(96_000);
+  });
+
+  it("defines unique thumbnail outcomes", () => {
+    expect(FileThumbnailOutcome).toEqual({
+      Created: "created",
+      Skipped: "skipped",
+      Failed: "failed",
+    });
+    expect(new Set(Object.values(FileThumbnailOutcome)).size).toBe(3);
   });
 });

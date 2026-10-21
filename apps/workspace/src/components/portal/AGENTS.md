@@ -113,8 +113,8 @@ Plan: `apps/workspace/plans/crm/14-dateien/55-portal-dateien.md`.
   Kopf und Footer bleiben stehen, die Seite selbst scrollt nicht; dazu
   Mobile-Cards unter 720 px; je Eintrag `files/portal-file-table-row`. Spalten: Auswahl, Name (Typ-Icon, Name,
   Notiz einzeilig), Von (Badge), Projekt (nur unter „Alle Projekte“, aus `portal-file-project-label`), Typ
-  (`filePresentation.typeLabel`), Größe, Hinzugefügt, Aktion (Herunterladen bzw. Öffnen). Bis Plan L nur das
-  Typ-Icon, keine Vorschaubilder. „Weitere laden“ steht im `footer` der Tabelle, keine nummerierten Seiten:
+  (`filePresentation.typeLabel`), Größe, Hinzugefügt, Aktion (Herunterladen bzw. Öffnen). Statt des
+  Typ-Icons steht bei Bildern `FileThumbnail` mit `thumbnailUrl` aus dem DTO (Paket L). „Weitere laden“ steht im `footer` der Tabelle, keine nummerierten Seiten:
   Die ZIP-Auswahl darf alles Geladene umfassen.
 - **Filter** (`files/portal-files-filters`, zwei `CustomSelect`): Projekt (jedes freigegebene Projekt aus
   `projects` oder „Alle Projekte“; erscheint nur mit mindestens einem Projekt) und Herkunft („Von uns und dir“,
@@ -140,8 +140,9 @@ Plan: `apps/workspace/plans/crm/14-dateien/55-portal-dateien.md`.
   höchstens zwei Drittel, rechts mitlaufend (`sticky`) `FilePreviewPanel` aus `@invessiv/ui`. Der Klick zeigt
   den Eintrag dort (URL-Parameter `file`), die gezeigte Zeile ist `data-active`. „Vollbild“ öffnet die Lightbox.
   Nur die gewählte Datei lädt, ohne Wahl nichts. Filterwechsel leeren das Panel.
-- **Vorschaubilder in der Tabelle** sind nicht umgesetzt; Plan `26-portal-dateien-layout/L-file-thumbnails.md`
-  (serverseitige Kleinversionen, private Originale bleiben ungeladen).
+- **Vorschaubilder (Paket L, Plan `26-portal-dateien-layout/L-file-thumbnails.md`):** Tabelle und Dashboard-Widget
+  zeigen die serverseitige 160-px-Kleinversion, nie das Original. Das Panel zeigt sie sofort als Platzhalter und
+  blendet zum Original über. Ob es eine Vorschau gibt, entscheidet allein `thumbnailUrl` im DTO.
 - Laden nur über `usePortalFiles` (auf dem geteilten `usePagedFiles`; `origin` null lädt beide Herkünfte),
   Uploads nur über `useUploadQueue` mit Portal-Transport, Auswahl für ZIP über `useFileSelection` (URL-Parameter
   `selected`, an die Kunden-ID gebunden).

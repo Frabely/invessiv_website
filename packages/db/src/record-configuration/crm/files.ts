@@ -60,6 +60,7 @@ export const files = pgTable(
     uploaded_by_member_id: uuid("uploaded_by_member_id"),
     uploaded_by_portal_membership_id: uuid("uploaded_by_portal_membership_id"),
     storage_key: text("storage_key"),
+    thumbnail_key: text("thumbnail_key"),
     content_type: text("content_type"),
     extension: text("extension", { enum: UPLOAD_EXTENSION_VALUES }),
     size_bytes: bigint("size_bytes", { mode: "number" }),

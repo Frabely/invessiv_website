@@ -37,7 +37,7 @@ function conflict(row: typeof files.$inferSelect): FileResult<never> {
     conflict: {
       code: ConcurrencyErrorCode.VersionConflict,
       currentVersion: row.version,
-      current: fileMappingService.toDto(row),
+      current: fileMappingService.toDto(row, null),
     },
   };
 }

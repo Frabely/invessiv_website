@@ -142,6 +142,10 @@ importieren, und App-Services importieren `server-only`, was außerhalb von Next
 
 ## Skripte
 
+- Die Zielwahl (`parseDatabaseTarget`, `configureDatabaseUrlFromTarget`) liegt in `src/core/database-target.ts`, damit
+  auch App-Skripte sie über `@invessiv/db/core/database-target` nutzen (zuerst `files:backfill-thumbnails` der
+  Workspace-App). `scripts/database-target.ts` exportiert sie für die Skripte hier nur weiter.
+
 - Dedizierte Constraint-Smokes dürfen Raw SQL verwenden, wenn sie absichtlich ungültige Zeilen, Trigger oder
   Postgres-Katalogzustände prüfen. Diese Ausnahme gilt nur innerhalb des Smokes einschließlich seines eindeutig
   markierten Fixture-Setups und -Cleanups; produktive Persistenz und rein lesende Katalogvergleiche bleiben beim

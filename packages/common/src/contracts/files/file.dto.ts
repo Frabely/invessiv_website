@@ -41,6 +41,11 @@ export interface FileDto {
   inspectionStatus: FileInspectionStatus | null;
   /** User-provided HTTPS destination for links, never a signed storage URL. */
   url: string | null;
+  /**
+   * Short-lived, signed inline URL of a small WebP preview; signed only after the visibility
+   * filter. Null for non-images, before generation, in write responses and on proxy-only stores.
+   */
+  thumbnailUrl: string | null;
   /** Optimistic concurrency token for edits and deletion. */
   version: number;
   /** ISO timestamp for stable chronological display. */

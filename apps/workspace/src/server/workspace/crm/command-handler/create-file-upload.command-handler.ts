@@ -75,7 +75,7 @@ export async function createFileUpload(
     return {
       ok: true,
       value: {
-        file: fileMappingService.toDto(issued.value.row),
+        file: fileMappingService.toDto(issued.value.row, null),
         ticket: issued.value.ticket,
       },
     };

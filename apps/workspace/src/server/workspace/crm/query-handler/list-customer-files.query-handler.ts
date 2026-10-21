@@ -12,6 +12,8 @@ import { customers, files } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope } from "@/common/patterns/auth/access-scope";
 import { customerFileVisibilityService } from "@/server/shared/files/customer-file-visibility-service";
+import { fileThumbnailService } from "@/server/shared/files/file-thumbnail-service";
+import { storageService } from "@/server/shared/files/storage-service";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 import { fileSchemas } from "../services/files/file-schemas";
 import { fileAccessService } from "../services/files/file-access-service";
@@ -111,10 +113,16 @@ export async function listCustomerFiles(
       .offset((data.page - 1) * data.pageSize),
     db.select({ value: count() }).from(files).where(condition),
   ]);
+  const thumbnails = await fileThumbnailService.signUrls(
+    storageService.getAdapter(),
+    rows,
+  );
   return {
     ok: true,
     value: {
-      files: rows.map(fileMappingService.toDto),
+      files: rows.map((row) =>
+        fileMappingService.toDto(row, thumbnails.get(row.id) ?? null),
+      ),
       total: total.value,
       page: data.page,
       pageSize: data.pageSize,

@@ -1,5 +1,6 @@
 import type { StorageUploadOptions } from "@invessiv/common/contracts/storage/storage-upload-options";
 import type { StorageDownloadOptions } from "@invessiv/common/contracts/storage/storage-download-options";
+import type { StoragePutOptions } from "@invessiv/common/contracts/storage/storage-put-options";
 import { StorageErrorCode } from "@invessiv/common/constants/storage/storage-error-code";
 import { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
 import {
@@ -9,6 +10,7 @@ import {
 import { StorageError } from "./storage-error";
 
 const UNSAFE_DOWNLOAD_FILENAME_CHARACTERS = /[\\/\r\n]/;
+const CONTENT_TYPE_PATTERN = /^[a-z0-9.+-]+\/[a-z0-9.+-]+$/i;
 
 export function validateKey(key: string): void {
   if (
@@ -39,7 +41,18 @@ export function validateUpload(
   if (
     !Number.isSafeInteger(options.maxBytes) ||
     options.maxBytes <= 0 ||
-    !/^[a-z0-9.+-]+\/[a-z0-9.+-]+$/i.test(options.contentType)
+    !CONTENT_TYPE_PATTERN.test(options.contentType)
+  )
+    throw new StorageError(StorageErrorCode.InvalidInput);
+}
+
+// Vercel Blob rejects cache lifetimes below one minute.
+export function validatePut(key: string, options: StoragePutOptions): void {
+  validateKey(key);
+  if (
+    !CONTENT_TYPE_PATTERN.test(options.contentType) ||
+    !Number.isSafeInteger(options.cacheMaxAgeSeconds) ||
+    options.cacheMaxAgeSeconds < 60
   )
     throw new StorageError(StorageErrorCode.InvalidInput);
 }

@@ -4,15 +4,20 @@ import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-fil
 import type { files } from "@invessiv/db/record-configuration";
 import { filePresentationMappingService } from "@/server/shared/files/file-presentation-mapping-service";
 
-/** Maps only released columns; visibility, uploader ids and storage coordinates stay internal. */
+/**
+ * Maps only released columns; visibility, uploader ids and storage coordinates stay internal. The
+ * preview URL is signed by the caller after its visibility filter.
+ */
 function toDto(
   row: typeof files.$inferSelect,
   projectTitle: string | null,
+  thumbnailUrl: string | null,
 ): PortalFileDto {
   return {
     ...filePresentationMappingService.toFields(row),
     projectId: row.project_id,
     projectTitle: row.project_id ? projectTitle : null,
+    thumbnailUrl,
     origin:
       row.uploaded_by_side === UploadSide.Customer
         ? PortalFileOrigin.FromYou

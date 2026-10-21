@@ -13,6 +13,8 @@ import { portalFileMappingService } from "@/server/portal/services/files/portal-
 import { portalFileSchemas } from "@/server/portal/services/files/portal-file-schemas";
 import { portalFileService } from "@/server/portal/services/files/portal-file-service";
 import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
+import { fileThumbnailService } from "@/server/shared/files/file-thumbnail-service";
+import { storageService } from "@/server/shared/files/storage-service";
 
 /**
  * Visible entries, newest first: one origin, or both for the files page and the chat picker.
@@ -60,6 +62,10 @@ export async function listPortalFiles(
     db.select({ value: count() }).from(files).where(condition),
   ]);
   const withProjects = portalFileService.canSeeProjects(reader);
+  const thumbnails = await fileThumbnailService.signUrls(
+    storageService.getAdapter(),
+    rows.map((row) => row.file),
+  );
   return {
     ok: true,
     value: {
@@ -67,6 +73,7 @@ export async function listPortalFiles(
         portalFileMappingService.toDto(
           row.file,
           withProjects ? row.projectTitle : null,
+          thumbnails.get(row.file.id) ?? null,
         ),
       ),
       total: total.value,

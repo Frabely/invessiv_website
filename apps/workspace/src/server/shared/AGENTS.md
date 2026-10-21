@@ -43,6 +43,23 @@ fertig, nicht verwaist, kundenweit oder in einem portal-sichtbaren Projekt — p
 Validierung und Storage-Zugang. Autorisierung, Sichtbarkeitsfilter, die Sperre der Uploader-Zeile und die Prüfung „nur
 der eigene Upload“ bleiben in den getrennten Handlern (`portalFileService` bzw. `fileAccessService`).
 
+## Vorschaubilder (Paket L)
+
+Plan: `apps/workspace/plans/crm/26-portal-dateien-layout/L-file-thumbnails.md`.
+
+- `files/file-thumbnail-service.ts` ist der einzige Weg zu `files.thumbnail_key`: `create` (PNG/JPG/WebP →
+  160 px WebP über `sharp`, EXIF fällt weg), `generate` (lädt, erzeugt, hängt an; wirft nie, loggt nur Datei-ID und
+  Code), `schedule` (`after()` in beiden Complete-Handlern, nach dem Commit), `signUrls`/`signUrl` und
+  `backfillMissing` (Skript `files:backfill-thumbnails`).
+- **`thumbnail_key` ist eine technische Spalte:** geschrieben ohne `updateVersioned`, ohne Versions- und
+  `updated_at`-Sprung, damit ein Bearbeiten kurz nach dem Upload nie in einen fremden Konflikt läuft. Der Schreibweg
+  prüft Zeile, `storage_key`, `ready` und „nicht verwaist“ im `WHERE`; findet er nichts, löscht er das Objekt.
+- **Signiert wird erst nach dem Sichtbarkeitsfilter:** Die List-Handler geben `signUrls` genau die Zeilen ihrer
+  Abfrage. Die Mapper bekommen die URL als Argument und sehen den Schlüssel nie im DTO. Eine nicht signierbare
+  Vorschau fehlt nur, die Liste scheitert nicht daran.
+- Der Ablauf der URL ist auf 2 Minuten gerastert, damit der Browser wiederholte Listen aus dem Cache bedient.
+- `fileObjectService.remove` löscht zuerst die Vorschau, dann das Original.
+
 ## Chat-Anhänge (ab Task 56)
 
 - `services/message/message-attachment-service.ts` schreibt `message_files` in derselben Transaktion wie die Nachricht

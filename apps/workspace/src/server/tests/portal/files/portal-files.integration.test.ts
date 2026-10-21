@@ -38,6 +38,8 @@ import { listCustomerFiles } from "@/server/workspace/crm/query-handler/list-cus
 import { createFileTestFixture } from "../../shared/files/file-test-fixture";
 
 vi.mock("server-only", () => ({}));
+// Thumbnail generation has its own suite; here it would only race the storage assertions.
+vi.mock("next/server", () => ({ after: vi.fn() }));
 
 describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
   "portal files PostgreSQL integration",

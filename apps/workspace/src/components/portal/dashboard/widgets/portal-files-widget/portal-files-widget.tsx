@@ -11,7 +11,7 @@ import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes"
 import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/portal-files-overview.dto";
 import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { FileKindIcon, TabList, Widget } from "@invessiv/ui";
+import { FileThumbnail, TabList, Widget } from "@invessiv/ui";
 import { PORTAL_WIDGET_ACCENTS } from "@/common/constants/portal/portal-widget-accents";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import type { Locale } from "@/config/i18n";
@@ -82,9 +82,10 @@ export function PortalFilesWidget({
               <ul className={styles.list}>
                 {page.files.map((file) => (
                   <li className={styles.item} key={file.id}>
-                    <FileKindIcon
+                    <FileThumbnail
                       assetKind={file.assetKind}
                       extension={file.extension}
+                      thumbnailUrl={file.thumbnailUrl}
                     />
                     <span className={styles.name}>{file.displayName}</span>
                     <time className={styles.date} dateTime={file.createdAt}>

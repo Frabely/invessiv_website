@@ -8,6 +8,7 @@ import { portalActivityActor } from "@/server/portal/auth/portal-activity-actor"
 import { portalFileMappingService } from "@/server/portal/services/files/portal-file-mapping-service";
 import { portalFileService } from "@/server/portal/services/files/portal-file-service";
 import { fileObjectService } from "@/server/shared/files/file-object-service";
+import { fileThumbnailService } from "@/server/shared/files/file-thumbnail-service";
 
 /** Finishes the actor's own upload; a repeated call returns the ready entry unchanged. */
 export async function completePortalFileUpload(
@@ -16,18 +17,22 @@ export async function completePortalFileUpload(
 ): Promise<FileResult<PortalFileDto>> {
   if (!portalFileService.canWrite(actor))
     return { ok: false, code: E.NotFound };
-  return getDrizzleDatabaseClient().transaction(async (tx) => {
-    const row = await portalFileService.lockOwnUpload(tx, actor, id);
-    if (!row) return { ok: false, code: E.NotFound };
-    const completed = await fileObjectService.completeUpload(
-      tx,
-      row,
-      portalActivityActor(actor),
-    );
-    if (!completed.ok) return completed;
-    return {
-      ok: true,
-      value: portalFileMappingService.toDto(completed.value, null),
-    };
-  });
+  const result = await getDrizzleDatabaseClient().transaction(
+    async (tx): Promise<FileResult<PortalFileDto>> => {
+      const row = await portalFileService.lockOwnUpload(tx, actor, id);
+      if (!row) return { ok: false, code: E.NotFound };
+      const completed = await fileObjectService.completeUpload(
+        tx,
+        row,
+        portalActivityActor(actor),
+      );
+      if (!completed.ok) return completed;
+      return {
+        ok: true,
+        value: portalFileMappingService.toDto(completed.value, null, null),
+      };
+    },
+  );
+  if (result.ok) fileThumbnailService.schedule(result.value.id);
+  return result;
 }

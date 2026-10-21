@@ -114,3 +114,53 @@
     height: 100%;
   }
 }
+
+/*
+ * The small preview holds the room at full width until the original is complete, then the
+ * original fades in over it and the preview leaves the layout. The blur makes the upscaled
+ * 160 px preview read as a stand-in rather than as a broken picture.
+ */
+.stack {
+  display: grid;
+  position: relative;
+  justify-self: stretch;
+  overflow: hidden;
+  border-radius: 0.85rem;
+}
+
+.stack > * {
+  grid-area: 1 / 1;
+}
+
+.placeholder {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: var(--preview-media-height);
+  object-fit: contain;
+  object-position: left top;
+  filter: blur(4px);
+  transition: opacity 180ms ease-out;
+}
+
+.stack .image {
+  transition: opacity 180ms ease-out;
+}
+
+.stack[data-loaded="false"] .image {
+  opacity: 0;
+}
+
+.stack[data-loaded="true"] .placeholder {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .placeholder,
+  .stack .image {
+    transition: none;
+  }
+}

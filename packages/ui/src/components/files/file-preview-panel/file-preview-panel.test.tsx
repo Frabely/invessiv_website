@@ -94,6 +94,53 @@ describe("FilePreviewPanel", () => {
     );
   });
 
+  it("shows the small preview at once and swaps to the original once it has loaded", async () => {
+    let resolveSource: (url: string) => void = () => {};
+    const loadSourceAction = vi.fn(
+      () =>
+        new Promise<string | null>((resolve) => {
+          resolveSource = resolve;
+        }),
+    );
+    const { container } = render(
+      <FilePreviewPanel
+        file={image({ thumbnailUrl: "https://blob.test/logo.thumb.webp" })}
+        kindLabel="Image"
+        labels={labels}
+        loadSourceAction={loadSourceAction}
+        locale="en"
+        onDownloadAction={vi.fn()}
+        onExpandAction={vi.fn()}
+      />,
+    );
+
+    const placeholder = () =>
+      container.querySelector('img[src="https://blob.test/logo.thumb.webp"]');
+    expect(placeholder()).toBeInTheDocument();
+    expect(placeholder()).toHaveAttribute("alt", "");
+    expect(screen.queryByText(labels.loading)).not.toBeInTheDocument();
+
+    resolveSource("https://blob.test/logo.png");
+    const original = await screen.findByRole("img", { name: "Logo.png" });
+    expect(original.closest("[data-loaded]")).toHaveAttribute(
+      "data-loaded",
+      "false",
+    );
+    fireEvent.load(original);
+    expect(original.closest("[data-loaded]")).toHaveAttribute(
+      "data-loaded",
+      "true",
+    );
+  });
+
+  it("names a broken original instead of keeping the small preview forever", async () => {
+    renderPanel(image({ thumbnailUrl: "https://blob.test/logo.thumb.webp" }));
+
+    fireEvent.error(await screen.findByRole("img", { name: "Logo.png" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(labels.error);
+  });
+
   it("shows the type instead of loading a file that has no preview", () => {
     const { loadSourceAction } = renderPanel(
       image({

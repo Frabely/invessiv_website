@@ -49,6 +49,6 @@ export async function createFileLink(
       },
     });
     await fileActivityService.record(tx, row, actor, ActivityType.Created);
-    return { ok: true, value: fileMappingService.toDto(row) };
+    return { ok: true, value: fileMappingService.toDto(row, null) };
   });
 }

@@ -20,7 +20,7 @@ import {
   DataTableCell,
   DataTableHeaderCell,
   DataTableRow,
-  FileKindIcon,
+  FileThumbnail,
 } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { PortalFilesDictionary } from "@/i18n/dictionaries/portal";
@@ -108,7 +108,11 @@ export function PortalFileTableRow({
         scope="row"
       >
         <span className={styles.identity}>
-          <FileKindIcon assetKind={file.assetKind} extension={file.extension} />
+          <FileThumbnail
+            assetKind={file.assetKind}
+            extension={file.extension}
+            thumbnailUrl={file.thumbnailUrl}
+          />
           <span className={styles.text}>
             {opensDirectly && linkUrl ? (
               <a

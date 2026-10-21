@@ -6,6 +6,7 @@ import { StorageError } from "../storage-error";
 import {
   validateDownload,
   validateKey,
+  validatePut,
   validateRange,
   validateUpload,
 } from "../storage-validation";
@@ -69,6 +70,13 @@ export function createInMemoryStorage() {
           controller.enqueue(bytes);
           controller.close();
         },
+      });
+    },
+    async put(key, body, options) {
+      validatePut(key, options);
+      objects.set(key, {
+        bytes: body.slice(),
+        contentType: options.contentType,
       });
     },
     async delete(key) {

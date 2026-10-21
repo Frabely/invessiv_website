@@ -75,6 +75,7 @@ export function FilePreviewPanel<TFile extends FileEntryItem>({
           key={file.id}
           labels={labels}
           loadSourceAction={loadSourceAction}
+          placeholderSrc={file.thumbnailUrl}
           playbackEnabled={playbackEnabled}
           variant={FilePreviewStageVariant.Panel}
         />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FilePreviewKind } from "@invessiv/common/constants/files/file-preview-kind";
 import {
   FilePreviewStageVariant,
@@ -25,6 +25,8 @@ export type FilePreviewStageProps<TFile extends FilePreviewItem> = {
     kind: FilePreviewKind,
   ) => Promise<string | null>;
   variant?: FilePreviewStageVariantValue;
+  /** Small preview of an image, shown at once and replaced as soon as the original has loaded. */
+  placeholderSrc?: string | null;
 };
 
 /**
@@ -37,18 +39,67 @@ export function FilePreviewStage<TFile extends FilePreviewItem>({
   labels,
   loadSourceAction,
   variant = FilePreviewStageVariant.Dialog,
+  placeholderSrc,
 }: FilePreviewStageProps<TFile>) {
   const kind = filePresentation.previewKindOf(file);
   const current = useFilePreviewSource(file, kind, loadSourceAction);
   const videoRef = useRef<HTMLVideoElement>(null);
+  // Keyed by source: a renewed signed URL starts hidden again and may fail on its own.
+  const [loadedSource, setLoadedSource] = useState<string | null>(null);
+  const [failedSource, setFailedSource] = useState<string | null>(null);
+  const placeholder =
+    kind === FilePreviewKind.Image && placeholderSrc ? placeholderSrc : null;
 
   useEffect(() => {
     if (!playbackEnabled) videoRef.current?.pause();
   }, [playbackEnabled, current?.source]);
 
+  function renderImage(source: string) {
+    return (
+      // Signed private URLs cannot pass through an image optimizer; the SVG stays inert inside <img>.
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        alt={file.displayName}
+        className={styles.image}
+        onError={() => setFailedSource(source)}
+        onLoad={() => setLoadedSource(source)}
+        src={source}
+      />
+    );
+  }
+
+  /** Both pictures share one cell; the original fades in over the small one once it is complete. */
+  function renderWithPlaceholder(
+    placeholderUrl: string,
+    source: string | null,
+  ) {
+    return (
+      <span
+        className={styles.stack}
+        data-loaded={
+          source !== null && loadedSource === source ? "true" : "false"
+        }
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element -- decorative stand-in for the original below */}
+        <img
+          alt=""
+          aria-hidden="true"
+          className={styles.placeholder}
+          src={placeholderUrl}
+        />
+        {source ? renderImage(source) : null}
+      </span>
+    );
+  }
+
   function renderPreview() {
-    if (!current) return <p className={styles.state}>{labels.loading}</p>;
-    if (current.source === null)
+    if (!current)
+      return placeholder ? (
+        renderWithPlaceholder(placeholder, null)
+      ) : (
+        <p className={styles.state}>{labels.loading}</p>
+      );
+    if (current.source === null || failedSource === current.source)
       return (
         <p className={styles.state} role="alert">
           {labels.error}
@@ -56,15 +107,9 @@ export function FilePreviewStage<TFile extends FilePreviewItem>({
       );
     switch (kind) {
       case FilePreviewKind.Image:
-        return (
-          // Signed private URLs cannot pass through an image optimizer; the SVG stays inert inside <img>.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            alt={file.displayName}
-            className={styles.image}
-            src={current.source}
-          />
-        );
+        return placeholder
+          ? renderWithPlaceholder(placeholder, current.source)
+          : renderImage(current.source);
       case FilePreviewKind.Pdf:
         return (
           <iframe

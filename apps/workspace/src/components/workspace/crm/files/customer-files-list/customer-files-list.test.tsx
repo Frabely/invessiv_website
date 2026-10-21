@@ -35,6 +35,7 @@ function file(id: string, kind: AssetKind): FileDto {
     sizeBytes: 100,
     inspectionStatus: FileInspectionStatus.Unscanned,
     url: null,
+    thumbnailUrl: null,
     version: 1,
     createdAt: "2026-01-01T00:00:00.000Z",
     updatedAt: "2026-01-01T00:00:00.000Z",

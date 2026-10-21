@@ -6,6 +6,7 @@ import {
   head,
   issueSignedToken,
   presignUrl,
+  put,
 } from "@vercel/blob";
 import type { StorageAdapter } from "@invessiv/common/contracts/storage/storage-adapter";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
@@ -18,6 +19,7 @@ import { createIdleAbort } from "../idle-abort";
 import {
   validateDownload,
   validateKey,
+  validatePut,
   validateRange,
   validateUpload,
 } from "../storage-validation";
@@ -234,7 +236,7 @@ export function createVercelBlobStorage(): StorageAdapter {
             pathname: key,
             access: "private",
             validUntil: options.expiresAt.getTime(),
-            useCache: false,
+            useCache: options.cacheable === true,
           },
         );
         return options.disposition === StorageDisposition.Attachment
@@ -273,6 +275,19 @@ export function createVercelBlobStorage(): StorageAdapter {
           },
         });
       });
+    },
+    async put(key, body, options) {
+      validatePut(key, options);
+      // Overwrite keeps a regenerated object idempotent when the previous DB write was lost.
+      await safe(() =>
+        put(key, Buffer.from(body), {
+          access: "private",
+          addRandomSuffix: false,
+          allowOverwrite: true,
+          contentType: options.contentType,
+          cacheControlMaxAge: options.cacheMaxAgeSeconds,
+        }),
+      );
     },
     async delete(key) {
       validateKey(key);

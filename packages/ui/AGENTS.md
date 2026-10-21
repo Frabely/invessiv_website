@@ -89,6 +89,11 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   `files/file-entry-meta`; Zeile und Panel nutzen sie gemeinsam. Das Typwort selbst (Link-Host, Endung, sonst
   Typname) liefert `filePresentation.typeLabel` aus `@invessiv/common`, auch für Tabellen mit eigener Typ-Spalte.
   Der gemeinsame Eintragstyp ist `FileEntryItem` (`@invessiv/common/contracts/files/file-entry-item`).
+- **Vorschaubild statt Typ-Symbol** nur über `files/file-thumbnail`: gleiche Fläche wie `FileKindIcon` (2.25rem),
+  `loading="lazy"`, feste Maße, `alt=""`; ohne URL oder nach `onError` steht das Symbol da. Eine neue URL wird erneut
+  versucht. Listen laden nie das Original. `FilePreviewStage` nimmt `placeholderSrc` (nur Bilder): Die Kleinversion
+  steht sofort da, das Original blendet über, sobald es geladen ist; ein kaputtes Original zeigt den Fehlertext.
+  `FilePreviewPanel` reicht `file.thumbnailUrl` selbst durch.
 
 ## Tabellen und Mehrfachauswahl (verbindlich)
 

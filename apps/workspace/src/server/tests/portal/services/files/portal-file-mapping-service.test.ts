@@ -30,6 +30,7 @@ function row(
     uploaded_by_member_id: "member-1",
     uploaded_by_portal_membership_id: null,
     storage_key: "customers/customer-1/file-1/Offer.pdf",
+    thumbnail_key: null,
     content_type: "application/pdf",
     extension: UploadExtension.Pdf,
     size_bytes: 2048,
@@ -45,7 +46,7 @@ function row(
 
 describe("portalFileMappingService.toDto", () => {
   it("maps released columns only", () => {
-    const dto = portalFileMappingService.toDto(row(), "Relaunch");
+    const dto = portalFileMappingService.toDto(row(), "Relaunch", null);
 
     expect(dto).toEqual({
       id: "file-1",
@@ -59,6 +60,7 @@ describe("portalFileMappingService.toDto", () => {
       extension: UploadExtension.Pdf,
       sizeBytes: 2048,
       url: null,
+      thumbnailUrl: null,
       createdAt: "2026-09-28T10:00:00.000Z",
     });
     expect(JSON.stringify(dto)).not.toContain("customers/customer-1");
@@ -83,6 +85,7 @@ describe("portalFileMappingService.toDto", () => {
         url: "https://drive.google.com/file/1",
       }),
       "ignored for company-wide entries",
+      null,
     );
 
     expect(dto).toMatchObject({
@@ -95,5 +98,18 @@ describe("portalFileMappingService.toDto", () => {
       url: "https://drive.google.com/file/1",
     });
     expect(JSON.stringify(dto)).not.toContain("membership-1");
+  });
+
+  it("carries the signed preview URL but never the preview key", () => {
+    const dto = portalFileMappingService.toDto(
+      row({
+        thumbnail_key: "customers/customer-1/file-1/Offer.pdf.thumb.webp",
+      }),
+      "Relaunch",
+      "https://storage.invalid/preview",
+    );
+
+    expect(dto.thumbnailUrl).toBe("https://storage.invalid/preview");
+    expect(JSON.stringify(dto)).not.toContain("thumb.webp");
   });
 });

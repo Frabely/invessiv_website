@@ -14,6 +14,7 @@ const state = vi.hoisted(() => ({
   sign: vi.fn(),
   head: vi.fn(),
   del: vi.fn(),
+  put: vi.fn(),
 }));
 vi.mock("server-only", () => ({}));
 vi.mock("@vercel/blob", () => ({
@@ -21,6 +22,7 @@ vi.mock("@vercel/blob", () => ({
   presignUrl: state.sign,
   head: state.head,
   del: state.del,
+  put: state.put,
   getDownloadUrl: (url: string) => url + "&download=1",
   BlobNotFoundError: class extends Error {},
 }));
@@ -67,6 +69,19 @@ beforeEach(() => {
   state.del.mockImplementation(async (path: string) => {
     state.objects.delete(path);
   });
+  state.put.mockImplementation(
+    async (
+      path: string,
+      body: Uint8Array,
+      options: { contentType: string },
+    ) => {
+      state.objects.set(path, {
+        bytes: body.slice(),
+        contentType: options.contentType,
+      });
+      return { pathname: path };
+    },
+  );
   vi.stubGlobal(
     "fetch",
     vi.fn(async (url: string, options?: RequestInit) => {
@@ -138,6 +153,44 @@ describe.each(["memory", "vercel"])("%s storage contract", (kind) => {
       code: StorageErrorCode.NotFound,
     });
   });
+  it("writes server-generated objects that read back like uploads", async () => {
+    const { adapter } = fixture();
+    const thumbnailKey = `${key}.thumb.webp`;
+    await adapter.put(thumbnailKey, bytes, {
+      contentType: "image/webp",
+      cacheMaxAgeSeconds: 31_536_000,
+    });
+    expect(await adapter.head(thumbnailKey)).toEqual({
+      size: bytes.length,
+      contentType: "image/webp",
+    });
+    expect(
+      await new Response(await adapter.openReadStream(thumbnailKey)).text(),
+    ).toBe("hello storage");
+    await adapter.put(thumbnailKey, bytes.slice(0, 5), {
+      contentType: "image/webp",
+      cacheMaxAgeSeconds: 31_536_000,
+    });
+    expect(await adapter.head(thumbnailKey)).toMatchObject({ size: 5 });
+    await expect(
+      adapter.put("../bad", bytes, {
+        contentType: "image/webp",
+        cacheMaxAgeSeconds: 60,
+      }),
+    ).rejects.toMatchObject({ code: StorageErrorCode.InvalidInput });
+    await expect(
+      adapter.put(thumbnailKey, bytes, {
+        contentType: "not a type",
+        cacheMaxAgeSeconds: 60,
+      }),
+    ).rejects.toMatchObject({ code: StorageErrorCode.InvalidInput });
+    await expect(
+      adapter.put(thumbnailKey, bytes, {
+        contentType: "image/webp",
+        cacheMaxAgeSeconds: 0,
+      }),
+    ).rejects.toMatchObject({ code: StorageErrorCode.InvalidInput });
+  });
   it("rejects invalid ranges, keys, limits and expiry", async () => {
     const { adapter } = fixture();
     await expect(adapter.readRange(key, -1, 3)).rejects.toMatchObject({
@@ -180,6 +233,34 @@ describe("Vercel private adapter", () => {
       }),
     );
   });
+  it("writes private, overwritable objects under the exact key without leaking provider errors", async () => {
+    const adapter = createVercelBlobStorage();
+    await adapter.put(key, bytes, {
+      contentType: "image/webp",
+      cacheMaxAgeSeconds: 31_536_000,
+    });
+    expect(state.put).toHaveBeenCalledWith(
+      key,
+      expect.any(Buffer),
+      expect.objectContaining({
+        access: "private",
+        addRandomSuffix: false,
+        allowOverwrite: true,
+        contentType: "image/webp",
+        cacheControlMaxAge: 31_536_000,
+      }),
+    );
+    state.put.mockRejectedValueOnce(new Error("secret signed-url"));
+    await expect(
+      adapter.put(key, bytes, {
+        contentType: "image/webp",
+        cacheMaxAgeSeconds: 60,
+      }),
+    ).rejects.toMatchObject({
+      code: StorageErrorCode.Unavailable,
+      message: "Storage operation failed.",
+    });
+  });
   it("shares concurrent token issuance and refreshes before expiry", async () => {
     vi.useFakeTimers();
     const adapter = createVercelBlobStorage();
@@ -201,6 +282,19 @@ describe("Vercel private adapter", () => {
     });
     await adapter.createUploadUrl(key, upload());
     expect(state.issue).toHaveBeenCalledTimes(2);
+  });
+  it("lets the CDN cache only downloads that opt in", async () => {
+    const adapter = createVercelBlobStorage();
+    await adapter.createDownloadUrl(key, download());
+    expect(state.sign).toHaveBeenLastCalledWith(
+      expect.anything(),
+      expect.objectContaining({ operation: "get", useCache: false }),
+    );
+    await adapter.createDownloadUrl(key, { ...download(), cacheable: true });
+    expect(state.sign).toHaveBeenLastCalledWith(
+      expect.anything(),
+      expect.objectContaining({ operation: "get", useCache: true }),
+    );
   });
   it("requires a proxy for SVG attachments and renamed downloads", async () => {
     const adapter = createVercelBlobStorage();

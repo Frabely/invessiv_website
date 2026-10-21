@@ -59,4 +59,38 @@ describe("FileEntryRow", () => {
       screen.queryByRole("button", { name: "Download Example" }),
     ).not.toBeInTheDocument();
   });
+
+  it("shows the preview image in place of the kind icon and falls back on error", () => {
+    const { container } = render(
+      <ul>
+        <FileEntryRow
+          file={{
+            id: "image-1",
+            source: FileSource.Upload,
+            assetKind: AssetKind.Image,
+            displayName: "Moodboard.jpg",
+            note: null,
+            url: null,
+            extension: "jpg",
+            sizeBytes: 1000,
+            createdAt: "2026-01-01T00:00:00.000Z",
+            thumbnailUrl: "https://storage.invalid/moodboard.thumb.webp",
+          }}
+          kindLabel="Image"
+          labels={labels}
+          locale="en"
+          onDownloadAction={vi.fn()}
+          selected={false}
+        />
+      </ul>,
+    );
+    const image = container.querySelector("img")!;
+    expect(image).toHaveAttribute(
+      "src",
+      "https://storage.invalid/moodboard.thumb.webp",
+    );
+    fireEvent.error(image);
+    expect(container.querySelector("img")).not.toBeInTheDocument();
+    expect(screen.getByText("Moodboard.jpg")).toBeInTheDocument();
+  });
 });

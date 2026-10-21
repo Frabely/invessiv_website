@@ -64,6 +64,7 @@ function fileDto(overrides: Partial<FileDto> = {}): FileDto {
     sizeBytes: 1_500_000,
     inspectionStatus: FileInspectionStatus.Unscanned,
     url: null,
+    thumbnailUrl: null,
     version: 1,
     createdAt: "2026-09-20T10:00:00.000Z",
     updatedAt: "2026-09-20T10:00:00.000Z",

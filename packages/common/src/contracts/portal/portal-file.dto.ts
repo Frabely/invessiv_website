@@ -31,6 +31,11 @@ export interface PortalFileDto {
   sizeBytes: number | null;
   /** HTTPS destination for links, never a signed storage URL; null for uploads. */
   url: string | null;
+  /**
+   * Short-lived, signed inline URL of a small WebP preview, as visible as the original. Null for
+   * non-images, before generation, in write responses and on proxy-only stores.
+   */
+  thumbnailUrl: string | null;
   /** ISO timestamp; lists are ordered by it, newest first. */
   createdAt: string;
 }

@@ -2,7 +2,11 @@ import type { files } from "@invessiv/db/record-configuration";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
 import { filePresentationMappingService } from "@/server/shared/files/file-presentation-mapping-service";
 
-function toDto(row: typeof files.$inferSelect): FileDto {
+/** The preview URL is signed by the caller after its visibility filter; the key stays internal. */
+function toDto(
+  row: typeof files.$inferSelect,
+  thumbnailUrl: string | null,
+): FileDto {
   return {
     ...filePresentationMappingService.toFields(row),
     customerId: row.customer_id,
@@ -14,6 +18,7 @@ function toDto(row: typeof files.$inferSelect): FileDto {
     uploadedByPortalMembershipId: row.uploaded_by_portal_membership_id,
     contentType: row.content_type,
     inspectionStatus: row.inspection_status,
+    thumbnailUrl,
     version: row.version,
     updatedAt: row.updated_at.toISOString(),
   };

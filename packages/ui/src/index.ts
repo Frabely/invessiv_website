@@ -40,6 +40,7 @@ export * from "./components/message-thread/message-thread-status/message-thread-
 export * from "./hooks/use-is-browser";
 export * from "./hooks/use-file-drag-target";
 export * from "./components/files/file-kind-icon/file-kind-icon";
+export * from "./components/files/file-thumbnail/file-thumbnail";
 export * from "./components/files/file-lightbox/file-lightbox";
 export * from "./components/files/file-preview-panel/file-preview-panel";
 export * from "./components/files/upload-queue-row/upload-queue-row";

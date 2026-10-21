@@ -4,6 +4,9 @@ import "@testing-library/jest-dom/vitest";
 import { fireEvent, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
+import { UploadExtension } from "@invessiv/common/constants/files/upload-extension";
+import { PortalFileOrigin } from "@invessiv/common/constants/portal/portal-file-origin";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import {
@@ -91,6 +94,43 @@ describe("PortalDashboard composition", () => {
       within(widget).getByText(content.widgets.files.emptyFromYou),
     ).toBeInTheDocument();
   });
+  it.each([PortalFileOrigin.FromUs, PortalFileOrigin.FromYou])(
+    "shows image thumbnails in the files widget's %s tab and falls back on failure",
+    (origin) => {
+      const thumbnailUrl = "https://storage.invalid/photo.thumb.webp";
+      renderDashboard({
+        filesOverview: {
+          ...FILES,
+          [origin]: {
+            ...FILES.fromUs,
+            files: [
+              {
+                ...FILES.fromUs.files[0],
+                assetKind: AssetKind.Image,
+                extension: UploadExtension.Jpg,
+                displayName: "Photo.jpg",
+                origin,
+                thumbnailUrl,
+              },
+            ],
+          },
+        },
+      });
+      const widget = screen.getByRole("region", { name: FILES_WIDGET_NAME });
+      fireEvent.click(
+        within(widget).getByRole("tab", {
+          name: content.widgets.files[origin],
+        }),
+      );
+      const image = widget.querySelector("img");
+      expect(image).toHaveAttribute("src", thumbnailUrl);
+      expect(image).toHaveAttribute("alt", "");
+      fireEvent.error(image!);
+      expect(widget.querySelector("img")).toBeNull();
+      expect(within(widget).getByText("Photo.jpg")).toBeInTheDocument();
+    },
+  );
+
   it("keeps the files page reachable when the preview is unavailable", () => {
     renderDashboard({
       dashboard: dto(),

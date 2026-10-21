@@ -25,6 +25,7 @@ describe("file mapping", () => {
     uploaded_by_member_id: "member",
     uploaded_by_portal_membership_id: null,
     storage_key: "secret-storage-coordinate",
+    thumbnail_key: null,
     content_type: "text/plain",
     extension: UploadExtension.Txt,
     size_bytes: 12,
@@ -36,7 +37,7 @@ describe("file mapping", () => {
     updated_at: new Date("2026-09-28T11:00:00Z"),
   };
   it("maps every public field without leaking storage or cleanup state", () => {
-    expect(fileMappingService.toDto(row)).toEqual({
+    expect(fileMappingService.toDto(row, null)).toEqual({
       id: "file",
       customerId: "customer",
       projectId: "project",
@@ -54,30 +55,42 @@ describe("file mapping", () => {
       sizeBytes: 12,
       inspectionStatus: FileInspectionStatus.Unscanned,
       url: null,
+      thumbnailUrl: null,
       version: 3,
       createdAt: "2026-09-28T10:00:00.000Z",
       updatedAt: "2026-09-28T11:00:00.000Z",
     });
   });
+  it("carries the signed preview URL but never the preview key", () => {
+    const dto = fileMappingService.toDto(
+      { ...row, thumbnail_key: "secret-thumbnail-coordinate" },
+      "https://storage.invalid/preview",
+    );
+    expect(dto.thumbnailUrl).toBe("https://storage.invalid/preview");
+    expect(JSON.stringify(dto)).not.toContain("secret-thumbnail-coordinate");
+  });
   it("preserves nullable link metadata and portal uploader attribution", () => {
     expect(
-      fileMappingService.toDto({
-        ...row,
-        project_id: null,
-        note: null,
-        source: FileSource.Link,
-        asset_kind: AssetKind.Link,
-        uploaded_by_side: UploadSide.Customer,
-        uploaded_by_member_id: null,
-        uploaded_by_portal_membership_id: "membership",
-        content_type: null,
-        extension: null,
-        size_bytes: null,
-        inspection_status: null,
-        storage_key: null,
-        url: "https://example.com",
-        visible_to_customer: true,
-      }),
+      fileMappingService.toDto(
+        {
+          ...row,
+          project_id: null,
+          note: null,
+          source: FileSource.Link,
+          asset_kind: AssetKind.Link,
+          uploaded_by_side: UploadSide.Customer,
+          uploaded_by_member_id: null,
+          uploaded_by_portal_membership_id: "membership",
+          content_type: null,
+          extension: null,
+          size_bytes: null,
+          inspection_status: null,
+          storage_key: null,
+          url: "https://example.com",
+          visible_to_customer: true,
+        },
+        null,
+      ),
     ).toMatchObject({
       projectId: null,
       note: null,

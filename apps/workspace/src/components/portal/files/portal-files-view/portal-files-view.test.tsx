@@ -64,6 +64,7 @@ function file(overrides: Partial<PortalFileDto> = {}): PortalFileDto {
     extension: UploadExtension.Pdf,
     sizeBytes: 2_000,
     url: null,
+    thumbnailUrl: null,
     createdAt: "2026-09-25T10:00:00.000Z",
     ...overrides,
   };
@@ -168,6 +169,30 @@ describe("PortalFilesView", () => {
     expect(within(logo).getByText(content.origin.fromYou)).toBeInTheDocument();
     expect(within(logo).getByText(content.row.general)).toBeInTheDocument();
     expect(mocks.listFiles).not.toHaveBeenCalled();
+  });
+
+  it("shows an image's preview in its table row and keeps the icon for documents", () => {
+    renderView({
+      initialPage: page([
+        file(),
+        file({
+          id: "file-2",
+          displayName: "Moodboard.jpg",
+          assetKind: AssetKind.Image,
+          extension: UploadExtension.Jpg,
+          thumbnailUrl: "https://storage.invalid/moodboard.thumb.webp",
+        }),
+      ]),
+    });
+
+    const table = screen.getByRole("table", { name: content.list.label });
+    const image = within(table).getByRole("row", { name: /Moodboard\.jpg/ });
+    expect(image.querySelector("img")).toHaveAttribute(
+      "src",
+      "https://storage.invalid/moodboard.thumb.webp",
+    );
+    const offer = within(table).getByRole("row", { name: /Offer\.pdf/ });
+    expect(offer.querySelector("img")).not.toBeInTheDocument();
   });
 
   it("keeps the bar at the bottom like the other step pages", () => {

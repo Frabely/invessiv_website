@@ -12,6 +12,7 @@
     "db:smoke:activities": "vitest run src/server/tests/shared/services/activity-service.integration.test.ts --mode activity-integration",
     "db:smoke:rbac": "vitest run src/server/tests/workspace/auth/workspace-authorization.integration.test.ts --mode rbac-integration",
     "db:smoke:access": "vitest run src/server/tests/workspace/access/access-management.integration.test.ts src/server/tests/workspace/access/access-scope-read.integration.test.ts --mode rbac-integration",
+    "files:backfill-thumbnails": "tsx --conditions=react-server scripts/files-backfill-thumbnails.ts",
     "test:e2e": "playwright test",
     "test:e2e:portal": "node e2e/run-portal-e2e.mjs"
   },
@@ -34,8 +35,9 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.72.1",
-    "server-only": "^0.0.1",
     "saxes": "^6.0.0",
+    "server-only": "^0.0.1",
+    "sharp": "0.34.5",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -43,6 +45,7 @@
     "@clerk/testing": "^2.2.37",
     "@playwright/test": "1.63.0",
     "@vercel/blob": "^2.8.0",
-    "dotenv": "^17.3.1"
+    "dotenv": "^17.3.1",
+    "tsx": "^4.21.0"
   }
 }
