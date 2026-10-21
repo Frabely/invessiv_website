@@ -4,10 +4,13 @@ import { FileListLoadStatus } from "@/common/constants/files/file-list-load-stat
 import type { FileClientResult } from "@/common/contracts/files/file-client-result";
 import type { PagedFiles } from "@/common/contracts/files/paged-files";
 import type { PagedListPage } from "@/common/contracts/shared/paged-list-page";
+import type { FileThumbnailCandidate } from "@/common/contracts/files/file-thumbnail-candidate";
+import { FILES_PAGE_SIZE } from "@/common/constants/files/files-page-size";
+import { useFileThumbnailRefresh } from "./use-file-thumbnail-refresh";
 import { usePagedList } from "./use-paged-list";
 
 /** Page-number pagination with server-rendered initial data and local file replacement. */
-export function usePagedFiles<TFile extends { id: string }>(
+export function usePagedFiles<TFile extends FileThumbnailCandidate>(
   requestKey: string,
   loadPage: (page: number) => Promise<FileClientResult<PagedFiles<TFile>>>,
   initialPage?: PagedFiles<TFile>,
@@ -29,6 +32,19 @@ export function usePagedFiles<TFile extends { id: string }>(
       return result.ok ? normalize(result.value) : null;
     },
     initialPage ? normalize(initialPage) : undefined,
+  );
+
+  useFileThumbnailRefresh(
+    requestKey,
+    list.page?.entries ?? [],
+    initialPage?.pageSize ?? FILES_PAGE_SIZE,
+    loadPage,
+    (original, thumbnailUrl) =>
+      // A concurrent edit or a new filter must not be overwritten by an older response.
+      list.replaceEntry((entry) => entry === original, {
+        ...original,
+        thumbnailUrl,
+      }),
   );
 
   return {

@@ -1,7 +1,31 @@
 # Paket L – Vorschaubilder in Dateilisten (Portal und CRM)
 
-Stand: 20.10.2026. Folgt auf [Paket K](../done/26-portal-dateien-layout/K-portal-files-layout.md). Umgesetzt auf
-`feat/portal-file-thumbnails`, ungecommittet, im Review. Dev-DB hat `0061`.
+Stand: 21.10.2026. Folgt auf [Paket K](../done/26-portal-dateien-layout/K-portal-files-layout.md). Umgesetzt auf
+`feat/portal-file-thumbnails`, mit Nacharbeiten aus dem Branch-Review. Dev-DB hat `0061`.
+
+## Nacharbeiten aus dem Review (21.10.2026)
+
+- Schreibrecht allein erzeugt keine signierte Vorschau-URL. Beim Bearbeiten werden Quell- und Ziel-Leserecht geprüft.
+- Fehlende Storage-Konfiguration betrifft nur die Vorschau; Listen und Metadatenänderungen bleiben nutzbar.
+- Unterstützte Bilder ohne Vorschau werden in geöffneten Listen höchstens fünfmal im Hintergrund nachgeladen
+  (Wartezeiten 1/2/4/8/15 Sekunden). Pagination, Auswahl und zwischenzeitliche Metadatenänderungen bleiben erhalten.
+  HEIC, SVG und andere nicht unterstützte Formate lösen keine Nachladeversuche aus.
+- Auch der erste DB-Read der automatischen Erzeugung fällt unter die kontrollierte Fehlerbehandlung.
+- Die reine Zieldefinition liegt in `packages/common/src/constants/database/database-target.ts`.
+- Dev und Preview dürfen denselben Blob-Store verwenden. Eine bekannte Production-DB oder ein bekannter
+  Production-Store wird für diese Ziele abgelehnt; direkte und gepoolte Neon-Adressen gelten als dieselbe DB.
+- Das Backfill-Skript liest ausschließlich die ausdrücklich gewählte `.env.<ziel>.local` an Root/App bzw.
+  `DATABASE_URL_<ZIEL>`. Widersprüchliche DB-Zuordnungen werden abgelehnt; eine allgemeine `DATABASE_URL` oder
+  `.env.local` ist kein Fallback. Für den DB-Sicherheitsvergleich muss die Production-DB explizit bekannt sein.
+  Store-ID und passende OIDC-/Read-Write-Zugangsdaten müssen in der Zieldatei stehen. Die normalen DB-Skripte
+  behalten ihre bisherige Ladefunktion; nur das temporäre Backfill nutzt die strengere Prüfung.
+- In einer tatsächlichen Vercel-Umgebung (`VERCEL=1`) muss `VERCEL_ENV` exakt zum angeforderten Ziel passen.
+  Dort werden die deployten DB-/Storage-Werte dieser Umgebung verwendet. Lokal ausschließlich in Vercel
+  hinterlegte Prod-Werte müssen zuerst ausdrücklich für Production bereitgestellt werden; ohne diese bricht
+  der lokale Prod-Lauf ab. Eine lokale Prüfung bestätigt keine erfolgreich ausgeführten früheren Prod-Backfills.
+- Nur die Konfiguration prüfen, ohne DB-/Storage-Zugriff:
+  `pnpm --filter @invessiv/workspace files:backfill-thumbnails <development|preview|production> --check`.
+  Dies prüft die Zuordnung, nicht die Gültigkeit oder Laufzeit eines OIDC-Tokens.
 
 ## Einmaliger Backfill und Aufräumen nach dem Master-Merge
 
@@ -14,9 +38,13 @@ Neue Uploads erzeugen ihre Vorschaubilder automatisch.
       `pnpm --filter @invessiv/workspace files:backfill-thumbnails preview`.
 - [ ] Production nach Master-Merge, Deployment und Migration nachziehen:
       `pnpm --filter @invessiv/workspace files:backfill-thumbnails production`.
+      Lesender Check am 21.10.2026: In der ausdrücklich konfigurierten Production-DB fehlen die Spalte
+      `thumbnail_key` und die Registrierung von `0061` noch. Production-Storage ist laut Nutzer nur in Vercel
+      konfiguriert; der lokale Prod-Konfigurationscheck bricht deshalb erwartungsgemäß vor jedem Zugriff ab.
 - [ ] Ergebnis je Umgebung prüfen: `Failed: 0`, Vorschaubilder in Dateiliste und Portal-Widget sichtbar.
       Fehlgeschlagene Dateien vor dem Cleanup erneut nachziehen; vorhandene Vorschaubilder werden übersprungen.
 - [ ] Danach `apps/workspace/scripts/files-backfill-thumbnails.ts` löschen.
+- [ ] Auch `apps/workspace/scripts/configure-thumbnail-backfill-environment.ts` und dessen Test entfernen.
 - [ ] Den Eintrag `files:backfill-thumbnails` aus `apps/workspace/package.json` entfernen.
 - [ ] Die DevDependency `tsx` aus diesem App-Paket entfernen, sofern sie weiterhin ausschließlich für das
       Backfill-Skript verwendet wird; Lockfile aktualisieren. `tsx` im DB-Paket bleibt bestehen.
@@ -36,10 +64,10 @@ Vorschaubilder bleiben bestehen. Das Löschen des Hilfsskripts löscht keine Bil
 - **`thumbnail_key` ohne Versionssprung:** technisches `UPDATE … WHERE id, storage_key, ready, nicht verwaist,
 thumbnail_key IS NULL/gleich` statt `updateVersioned`. Sonst liefe ein Bearbeiten direkt nach dem Upload in einen
   unnötigen 409. Ist die Zeile inzwischen weg, löscht der Service das Objekt wieder.
-- **Gemeinsame `FileThumbnail`** in `packages/ui`: `FileEntryRow` (CRM, Dashboard-Widget) und die Portal-Tabelle
+- **Gemeinsame `FileThumbnail`** in `packages/ui`: `FileEntryRow` (CRM), das Portal-Dashboard-Widget und die Portal-Tabelle
   (`PortalFileTableRow`, seit Paket M) nutzen sie. Größe wie das Typ-Symbol (2.25rem), damit Namen bündig bleiben.
 - **`put` überschreibt** (`allowOverwrite: true`), damit ein erneuter Lauf nach verlorenem DB-Write nicht scheitert.
-- **Schreibantworten:** `updateFile` signiert die Vorschau mit (der Client ersetzt die Zeile durch die Antwort);
+- **Schreibantworten:** `updateFile` signiert mit Quell- und Ziel-Leserecht die Vorschau mit (der Client ersetzt die Zeile durch die Antwort);
   Anlegen, Abschluss und Konfliktantwort liefern `null`.
 - **Kein Bereinigungsjob vorhanden:** `remove` löscht Vorschau und Original; eine als verwaist markierte Zeile behält
   beide Schlüssel für einen späteren Lauf.
@@ -53,7 +81,7 @@ thumbnail_key IS NULL/gleich` statt `updateVersioned`. Sonst liefe ein Bearbeite
 
 Bilder zeigen in der Dateiliste statt des Typ-Symbols eine kleine, komprimierte Vorschau. Das Vorschau-Panel aus
 Paket K nutzt sie als Platzhalter, bis das Original geladen ist. Davon profitieren Portal-Dateien, das Dashboard-Widget
-und die CRM-Dateiliste, weil alle `FileEntryRow` nutzen.
+und die CRM-Dateiliste über die gemeinsame `FileThumbnail`-Darstellung.
 
 ## Warum ein eigenes Paket
 
@@ -62,8 +90,8 @@ und die CRM-Dateiliste, weil alle `FileEntryRow` nutzen.
   derselbe Grund wie im Kommentar in `FileLightbox`.
 - Bilder dürfen bis **40 MB** groß sein (`UPLOAD_LIMIT_BY_KIND`). Würde die Liste die Originale laden, kämen bei
   25 Zeilen schnell über 100 MB zusammen. Am Handy wäre das untragbar (LCP, Datenvolumen).
-- Sinnvoll ist deshalb nur eine **serverseitig erzeugte Kleinversion**: etwa 480 px lange Kante, WebP, Qualität 70,
-  typisch 15–40 KB. 25 Zeilen kosten dann unter 1 MB und werden zusätzlich erst beim Hineinscrollen geladen
+- Sinnvoll ist deshalb eine **serverseitig erzeugte Kleinversion**: maximal 160 px lange Kante, WebP, Qualität 70.
+  Die kleinen Vorschaubilder werden zusätzlich erst beim Hineinscrollen geladen
   (`loading="lazy"`).
 - Dafür braucht es eine Migration, einen Speicher-Schreibweg, eine Bildbibliothek und ein Nachzieh-Skript. Diese
   Backend-Änderung soll als eigener PR prüfbar sein.
@@ -90,7 +118,7 @@ und die CRM-Dateiliste, weil alle `FileEntryRow` nutzen.
   - nur für `assetKind = image` mit `png`, `jpg`, `jpeg` und `webp`;
   - **HEIC/HEIF nicht**, weil das vorgebaute `sharp` sie nicht liest; dort bleibt das Symbol;
   - **SVG nicht**, weil das Original im `<img>` ohnehin klein und sicher ist;
-  - Ablauf: Original über `openReadStream` → `sharp().rotate().resize(480, 480, { fit: "inside", withoutEnlargement: true }).webp({ quality: 70 })` → `put(`${storage_key}.thumb.webp`)` → `thumbnail_key` über `updateVersioned` setzen.
+  - Ablauf: Original über `openReadStream` → `sharp().rotate().resize(160, 160, { fit: "inside", withoutEnlargement: true }).webp({ quality: 70 })` → `put(`${storage_key}.thumb.webp`)` → `thumbnail_key` über das abgesicherte technische Update setzen.
   - `sharp` entfernt EXIF-Daten. Die Vorschau trägt damit **keine GPS-Position** der Handyfotos weiter (Privacy-Plus).
 - **Zeitpunkt:** nach dem Commit von `completeUpload`, in den Complete-Handlern von Portal
   (`complete-portal-file-upload.command-handler.ts`) und CRM (`complete-file-upload.command-handler.ts`), über `after()`
@@ -113,11 +141,11 @@ und die CRM-Dateiliste, weil alle `FileEntryRow` nutzen.
 ### 5. UI (`packages/ui`)
 
 - `FileEntryRow`: Mit `thumbnailUrl` erscheint an der Stelle des `FileKindIcon` ein quadratisches Vorschaubild
-  (etwa 2.75rem, `object-fit: cover`, `loading="lazy"`, `decoding="async"`, feste `width`/`height` gegen CLS). Bei
+  (2.25rem, `object-fit: cover`, `loading="lazy"`, `decoding="async"`, feste `width`/`height` gegen CLS). Bei
   `onError` (z. B. abgelaufene URL) fällt es auf das Symbol zurück. `alt=""`, weil der Name daneben steht.
 - `FilePreviewPanel` / `FilePreviewStage` bekommen einen optionalen Platzhalter (`placeholderSrc`). Das Panel zeigt
   sofort die Kleinversion und blendet zum Original über, sobald es geladen ist.
-- Das Dashboard-Widget `files` übernimmt das automatisch über `FileEntryRow`.
+- Das Dashboard-Widget `files` bindet dieselbe `FileThumbnail`-Komponente direkt ein.
 
 ### 6. Bestand nachziehen
 
@@ -147,7 +175,8 @@ und die CRM-Dateiliste, weil alle `FileEntryRow` nutzen.
 ## Risiko und Rollback
 
 - Die Spalte ist nullable, die UI fällt ohne Wert auf das Symbol zurück. Ein Rollback des Codes braucht keine
-  Datenmigration; verwaiste `.thumb.webp`-Objekte kann das Skript entfernen.
+  Datenmigration. Das Backfill-Skript erzeugt ausschließlich fehlende Vorschauen und entfernt keine verwaisten
+  Objekte; ein solcher Bereinigungsjob ist nicht umgesetzt.
 - Laufzeit und Speicher: `sharp` dekodiert ein 40-MB-JPEG in der Function. Das passiert über `after()` außerhalb der
   Antwortzeit. Bei Problemen läuft die Erzeugung nur noch über das Skript.
 - **Env:** keine neuen Variablen. Der bestehende Blob-Token deckt `put` ab.

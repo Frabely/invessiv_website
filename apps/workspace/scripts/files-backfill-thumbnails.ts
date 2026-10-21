@@ -7,13 +7,9 @@
  * Needs the database URL of the target and the storage variables (STORAGE_PROVIDER, Blob token).
  * The output is counts only; failures are logged with file id and code, never with a file name.
  */
-import path from "node:path";
-import { config as loadDotenv } from "dotenv";
-import {
-  configureDatabaseUrlFromTarget,
-  parseDatabaseTarget,
-} from "@invessiv/db/core/database-target";
+import { parseDatabaseTarget } from "@invessiv/db/core/database-target";
 import { fileThumbnailService } from "@/server/shared/files/file-thumbnail-service";
+import { configureThumbnailBackfillEnvironment } from "./configure-thumbnail-backfill-environment";
 
 const BATCH_SIZE = 20;
 
@@ -23,15 +19,13 @@ async function main() {
     throw new Error(
       "Missing database target. Use one of: development, preview, production.",
     );
-  // Unlike Next, tsx does not load the app's storage environment automatically.
-  for (const filename of [`.env.${target}.local`, ".env.local"]) {
-    loadDotenv({
-      path: path.resolve(process.cwd(), filename),
-      override: false,
-      quiet: true,
-    });
+  configureThumbnailBackfillEnvironment(target);
+  if (process.argv.includes("--check")) {
+    console.log(
+      `Backfill configuration validated for ${target}; no database or storage access performed.`,
+    );
+    return;
   }
-  configureDatabaseUrlFromTarget(target);
 
   console.log(`Backfilling file thumbnails on ${target} …`);
   const counts = await fileThumbnailService.backfillMissing(BATCH_SIZE);

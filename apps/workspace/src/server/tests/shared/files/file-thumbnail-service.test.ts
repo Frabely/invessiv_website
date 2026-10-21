@@ -12,8 +12,11 @@ import { StorageError } from "@invessiv/storage";
 import { createInMemoryStorage } from "@invessiv/storage/testing";
 import type { FileRow } from "@/server/shared/files/file-object-service-types";
 import { fileThumbnailService } from "@/server/shared/files/file-thumbnail-service";
+import { storageService } from "@/server/shared/files/storage-service";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 
 vi.mock("server-only", () => ({}));
+vi.mock("@invessiv/db/core", () => ({ getDrizzleDatabaseClient: vi.fn() }));
 
 function row(extension: UploadExtension, overrides: Partial<FileRow> = {}) {
   const value: FileRow = {
@@ -59,7 +62,10 @@ async function photo(format: "jpeg" | "png", width: number, height: number) {
 }
 
 describe("fileThumbnailService.signUrls", () => {
-  afterEach(() => vi.useRealTimers());
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
 
   it("signs inline, cacheable URLs only for rows with a preview", async () => {
     const storage = createInMemoryStorage();
@@ -68,10 +74,10 @@ describe("fileThumbnailService.signUrls", () => {
       thumbnail_key: "customers/c/f/photo.png.thumb.webp",
     });
 
-    const urls = await fileThumbnailService.signUrls(storage.adapter, [
-      withPreview,
-      row(UploadExtension.Png),
-    ]);
+    const urls = await fileThumbnailService.signUrls(
+      [withPreview, row(UploadExtension.Png)],
+      storage.adapter,
+    );
 
     expect(urls.get(withPreview.id)).toContain("https://");
     expect(urls.size).toBe(1);
@@ -90,11 +96,11 @@ describe("fileThumbnailService.signUrls", () => {
       thumbnail_key: "k/photo.thumb.webp",
     });
 
-    const first = await fileThumbnailService.signUrls(storage.adapter, [file]);
+    const first = await fileThumbnailService.signUrls([file], storage.adapter);
     vi.setSystemTime(new Date("2026-10-20T10:01:50Z"));
-    const second = await fileThumbnailService.signUrls(storage.adapter, [file]);
+    const second = await fileThumbnailService.signUrls([file], storage.adapter);
     vi.setSystemTime(new Date("2026-10-20T10:02:00Z"));
-    const third = await fileThumbnailService.signUrls(storage.adapter, [file]);
+    const third = await fileThumbnailService.signUrls([file], storage.adapter);
 
     expect(second.get(file.id)).toBe(first.get(file.id));
     expect(third.get(file.id)).not.toBe(first.get(file.id));
@@ -116,8 +122,57 @@ describe("fileThumbnailService.signUrls", () => {
     ];
 
     expect(
-      (await fileThumbnailService.signUrls(storage.adapter, files)).size,
+      (await fileThumbnailService.signUrls(files, storage.adapter)).size,
     ).toBe(0);
+  });
+
+  it("does not resolve storage for an empty list or rows without previews", async () => {
+    const getAdapter = vi
+      .spyOn(storageService, "getAdapter")
+      .mockImplementation(() => {
+        throw new StorageError(StorageErrorCode.Configuration);
+      });
+    expect(await fileThumbnailService.signUrls([])).toEqual(new Map());
+    expect(
+      await fileThumbnailService.signUrl(row(UploadExtension.Png)),
+    ).toBeNull();
+    expect(getAdapter).not.toHaveBeenCalled();
+  });
+
+  it("keeps metadata usable when the storage factory fails", async () => {
+    vi.spyOn(storageService, "getAdapter").mockImplementation(() => {
+      throw new StorageError(StorageErrorCode.Configuration);
+    });
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(
+      await fileThumbnailService.signUrl(
+        row(UploadExtension.Png, {
+          thumbnail_key: "photo.thumb.webp",
+        }),
+      ),
+    ).toBeNull();
+    expect(log).toHaveBeenCalledWith("[files] thumbnail signing failed", {
+      code: StorageErrorCode.Configuration,
+    });
+  });
+});
+
+describe("fileThumbnailService.generate", () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it("returns a controlled failure when the initial database read fails", async () => {
+    vi.mocked(getDrizzleDatabaseClient).mockImplementation(() => {
+      throw new Error("private database details");
+    });
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(await fileThumbnailService.generate("file-id")).toBe("failed");
+    expect(log).toHaveBeenCalledWith("[files] thumbnail generation failed", {
+      fileId: "file-id",
+      code: "thumbnail_render_failed",
+    });
+    expect(JSON.stringify(log.mock.calls)).not.toContain(
+      "private database details",
+    );
   });
 });
 

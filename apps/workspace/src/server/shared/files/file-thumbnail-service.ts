@@ -16,7 +16,7 @@ import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
 import { FileStatus } from "@invessiv/common/constants/files/file-status";
 import { DOWNLOAD_URL_TTL_MS } from "@invessiv/common/constants/files/upload-limits";
-import { UploadExtension } from "@invessiv/common/constants/files/upload-extension";
+import { FILE_THUMBNAIL_EXTENSIONS } from "@invessiv/common/constants/files/file-thumbnail-extensions";
 import { StorageErrorCode } from "@invessiv/common/constants/storage/storage-error-code";
 import { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
 import type { StorageAdapter } from "@invessiv/common/contracts/storage/storage-adapter";
@@ -37,14 +37,8 @@ const THUMBNAIL_CACHE_SECONDS = 365 * 24 * 60 * 60;
 const RENDER_FAILED = "thumbnail_render_failed";
 const SIGNED_URL_WINDOW_MS = 2 * 60_000;
 // The prebuilt sharp cannot decode HEIC/HEIF; SVG originals are small and render directly.
-const THUMBNAIL_EXTENSION_VALUES = [
-  UploadExtension.Png,
-  UploadExtension.Jpg,
-  UploadExtension.Jpeg,
-  UploadExtension.Webp,
-];
 const THUMBNAIL_EXTENSIONS: ReadonlySet<string> = new Set(
-  THUMBNAIL_EXTENSION_VALUES,
+  FILE_THUMBNAIL_EXTENSIONS,
 );
 
 function isEligible(row: FileRow): row is FileRow & { storage_key: string } {
@@ -119,20 +113,20 @@ async function attach(row: FileRow, key: string): Promise<boolean> {
 
 /** Never throws: a file without a preview simply keeps its kind icon. */
 async function generate(fileId: string): Promise<FileThumbnailOutcome> {
-  const [row] = await getDrizzleDatabaseClient()
-    .select()
-    .from(files)
-    .where(eq(files.id, fileId))
-    .limit(1);
-  if (!row || !isEligible(row)) return FileThumbnailOutcome.Skipped;
   try {
+    const [row] = await getDrizzleDatabaseClient()
+      .select()
+      .from(files)
+      .where(eq(files.id, fileId))
+      .limit(1);
+    if (!row || !isEligible(row)) return FileThumbnailOutcome.Skipped;
     const key = await create(storageService.getAdapter(), row);
     if (!key || !(await attach(row, key))) return FileThumbnailOutcome.Skipped;
     return FileThumbnailOutcome.Created;
   } catch (error) {
     // The file name is PII; the id is enough to retry through the backfill script.
     console.error("[files] thumbnail generation failed", {
-      fileId: row.id,
+      fileId,
       code: error instanceof StorageError ? error.code : RENDER_FAILED,
     });
     return FileThumbnailOutcome.Failed;
@@ -155,19 +149,30 @@ function stableExpiry(): Date {
  * whose URL cannot be signed is left out and shows its kind icon; the list itself never fails.
  */
 async function signUrls(
-  adapter: StorageAdapter,
   rows: readonly FileRow[],
+  adapter?: StorageAdapter,
 ): Promise<Map<string, string>> {
   const expiresAt = stableExpiry();
   const urls = new Map<string, string>();
+  const withPreview = rows.filter((row) => row.thumbnail_key);
+  if (withPreview.length === 0) return urls;
+  let signer: StorageAdapter;
+  try {
+    signer = adapter ?? storageService.getAdapter();
+  } catch (error) {
+    console.error("[files] thumbnail signing failed", {
+      code: error instanceof StorageError ? error.code : RENDER_FAILED,
+    });
+    return urls;
+  }
   let failure: string | null = null;
   await Promise.all(
-    rows.map(async (row) => {
+    withPreview.map(async (row) => {
       if (!row.thumbnail_key) return;
       try {
         urls.set(
           row.id,
-          await adapter.createDownloadUrl(row.thumbnail_key, {
+          await signer.createDownloadUrl(row.thumbnail_key, {
             expiresAt,
             disposition: StorageDisposition.Inline,
             filename: row.thumbnail_key.split("/").pop()!,
@@ -189,10 +194,10 @@ async function signUrls(
 }
 
 async function signUrl(
-  adapter: StorageAdapter,
   row: FileRow,
+  adapter?: StorageAdapter,
 ): Promise<string | null> {
-  return (await signUrls(adapter, [row])).get(row.id) ?? null;
+  return (await signUrls([row], adapter)).get(row.id) ?? null;
 }
 
 /** The SQL twin of `isEligible`; both read the same extension list. */
@@ -204,7 +209,7 @@ function missingCondition(): SQL {
     isNull(files.orphaned_at),
     isNull(files.thumbnail_key),
     isNotNull(files.storage_key),
-    inArray(files.extension, THUMBNAIL_EXTENSION_VALUES),
+    inArray(files.extension, [...FILE_THUMBNAIL_EXTENSIONS]),
   )!;
 }
 

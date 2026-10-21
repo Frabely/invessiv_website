@@ -5,7 +5,7 @@ import type { UploadSide } from "../../constants/files/upload-side";
 import type { UploadExtension } from "../../constants/files/upload-extension";
 import type { FileInspectionStatus } from "../../constants/files/file-inspection-status";
 
-/** Public metadata only; storage coordinates and signed capabilities never belong here. */
+/** Public metadata and an optional authorized thumbnail URL; raw storage keys stay internal. */
 export interface FileDto {
   /** Stable identifier used by mutation and download endpoints. */
   id: string;
@@ -43,7 +43,9 @@ export interface FileDto {
   url: string | null;
   /**
    * Short-lived, signed inline URL of a small WebP preview; signed only after the visibility
-   * filter. Null for non-images, before generation, in write responses and on proxy-only stores.
+   * filter. Updates retain it only with read permission on both source and destination scopes.
+   * Null before generation, for non-images, without read access, on proxy-only stores or failures;
+   * create, upload-completion and conflict responses also return null.
    */
   thumbnailUrl: string | null;
   /** Optimistic concurrency token for edits and deletion. */

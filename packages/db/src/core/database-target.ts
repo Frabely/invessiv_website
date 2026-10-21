@@ -1,18 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parse as parseDotenv } from "dotenv";
+import {
+  DATABASE_TARGET_VALUES,
+  type DatabaseTarget,
+} from "@invessiv/common/constants/database/database-target";
 import { findWorkspaceRoot, loadLocalEnvFiles } from "./env";
 
-export const DATABASE_TARGETS = [
-  "development",
-  "preview",
-  "production",
-] as const;
-
-export type DatabaseTarget = (typeof DATABASE_TARGETS)[number];
-
 function isDatabaseTarget(value: string): value is DatabaseTarget {
-  return DATABASE_TARGETS.includes(value as DatabaseTarget);
+  return DATABASE_TARGET_VALUES.includes(value as DatabaseTarget);
 }
 
 export function parseDatabaseTarget(argv: string[]): DatabaseTarget | null {
@@ -23,7 +19,7 @@ export function parseDatabaseTarget(argv: string[]): DatabaseTarget | null {
 
   if (!isDatabaseTarget(rawTarget)) {
     throw new Error(
-      `Unknown database target "${rawTarget}". Use one of: ${DATABASE_TARGETS.join(", ")}.`,
+      `Unknown database target "${rawTarget}". Use one of: ${DATABASE_TARGET_VALUES.join(", ")}.`,
     );
   }
 

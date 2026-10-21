@@ -14,7 +14,6 @@ import { portalFileSchemas } from "@/server/portal/services/files/portal-file-sc
 import { portalFileService } from "@/server/portal/services/files/portal-file-service";
 import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { fileThumbnailService } from "@/server/shared/files/file-thumbnail-service";
-import { storageService } from "@/server/shared/files/storage-service";
 
 /**
  * Visible entries, newest first: one origin, or both for the files page and the chat picker.
@@ -63,7 +62,6 @@ export async function listPortalFiles(
   ]);
   const withProjects = portalFileService.canSeeProjects(reader);
   const thumbnails = await fileThumbnailService.signUrls(
-    storageService.getAdapter(),
     rows.map((row) => row.file),
   );
   return {
