@@ -3,6 +3,29 @@
 Stand: 20.10.2026. Folgt auf [Paket K](../done/26-portal-dateien-layout/K-portal-files-layout.md). Umgesetzt auf
 `feat/portal-file-thumbnails`, ungecommittet, im Review. Dev-DB hat `0061`.
 
+## Einmaliger Backfill und Aufräumen nach dem Master-Merge
+
+Das Backfill-Skript ist ein temporäres Hilfsmittel für bestehende Bilder. Nach dem Merge auf `master`
+und dem erfolgreichen Nachziehen aller benötigten Umgebungen wird es in einem separaten Cleanup entfernt.
+Neue Uploads erzeugen ihre Vorschaubilder automatisch.
+
+- [x] Development: Migration ausgeführt, 15 Vorschaubilder erzeugt, 0 Fehler (21.10.2026).
+- [ ] Preview nach Deployment/Migration nachziehen, sofern dort bestehende Bilder liegen:
+      `pnpm --filter @invessiv/workspace files:backfill-thumbnails preview`.
+- [ ] Production nach Master-Merge, Deployment und Migration nachziehen:
+      `pnpm --filter @invessiv/workspace files:backfill-thumbnails production`.
+- [ ] Ergebnis je Umgebung prüfen: `Failed: 0`, Vorschaubilder in Dateiliste und Portal-Widget sichtbar.
+      Fehlgeschlagene Dateien vor dem Cleanup erneut nachziehen; vorhandene Vorschaubilder werden übersprungen.
+- [ ] Danach `apps/workspace/scripts/files-backfill-thumbnails.ts` löschen.
+- [ ] Den Eintrag `files:backfill-thumbnails` aus `apps/workspace/package.json` entfernen.
+- [ ] Die DevDependency `tsx` aus diesem App-Paket entfernen, sofern sie weiterhin ausschließlich für das
+      Backfill-Skript verwendet wird; Lockfile aktualisieren. `tsx` im DB-Paket bleibt bestehen.
+- [ ] Die nur für den Backfill benötigte Methode `fileThumbnailService.backfillMissing` samt ausschließlich
+      dafür benötigten Helfern, Imports und Tests entfernen; zugehörige Backfill-Verweise in der Doku bereinigen.
+
+`sharp`, die automatische Erzeugung für neue Uploads, `thumbnail_key` und die bereits gespeicherten
+Vorschaubilder bleiben bestehen. Das Löschen des Hilfsskripts löscht keine Bilddateien.
+
 ## Abweichungen in der Umsetzung (Entscheidungen 20.10.2026)
 
 - **160 px statt 480 px** (Performance): Die Zeile zeigt 36 px, 160 px reichen bis 3x-Dichte. Eine Seite mit 25 Zeilen
