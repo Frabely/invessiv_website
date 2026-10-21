@@ -12,14 +12,16 @@ function readEnvironment(filename: string): Record<string, string> {
 }
 
 function databaseIdentity(value: string): string {
+  let url: URL;
   try {
-    const url = new URL(value);
-    if (!["postgres:", "postgresql:"].includes(url.protocol)) throw new Error();
-    // Neon pooled and direct URLs can address the same production database.
-    return url.hostname.replace(/-pooler(?=\.)/, "") + url.pathname;
+    url = new URL(value);
   } catch {
     throw new Error("Invalid database URL in backfill configuration.");
   }
+  if (!["postgres:", "postgresql:"].includes(url.protocol))
+    throw new Error("Invalid database URL in backfill configuration.");
+  // Neon pooled and direct URLs can address the same production database.
+  return url.hostname.replace(/-pooler(?=\.)/, "") + url.pathname;
 }
 
 /** Resolves one explicit DB target; dev/preview may share Blob, but neither may use production. */

@@ -192,6 +192,12 @@ Detailregeln stehen in den scope-spezifischen Dateien (siehe Index). Global gilt
 
 ## Arbeitsweise & Reviews
 
+- Für GPT/Codex und Claude gleichermaßen verbindlich: Nach Codeänderungen vor Abschluss `pnpm lint` ausführen
+  und neu verursachte Lint-Fehler beheben. Die gemeinsame Regel `invessiv/no-locally-caught-throw` erkennt explizite
+  `throw`-Anweisungen, die im selben Funktionskontext lokal abgefangen werden. Validierung außerhalb des `try`
+  bzw. normalen Kontrollfluss verwenden. Fachlich notwendige Ausnahmen nur gezielt und mit begründendem Kommentar
+  unterdrücken; keine pauschale Deaktivierung. Bei Änderungen an eigenen ESLint-Regeln zusätzlich
+  `pnpm test:lint-rules` ausführen. Ein reines Review behebt keinen Code und dokumentiert Befunde stattdessen.
 - Senior-Vorgehen: erst Scope/Abhängigkeiten/Risiken festziehen, dann in kleinen reviewbaren Schritten liefern; Tests
   früh anlegen; Refactoring kontinuierlich einplanen.
 - Lokal fokussiert testen (betroffene Unit-/Integration-/E2E-Tests zuerst); vor PR/Merge gelten die vollständigen

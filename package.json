@@ -23,9 +23,10 @@
     "dev:workspace": "pnpm --filter @invessiv/workspace dev",
     "build:web": "pnpm --filter @invessiv/web build",
     "build:workspace": "pnpm --filter @invessiv/workspace build",
-    "lint": "pnpm -r lint",
+    "lint": "eslint tooling/eslint eslint.config.mjs apps/web/eslint.config.mjs apps/workspace/eslint.config.mjs && pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r --workspace-concurrency=1 test",
+    "test": "pnpm test:lint-rules && pnpm -r --workspace-concurrency=1 test",
+    "test:lint-rules": "node --test tooling/eslint/*.test.mjs",
     "prepare": "husky"
   },
   "lint-staged": {
