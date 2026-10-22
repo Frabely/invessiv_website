@@ -6,8 +6,6 @@
 2. Datenschutztext DE/EN gegenlesen (`src/i18n/dictionaries/legal/privacy/*.json`, Abschnitt „Vercel Web Analytics“).
 3. Preview-Deploy öffnen → Vercel-Dashboard → Analytics → Umgebung **Preview** → Startseite durchscrollen, CTA klicken,
    Formular falsch und richtig absenden → Events erscheinen nach ein paar Minuten.
-4. Nur falls die Preview passwortgeschützt ist: Projekt-Settings → Deployment Protection → „Protection Bypass for
-   Automation“ anlegen, sonst kommt `lead_created` aus der Preview nicht an.
 
 ## Nach dem Production-Deploy
 
@@ -17,6 +15,8 @@
    gelöscht werden; Inkognito-Fenster zählen trotzdem. Prüfen: DevTools → Local Storage → `www.invessiv.com` →
    `invessiv:analytics-disabled = 1`. Rückgängig: `?analytics=on`.
 3. Dashboard immer mit Zeitraum **ab Stichtag** und Umgebung **Production** ansehen.
+4. Die echte Anzahl an Anfragen immer im Workspace (Leads, mit Herkunft) ablesen — Vercel zeigt nur
+   `form_completed` als Näherung.
 
 ## Wöchentlich (10 Minuten)
 

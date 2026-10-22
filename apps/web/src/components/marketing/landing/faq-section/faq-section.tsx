@@ -3,6 +3,8 @@
 import { AnalyticsArea } from "@/common/constants/analytics/analytics-area";
 import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
 import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { AnalyticsPage } from "@/common/constants/analytics/analytics-page";
+import { trackAnalyticsEvent } from "@/lib/analytics/track-analytics-event";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { getNavigationItem } from "@/lib/analytics/get-navigation-item";
@@ -69,7 +71,17 @@ export function FaqSection({
             hidden={!showAllItems && index >= INITIAL_VISIBLE_ITEMS}
             key={item.question}
           >
-            <details className={styles.details}>
+            <details
+              className={styles.details}
+              onToggle={(event) => {
+                if (event.currentTarget.open) {
+                  trackAnalyticsEvent(AnalyticsEventName.FaqOpened, {
+                    page: AnalyticsPage.Landing,
+                    question: `${id}-question-${index + 1}`,
+                  });
+                }
+              }}
+            >
               <summary
                 className={styles.summary}
                 ref={

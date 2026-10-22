@@ -48,5 +48,11 @@ describe("LimitReachedPreview", () => {
 
     fireEvent.click(screen.getByRole("link", { name: content.ctaAriaLabel }));
     expect(onRequestCustomWorkflow).toHaveBeenCalledTimes(1);
+    const link = screen.getByRole("link", { name: content.ctaAriaLabel });
+    expect(link.dataset.analyticsEvent).toBe("cta_clicked");
+    expect(JSON.parse(link.dataset.analyticsPayload ?? "{}")).toEqual({
+      cta: "linkedin_limit_contact",
+      target: "contact_form",
+    });
   });
 });

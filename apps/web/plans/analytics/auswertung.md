@@ -19,7 +19,8 @@
 - Die **Bounce Rate** zählt nur Ein-Seiten-Besuche; Events zählen nicht. Für den One-Pager `/de` ist sie wertlos —
   stattdessen die Abschnittskurve (`section_reached`) und `page_engaged` nutzen.
 - Verhältnisse zwischen Events sind Quoten, keine nachgewiesenen Einzelpfade (dafür bräuchte es einen Drain).
-- `lead_created` kommt vom Server und hat keine Seiten-/Geräte-/UTM-Zuordnung; dafür ist `form_completed` da.
+- Es gibt keine Server-Events. Die echte Lead-Zahl steht in der Datenbank (Workspace → Leads, mit Herkunft);
+  `form_completed` ist die segmentierbare Näherung im Dashboard.
 
 ## Die Kernfragen
 
@@ -51,11 +52,19 @@
 | 3a      | `form_invalid`    | Validierung scheitert, `field` = erstes fehlerhaftes Feld                      |
 | 3b      | `form_failed`     | Server-/Netzfehler, `reason`                                                   |
 | 4       | `form_completed`  | Anfrage angenommen (Client, segmentierbar nach Gerät/Seite)                    |
-| 5       | `lead_created`    | **maßgebliche Lead-Zahl** (Server, nach DB-Speicherung)                        |
-| 6       | `calendar_opened` | Calendly geöffnet (`after_submit` oder `success_page`)                         |
+| 5       | `calendar_opened` | Calendly geöffnet (`after_submit` oder `success_page`)                         |
 
-- Abbruchquote = 1 − `form_submitted` ÷ `form_started`.
-- `form_completed` < `lead_created` ist normal (Adblocker blockieren Client-Events).
+- `form_started` hat immer `form=contact`: Beim ersten Tippen steht der spätere Versandkanal noch nicht fest.
+  Für den Vergleich mit den beiden Versandkanälen deshalb nach derselben Seite und demselben Zeitraum filtern,
+  nicht nach `form=discovery_call` oder `form=quick_contact`.
+- **Versuchserfolgsquote:** Total `form_completed` ÷ Total `form_submitted` für denselben Kanal, dieselbe Seite
+  und denselben Zeitraum. Wiederholte Versuche zählen jeweils mit; verspätete Ergebnisse und Zeitraumgrenzen beachten.
+- Aus `1 − form_submitted ÷ form_started` lässt sich keine Abbruchquote berechnen: Ein Start kann mehrere
+  Absendeversuche haben; außerdem ist ein ungültiges Absenden ohne vorherige Eingabe möglich.
+- Die Visitors-Spalten erlauben einen groben Vergleich der Reichweite von Starts und Erfolgen bei identischen
+  Filtern. Auch das sind getrennte Aggregate, keine nachgewiesenen individuellen Formularpfade oder Abbrüche.
+- `form_completed` liegt meist unter der echten Lead-Zahl im Workspace (Adblocker, Opt-out, Netzfehler).
+  Für die tatsächliche Anzahl gespeicherter Anfragen immer die Datenbank verwenden.
 - Echte Termin-Buchungen sind mit Calendly Free nicht messbar → monatlich manuell aus Calendly gegen
   `calendar_opened` vergleichen.
 

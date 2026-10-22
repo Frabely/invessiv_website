@@ -1,4 +1,3 @@
-import type { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
 import type { AnalyticsArea } from "@/common/constants/analytics/analytics-area";
 import type { AnalyticsContactChannel } from "@/common/constants/analytics/analytics-contact-channel";
 import type { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
@@ -68,11 +67,6 @@ export type FormFailedPayload = {
   reason: AnalyticsFormFailureReason;
 };
 
-export type LeadCreatedPayload = {
-  form: AnalyticsFormId;
-  origin: ContactSubmissionOrigin;
-};
-
 export type CalendarOpenedPayload = {
   source: AnalyticsCalendarSource;
   placement: AnalyticsFormPlacement | AnalyticsCtaId;
@@ -102,7 +96,6 @@ export type AnalyticsEventPayloadMap = {
   form_invalid: FormInvalidPayload;
   form_failed: FormFailedPayload;
   form_completed: FormContextPayload;
-  lead_created: LeadCreatedPayload;
   calendar_opened: CalendarOpenedPayload;
   generator_step: GeneratorStepPayload;
   preference_changed: PreferenceChangedPayload;

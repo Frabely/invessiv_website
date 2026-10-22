@@ -51,6 +51,7 @@ import {
 } from "@/hooks/analytics/use-contact-form-analytics";
 import { SITE_ROUTES } from "@/config/routes";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
+import { useRequestGuard } from "@/hooks/analytics/use-request-guard";
 import styles from "./contact-form.module.css";
 
 type ContactFormProps = {
@@ -89,6 +90,7 @@ export function ContactForm({
   submitPath,
 }: ContactFormProps) {
   const { locale } = useLanguage();
+  const beginRequest = useRequestGuard();
   const fieldIdPrefix = useId();
   const honeypotId = `${fieldIdPrefix}-honeypot`;
   // Derived so two forms on one page cannot share the same error id.
@@ -193,6 +195,7 @@ export function ContactForm({
 
   const handleEmailSubmit = handleSubmit(
     async (values) => {
+      const isCurrentRequest = beginRequest();
       setStatusMessage(null);
 
       if (values.honeypot.trim()) {
@@ -214,6 +217,9 @@ export function ContactForm({
           ),
           { submitPath },
         );
+        if (!isCurrentRequest()) {
+          return;
+        }
 
         if (!response.ok) {
           setStatusMessage(
@@ -230,10 +236,15 @@ export function ContactForm({
           createLocalePathname(SITE_ROUTES.SUCCESS, locale),
         );
       } catch {
+        if (!isCurrentRequest()) {
+          return;
+        }
         setStatusMessage(formCopy.submitErrorGeneric);
         emailAnalytics.trackFailed(AnalyticsFormFailureReason.Generic);
       } finally {
-        setPendingAction(null);
+        if (isCurrentRequest()) {
+          setPendingAction(null);
+        }
       }
     },
     (invalidFields) => {
@@ -256,9 +267,14 @@ export function ContactForm({
 
     // Opened before the await so the browser still attributes it to the click.
     const pendingWindow = window.open("", "_blank");
+    const isCurrentRequest = beginRequest();
 
     const submit = handleSubmit(
       async (values) => {
+        if (!isCurrentRequest()) {
+          pendingWindow?.close();
+          return;
+        }
         if (values.honeypot.trim()) {
           pendingWindow?.close();
           setStatusMessage(formCopy.callSubmitSuccess);
@@ -272,9 +288,15 @@ export function ContactForm({
           mapDiscoveryCallFormToDto(values, locale, origin),
           { submitPath },
         );
+        // A stale request (form left or replaced) skips UI state and analytics,
+        // but a saved lead still gets its booking tab.
+        const isCurrent = isCurrentRequest();
 
         if (!response.ok) {
           pendingWindow?.close();
+          if (!isCurrent) {
+            return;
+          }
           setPendingAction(null);
           setStatusMessage(getSubmitErrorMessage(response));
           callAnalytics.trackFailed(getContactSubmitFailureReason(response));
@@ -294,24 +316,32 @@ export function ContactForm({
           });
         } catch {
           pendingWindow?.close();
+          if (!isCurrent) {
+            return;
+          }
           setPendingAction(null);
           setStatusMessage(formCopy.submitErrorGeneric);
           callAnalytics.trackFailed(AnalyticsFormFailureReason.Generic);
           return;
         }
 
-        setPendingAction(null);
-        setStatusMessage(formCopy.callSubmitSuccess);
-        callAnalytics.trackCompleted();
-        callAnalytics.trackCalendarOpened();
+        if (isCurrent) {
+          setPendingAction(null);
+          setStatusMessage(formCopy.callSubmitSuccess);
+          callAnalytics.trackCompleted();
+          callAnalytics.trackCalendarOpened();
+        }
 
         if (pendingWindow) {
           pendingWindow.opener = null;
           pendingWindow.location.replace(calendlyPrefillHref);
-        } else {
+        } else if (isCurrent) {
           window.location.assign(calendlyPrefillHref);
         }
 
+        if (!isCurrent) {
+          return;
+        }
         reset(DEFAULT_CONTACT_FORM_VALUES);
         resetStarted();
       },

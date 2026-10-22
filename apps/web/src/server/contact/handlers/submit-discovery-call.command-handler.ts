@@ -5,10 +5,7 @@ import {
   CONTACT_SUBMIT_LOG_MESSAGE,
   CONTACT_SUBMIT_LOG_PREFIX,
 } from "@/server/contact/handlers/contact-submit-logging";
-import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
-import { AnalyticsFormId } from "@/common/constants/analytics/analytics-form";
 import { leadMapperService } from "@/server/contact/mapper/contact-lead-mapper-service";
-import { serverAnalyticsService } from "@/server/services/analytics/server-analytics-service";
 import { persistDiscoveryCallLead } from "@invessiv/db/contact/persist-discovery-call";
 import { discoveryCallValidationService } from "@/server/contact/validation/discovery-call/discovery-call-validation-service";
 
@@ -30,10 +27,6 @@ export async function submitDiscoveryCallCommandHandler(
         },
       );
     await persistDiscoveryCallLead(discoveryCallPersistInput);
-    serverAnalyticsService.trackLeadCreated({
-      form: AnalyticsFormId.DiscoveryCall,
-      origin: validationResult.data.origin ?? ContactSubmissionOrigin.Website,
-    });
 
     return {
       ok: true as const,

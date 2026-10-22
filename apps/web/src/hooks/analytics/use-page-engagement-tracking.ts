@@ -12,26 +12,38 @@ export function usePageEngagementTracking(page: AnalyticsPage) {
     let remainingMs = ANALYTICS_PAGE_ENGAGED_MS;
     let startedAt: number | null = null;
     let timer: number | undefined;
+    let hasTracked = false;
+
+    const complete = () => {
+      if (hasTracked) {
+        return;
+      }
+      hasTracked = true;
+      remainingMs = 0;
+      startedAt = null;
+      window.clearTimeout(timer);
+      trackAnalyticsEvent(AnalyticsEventName.PageEngaged, { page });
+    };
 
     const pause = () => {
       if (startedAt === null) {
         return;
       }
-      remainingMs -= Date.now() - startedAt;
+      remainingMs = Math.max(0, remainingMs - (performance.now() - startedAt));
       startedAt = null;
       window.clearTimeout(timer);
     };
 
     const resume = () => {
-      if (startedAt !== null || remainingMs <= 0) {
+      if (startedAt !== null || hasTracked) {
         return;
       }
-      startedAt = Date.now();
-      timer = window.setTimeout(() => {
-        remainingMs = 0;
-        startedAt = null;
-        trackAnalyticsEvent(AnalyticsEventName.PageEngaged, { page });
-      }, remainingMs);
+      if (remainingMs <= 0) {
+        complete();
+        return;
+      }
+      startedAt = performance.now();
+      timer = window.setTimeout(complete, remainingMs);
     };
 
     const handleVisibilityChange = () => {

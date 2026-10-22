@@ -2,10 +2,7 @@ import "server-only";
 import type { ContactCommandHandlerResult } from "@invessiv/common/contracts/contact/records/contact-command-handler-result";
 import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import { getServerEnv } from "@/server/config/env";
-import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
-import { AnalyticsFormId } from "@/common/constants/analytics/analytics-form";
 import { leadMapperService } from "@/server/contact/mapper/contact-lead-mapper-service";
-import { serverAnalyticsService } from "@/server/services/analytics/server-analytics-service";
 import {
   CONTACT_SUBMIT_LOG_MESSAGE,
   CONTACT_SUBMIT_LOG_PREFIX,
@@ -35,10 +32,6 @@ export async function submitQuickContactCommandHandler(
         },
       );
     await persistQuickContactLead(quickContactPersistInput);
-    serverAnalyticsService.trackLeadCreated({
-      form: AnalyticsFormId.QuickContact,
-      origin: validationResult.data.origin ?? ContactSubmissionOrigin.Website,
-    });
     try {
       const message = await mapQuickContactToMail(
         validationResult.data,

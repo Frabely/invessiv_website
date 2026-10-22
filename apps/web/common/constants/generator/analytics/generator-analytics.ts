@@ -1,5 +1,6 @@
 export const GeneratorErrorReason = {
   Network: "network",
+  Validation: "validation",
 } as const;
 
 export type GeneratorErrorReason =

@@ -1,4 +1,8 @@
 import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import type { Locale } from "@/config/i18n";
 import type { GeneratorUsageLimit } from "@/common/contracts/generator/ui/generator-state";
 import type { LinkedInPostGeneratorPreviewLimitReachedCopy } from "@/i18n/dictionaries/linkedin-post/generator";
@@ -62,6 +66,10 @@ export function LimitReachedPreview({
           className={styles.cta}
           href={followUpHref}
           onClick={onRequestCustomWorkflow}
+          {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+            cta: AnalyticsCtaId.LinkedInLimitContact,
+            target: AnalyticsTarget.ContactForm,
+          })}
         >
           {content.ctaLabel}
         </PrimaryCtaLink>

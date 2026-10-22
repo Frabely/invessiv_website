@@ -1,13 +1,19 @@
 // @vitest-environment jsdom
 
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+const { track } = vi.hoisted(() => ({ track: vi.fn() }));
+vi.mock("@/lib/analytics/track-analytics-event", () => ({
+  trackAnalyticsEvent: track,
+}));
 
 import type { LandingFaqItem } from "@/i18n/dictionaries/landing/faq";
 import { FaqSection } from "./faq-section";
 
 afterEach(() => {
   cleanup();
+  track.mockClear();
 });
 
 const ITEMS: LandingFaqItem[] = Array.from({ length: 8 }, (_, index) => ({
@@ -38,6 +44,28 @@ function listItemFor(question: string) {
 }
 
 describe("FaqSection", () => {
+  it("tracks actual openings, including expanded questions, and ignores closing", () => {
+    renderFaqSection();
+    const details = screen.getByText("Frage 1?").closest("details")!;
+    details.open = true;
+    fireEvent(details, new Event("toggle"));
+    expect(track.mock.calls).toEqual([
+      ["faq_opened", { page: "landing", question: "faq-question-1" }],
+    ]);
+    details.open = false;
+    fireEvent(details, new Event("toggle"));
+    expect(track).toHaveBeenCalledTimes(1);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Mehr Fragen anzeigen" }),
+    );
+    const expanded = screen.getByText("Frage 6?").closest("details")!;
+    expanded.open = true;
+    fireEvent(expanded, new Event("toggle"));
+    expect(track).toHaveBeenLastCalledWith("faq_opened", {
+      page: "landing",
+      question: "faq-question-6",
+    });
+  });
   it("zeigt initial fünf Fragen, der Rest bleibt im Markup versteckt", () => {
     renderFaqSection();
 

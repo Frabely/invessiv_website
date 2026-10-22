@@ -12,7 +12,6 @@ export const AnalyticsEventName = {
   FormInvalid: "form_invalid",
   FormFailed: "form_failed",
   FormCompleted: "form_completed",
-  LeadCreated: "lead_created",
   CalendarOpened: "calendar_opened",
   GeneratorStep: "generator_step",
   PreferenceChanged: "preference_changed",

@@ -1,4 +1,8 @@
 import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { LinkedinPost } from "@/components/marketing/linkedin-post/linkedin-post/linkedin-post";
 import {
@@ -105,6 +109,10 @@ export function SuccessPreview({
             className={styles.followUpCta}
             href={followUpHref}
             onClick={onRequestCustomWorkflow}
+            {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+              cta: AnalyticsCtaId.LinkedInResultContact,
+              target: AnalyticsTarget.ContactForm,
+            })}
           >
             {success.followUp.ctaLabel}
           </PrimaryCtaLink>

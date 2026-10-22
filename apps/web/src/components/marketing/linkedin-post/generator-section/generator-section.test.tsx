@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -93,7 +94,7 @@ function renderSection(submitMock?: SubmitGenerator) {
       post: GENERATED_POST,
       previewHtml: PREVIEW_HTML,
     }));
-  const { container } = render(
+  const { container, unmount } = render(
     <GeneratorSection
       content={content}
       id="generator"
@@ -101,7 +102,7 @@ function renderSection(submitMock?: SubmitGenerator) {
       submitGenerator={submit}
     />,
   );
-  return { submit, container };
+  return { submit, container, unmount };
 }
 
 function clickSubmit() {
@@ -136,6 +137,7 @@ function fillValidValues() {
 }
 
 beforeEach(() => {
+  mockTrackAnalyticsEvent.mockClear();
   Object.assign(navigator, {
     clipboard: { writeText: vi.fn().mockResolvedValue(undefined) },
   });
@@ -181,7 +183,49 @@ describe("GeneratorSection", () => {
     });
     expect(screen.getByText(content.form.expertise.requiredError)).toBeTruthy();
     expect(submit).not.toHaveBeenCalled();
+    expect(mockTrackAnalyticsEvent.mock.calls).toEqual([
+      ["generator_step", { step: "submit" }],
+      ["generator_step", { step: "error", reason: "validation" }],
+    ]);
   });
+
+  it.each(["success", "failure", "network"] as const)(
+    "ignores late %s results after leaving the page",
+    async (outcome) => {
+      let resolve!: (value: LinkedInPostGeneratorResult) => void;
+      let reject!: (error: Error) => void;
+      const submit = vi.fn<SubmitGenerator>(
+        () =>
+          new Promise((res, rej) => {
+            resolve = res;
+            reject = rej;
+          }),
+      );
+      const { unmount } = renderSection(submit);
+      fillValidValues();
+      clickSubmit();
+      expect(submit).toHaveBeenCalledTimes(1);
+      unmount();
+      mockTrackAnalyticsEvent.mockClear();
+      await act(async () => {
+        if (outcome === "network") {
+          reject(new Error("Request failed"));
+        } else if (outcome === "failure") {
+          resolve({ ok: false, code: "INTERNAL" });
+        } else {
+          resolve({
+            ok: true,
+            caption: "Example",
+            downloadFileName: "example.png",
+            imageDataUrl: "data:image/png;base64,AAAA",
+            post: GENERATED_POST,
+            previewHtml: PREVIEW_HTML,
+          });
+        }
+      });
+      expect(mockTrackAnalyticsEvent).not.toHaveBeenCalled();
+    },
+  );
 
   it("does not render the result download action in the generation step", () => {
     renderSection();
@@ -397,6 +441,15 @@ describe("GeneratorSection", () => {
 
     await waitFor(() => {
       expect(screen.getByText(content.resultDownload.headline)).toBeTruthy();
+    });
+
+    const followUp = screen.getByRole("link", {
+      name: content.preview.success.followUp.ctaAriaLabel,
+    });
+    expect(followUp.dataset.analyticsEvent).toBe("cta_clicked");
+    expect(JSON.parse(followUp.dataset.analyticsPayload ?? "{}")).toEqual({
+      cta: "linkedin_result_contact",
+      target: "contact_form",
     });
 
     fireEvent.click(

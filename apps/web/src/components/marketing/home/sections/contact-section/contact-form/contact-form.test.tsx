@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -74,6 +75,87 @@ const copy = {
 };
 
 describe("ContactForm", () => {
+  it.each(["call", "email"] as const)(
+    "ignores a late %s response after unmount",
+    async (channel) => {
+      let resolve!: (value: { ok: boolean; requestId: string }) => void;
+      const pending = new Promise<{ ok: boolean; requestId: string }>((res) => {
+        resolve = res;
+      });
+      const submit =
+        channel === "call" ? submitDiscoveryCall : submitQuickContact;
+      submit.mockImplementationOnce(() => pending);
+      const { unmount } = render(
+        <ContactForm
+          calendlyHref="https://calendly.com/invessiv/30min"
+          formCopy={copy}
+          privacyHref="/privacy"
+        />,
+      );
+      fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+        target: { value: "Example" },
+      });
+      fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+        target: { value: "example@example.com" },
+      });
+      fireEvent.click(screen.getByRole("checkbox"));
+      fireEvent.click(
+        screen.getByRole("button", {
+          name:
+            channel === "call" ? copy.callSubmitLabel : copy.emailSubmitLabel,
+        }),
+      );
+      await waitFor(() => expect(submit).toHaveBeenCalledTimes(1));
+      unmount();
+      trackAnalyticsEvent.mockClear();
+      await act(async () => resolve({ ok: true, requestId: "late" }));
+      expect(trackAnalyticsEvent).not.toHaveBeenCalled();
+    },
+  );
+
+  it("still opens Calendly for a saved lead when the form was left during the request", async () => {
+    let resolve!: (value: { ok: boolean; requestId: string }) => void;
+    submitDiscoveryCall.mockImplementationOnce(
+      () =>
+        new Promise((res) => {
+          resolve = res;
+        }),
+    );
+    const bookingTab = {
+      close: vi.fn(),
+      location: { replace: vi.fn() },
+      opener: {},
+    };
+    const open = vi
+      .spyOn(window, "open")
+      .mockReturnValue(bookingTab as unknown as Window);
+    const { unmount } = render(
+      <ContactForm
+        calendlyHref="https://calendly.com/invessiv/30min"
+        formCopy={copy}
+        privacyHref="/privacy"
+      />,
+    );
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Example" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+      target: { value: "example@example.com" },
+    });
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: copy.callSubmitLabel }));
+    await waitFor(() => expect(submitDiscoveryCall).toHaveBeenCalledTimes(1));
+    unmount();
+    trackAnalyticsEvent.mockClear();
+    await act(async () => resolve({ ok: true, requestId: "late" }));
+    expect(bookingTab.location.replace).toHaveBeenCalledWith(
+      "https://calendly.com/invessiv/30min",
+    );
+    expect(bookingTab.close).not.toHaveBeenCalled();
+    expect(trackAnalyticsEvent).not.toHaveBeenCalled();
+    open.mockRestore();
+  });
+
   it.each(["home_contact", "landing_final", "linkedin_final"] as const)(
     "tracks the discovery call funnel for the %s placement",
     async (analyticsPlacement) => {

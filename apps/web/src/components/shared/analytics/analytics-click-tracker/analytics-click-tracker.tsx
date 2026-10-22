@@ -16,6 +16,12 @@ export function AnalyticsClickTracker() {
       if (!(target instanceof Element)) {
         return;
       }
+      if (
+        event.type === "auxclick" &&
+        (event.button !== 1 || !target.closest("a[href]"))
+      ) {
+        return;
+      }
 
       const trackedElement = target.closest<HTMLElement>(
         `[${ANALYTICS_DATA_ATTRIBUTE.Event}]`,
@@ -43,8 +49,10 @@ export function AnalyticsClickTracker() {
     };
 
     document.addEventListener("click", handleClick, true);
+    document.addEventListener("auxclick", handleClick, true);
     return () => {
       document.removeEventListener("click", handleClick, true);
+      document.removeEventListener("auxclick", handleClick, true);
     };
   }, []);
 

@@ -30,6 +30,7 @@ import { GeneratorForm } from "./generator-form";
 import { GeneratingPanel } from "./generating-panel/generating-panel";
 import { PreviewPanel } from "./preview-panel";
 import { useGeneratorFieldIds } from "@/hooks/marketing/use-generator-field-ids";
+import { useRequestGuard } from "@/hooks/analytics/use-request-guard";
 import styles from "./generator-section.module.css";
 
 const MOBILE_GENERATOR_SCROLL_QUERY = "(max-width: 719px)";
@@ -56,6 +57,7 @@ export function GeneratorSection({
   submitGenerator = linkedinPostGeneratorService.submitLinkedInPost,
 }: GeneratorSectionProps) {
   const fieldIds = useGeneratorFieldIds();
+  const beginRequest = useRequestGuard();
   const [values, setValues] = useState<LinkedInPostGeneratorFormValues>(
     () => DEFAULT_LINKEDIN_POST_GENERATOR_FORM_VALUES,
   );
@@ -232,6 +234,9 @@ export function GeneratorSection({
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      emitAnalytics(AnalyticsGeneratorStep.Error, {
+        reason: GeneratorErrorReason.Validation,
+      });
       return;
     }
 
@@ -252,13 +257,21 @@ export function GeneratorSection({
     setState({ kind: GeneratorStateKind.Loading, stepIndex: 0 });
 
     let result: LinkedInPostGeneratorResult;
+    const isCurrentRequest = beginRequest();
     try {
       result = await submitGenerator(values, locale);
     } catch {
+      if (!isCurrentRequest()) {
+        return;
+      }
       setState({ kind: GeneratorStateKind.Error });
       emitAnalytics(AnalyticsGeneratorStep.Error, {
         reason: GeneratorErrorReason.Network,
       });
+      return;
+    }
+
+    if (!isCurrentRequest()) {
       return;
     }
 

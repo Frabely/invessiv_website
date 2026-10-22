@@ -70,4 +70,38 @@ describe("AnalyticsClickTracker", () => {
 
     expect(mockTrackAnalyticsProperties).not.toHaveBeenCalled();
   });
+
+  it("counts middle-clicks only on links and does not duplicate ordinary clicks", () => {
+    const attributes = analyticsAttributes("reference_opened", {
+      project: "example",
+      target: "references",
+    });
+    const { unmount } = render(
+      <>
+        <AnalyticsClickTracker />
+        <a href="https://example.com/reference" {...attributes}>
+          <span>Reference</span>
+        </a>
+        <button type="button" {...attributes}>
+          Button
+        </button>
+      </>,
+    );
+    const target = document.querySelector("span")!;
+    fireEvent(target, new MouseEvent("auxclick", { bubbles: true, button: 1 }));
+    expect(mockTrackAnalyticsProperties).toHaveBeenCalledTimes(1);
+    fireEvent(target, new MouseEvent("auxclick", { bubbles: true, button: 2 }));
+    fireEvent(
+      document.querySelector("button")!,
+      new MouseEvent("auxclick", { bubbles: true, button: 1 }),
+    );
+    expect(mockTrackAnalyticsProperties).toHaveBeenCalledTimes(1);
+    fireEvent.click(target, { ctrlKey: true });
+    fireEvent.click(target, { metaKey: true });
+    fireEvent.click(target, { detail: 0 });
+    expect(mockTrackAnalyticsProperties).toHaveBeenCalledTimes(4);
+    unmount();
+    fireEvent(target, new MouseEvent("auxclick", { bubbles: true, button: 1 }));
+    expect(mockTrackAnalyticsProperties).toHaveBeenCalledTimes(4);
+  });
 });

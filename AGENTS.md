@@ -25,7 +25,7 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 | `apps/web/src/components/`                          | UI-Komponenten: Ordnerstruktur, `*.module.css`, Client/Server-Schnitt                                           |
 | `apps/web/src/client/`                              | Clientseitige Services                                                                                          |
 | `apps/<app>/src/lib/`, `apps/<app>/src/hooks/`      | Logik/Hooks: exportierte Typen/Konstanten/Patterns nach `common`; rein lokale (nicht exportiert) dürfen bleiben |
-| `apps/web/src/lib/analytics/`                       | Vercel-Eventmodell: max. 2 Properties, Konstanten statt Strings, `lead_created` nur serverseitig, UTM-Filter    |
+| `apps/web/src/lib/analytics/`                       | Vercel-Eventmodell: max. 2 Properties, Konstanten statt Strings, nur Client-Events, UTM-Filter                  |
 | `apps/web/src/server/` (+ `linkedin-post/`)         | Server-Handler, Service-Objekte, DB-Grenze                                                                      |
 | `apps/web/common/`                                  | App-shared Contracts/Constants/Defaults                                                                         |
 | `apps/workspace/`                                   | App-weit: Sprachregel (Doku Deutsch, Code-Kommentare/Testnamen/Fehlermeldungen Englisch)                        |

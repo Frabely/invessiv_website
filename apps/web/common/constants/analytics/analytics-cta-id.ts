@@ -20,6 +20,8 @@ export const AnalyticsCtaId = {
   LandingFaqServices: "landing_faq_services",
   LinkedInHeroPrimary: "linkedin_hero_primary",
   LinkedInHeroSecondary: "linkedin_hero_secondary",
+  LinkedInResultContact: "linkedin_result_contact",
+  LinkedInLimitContact: "linkedin_limit_contact",
 } as const;
 
 export type AnalyticsCtaId =

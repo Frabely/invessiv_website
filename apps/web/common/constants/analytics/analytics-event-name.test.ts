@@ -19,7 +19,6 @@ describe("analytics constants", () => {
       "form_invalid",
       "form_failed",
       "form_completed",
-      "lead_created",
       "calendar_opened",
       "generator_step",
       "preference_changed",

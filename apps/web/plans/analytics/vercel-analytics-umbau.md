@@ -18,7 +18,12 @@
 - Tracking-Werte (`analyticsTarget`, `analyticsEvent` …) aus den Landing-Dictionaries entfernt — Dictionaries enthalten
   nur noch Text.
 - Ungenutzte Komponenten `featured-service-card`, `service-card` und `service-card-link` gelöscht (trugen noch alte
-  `cta_click`-Attribute). Server-Event `lead_created` sendet `user-agent`, `x-forwarded-for` und bereinigten `referer` mit.
+  `cta_click`-Attribute).
+- **`lead_created` gestrichen (22.10.2026):** Das Server-SDK sendet die URL seines Request-Kontexts am
+  `beforeSend`-Schutz vorbei; eine sichere Umsetzung brauchte eine eigene URL-Prüfung gegen Vercel-Interna,
+  Header-Weitergabe (IP, User-Agent) und einen Opt-out-Header. Der Nutzen war gering, weil die echte Lead-Zahl
+  ohnehin in der Datenbank steht. Alle Erwähnungen von `lead_created` weiter unten sind damit hinfällig; maßgeblich
+  ist die Datenbank, `form_completed` die Näherung im Dashboard.
 
 ## Ergänzungen aus dem verworfenen Codex-Plan (`plans/analytics/README.md`, entfernt)
 
@@ -120,7 +125,8 @@ Seite (Route), Gerät, Land und Referrer liefert Vercel automatisch zu jedem Eve
 
 - `lead_created` ist die maßgebliche Zahl.
 - `form_completed` dient nur der Segmentierung nach Seite, Gerät und später UTM.
-- Die Differenz zwischen beiden entspricht etwa dem Anteil der Besucher mit Adblocker.
+- Die Differenz ist kein Adblocker-Anteil: Navigation, Opt-out, Prefillfehler und Transportverluste wirken ebenfalls hinein.
+- Für tatsächlich gespeicherte Anfragen bleibt die DB die fachliche Referenz; `lead_created` wird bestmöglich gesendet.
 
 **Entfernt werden:**
 

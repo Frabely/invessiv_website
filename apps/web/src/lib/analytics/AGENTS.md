@@ -27,11 +27,11 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - Zustandsabhängige Events (Formular, Generator, Header-Einstellungen) über `trackAnalyticsEvent` aus
   `track-analytics-event.ts` — die einzige Stelle mit `track()` im Client.
 - Abschnitte über `SectionReachTracker` (1 s Mindestsichtdauer, Anteil des Viewports) inkl. `page_engaged`.
-- **Lead-Zählung:** `lead_created` sendet ausschließlich der Server nach erfolgreichem Persistieren
-  (`server/services/analytics/server-analytics-service.ts`, via `after()`, Fehler werden geschluckt).
-  `form_completed` im Client dient nur der Segmentierung und wird nie mit `lead_created` addiert.
-- Server-Events brauchen Request-Header: `user-agent` und `x-forwarded-for` (Besucher-Hash) plus bereinigter `referer`
-  (Seite). Cookies werden nicht weitergegeben. Ohne Header verwirft Vercel das Event.
+- **Keine Server-Events.** Analytics läuft ausschließlich im Browser. Die tatsächliche Lead-Zahl kommt aus der
+  Datenbank (Workspace/CRM, mit Herkunft); `form_completed` ist nur die segmentierbare Näherung im Dashboard.
+  Hintergrund: `@vercel/analytics/server` sendet die URL seines Request-Kontexts ungefiltert und am `beforeSend`-Schutz
+  vorbei — ein Server-Event bräuchte eigene URL-Prüfung und Header-Weitergabe (IP, User-Agent). Wird es doch nötig,
+  vorher neu planen und die Datenschutzerklärung anpassen.
 
 ## URL-Schutz & Opt-out
 
