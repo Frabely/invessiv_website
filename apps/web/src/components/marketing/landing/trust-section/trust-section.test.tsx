@@ -37,13 +37,7 @@ const CONTENT = {
 
 function renderTrustSection() {
   return render(
-    <TrustSection
-      id="trust"
-      locale="de"
-      replyAnalyticsTarget="contact"
-      replyHref="#contact"
-      {...CONTENT}
-    />,
+    <TrustSection id="trust" locale="de" replyHref="#contact" {...CONTENT} />,
   );
 }
 
@@ -86,10 +80,11 @@ describe("TrustSection", () => {
       name: /Kostenlose Ersteinschätzung anfragen/,
     });
     expect(reply.getAttribute("href")).toBe("#contact");
-    expect(reply.dataset.analyticsEvent).toBe("cta_click");
-    expect(reply.dataset.analyticsLocation).toBe("trust");
-    expect(reply.dataset.analyticsTarget).toBe("contact");
-    expect(reply.dataset.analyticsVariant).toBe("secondary");
+    expect(reply.dataset.analyticsEvent).toBe("cta_clicked");
+    expect(JSON.parse(reply.dataset.analyticsPayload ?? "{}")).toEqual({
+      cta: "landing_trust_reply",
+      target: "contact_form",
+    });
   });
 
   it("marks messages as visible for the staggered reveal", async () => {

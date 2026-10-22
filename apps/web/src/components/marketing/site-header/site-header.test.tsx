@@ -16,7 +16,7 @@ const mockUseLanguage = vi.fn();
 const mockUseTheme = vi.fn();
 const mockUseScrolledHeader = vi.fn();
 const mockRouterReplace = vi.fn();
-const mockTrackConversionEvent = vi.fn();
+const mockTrackAnalyticsEvent = vi.fn();
 
 vi.mock("next/image", () => ({
   default: () => <span data-testid="mock-next-image" />,
@@ -41,9 +41,8 @@ vi.mock("@/hooks/marketing/use-scrolled-header", () => ({
   useScrolledHeader: (...args: unknown[]) => mockUseScrolledHeader(...args),
 }));
 
-vi.mock("@/lib/analytics/conversion-events", () => ({
-  trackConversionEvent: (...args: unknown[]) =>
-    mockTrackConversionEvent(...args),
+vi.mock("@/lib/analytics/track-analytics-event", () => ({
+  trackAnalyticsEvent: (...args: unknown[]) => mockTrackAnalyticsEvent(...args),
 }));
 
 vi.mock(
@@ -113,13 +112,13 @@ describe("SiteHeader", () => {
 
     expect(setLocale).toHaveBeenCalledWith("en");
     expect(toggleTheme).toHaveBeenCalledTimes(1);
-    expect(mockTrackConversionEvent).toHaveBeenCalledWith("language_switch", {
-      location: "header",
-      target: "en",
+    expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith("preference_changed", {
+      type: "language",
+      value: "en",
     });
-    expect(mockTrackConversionEvent).toHaveBeenCalledWith("theme_switch", {
-      location: "header",
-      target: "light",
+    expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith("preference_changed", {
+      type: "theme",
+      value: "light",
     });
     expect(mockRouterReplace).toHaveBeenCalledWith("/en/imprint", {
       scroll: false,
@@ -197,7 +196,7 @@ describe("SiteHeader", () => {
 
     expect(setLocale).not.toHaveBeenCalled();
     expect(mockRouterReplace).not.toHaveBeenCalled();
-    expect(mockTrackConversionEvent).not.toHaveBeenCalled();
+    expect(mockTrackAnalyticsEvent).not.toHaveBeenCalled();
     expect(
       window.sessionStorage.getItem(LOCALE_SCROLL_RESTORE_STORAGE_KEY),
     ).toBeNull();
@@ -294,7 +293,7 @@ describe("SiteHeader", () => {
     expect(screen.getByText("Invessiv")).toBeTruthy();
     expect(screen.queryByRole("navigation")).toBeNull();
     expect(
-      container.querySelector('[data-analytics-event="cta_click"]'),
+      container.querySelector('[data-analytics-event="cta_clicked"]'),
     ).toBeNull();
     expect(
       screen.queryByRole("button", { name: "Zu Light wechseln" }),

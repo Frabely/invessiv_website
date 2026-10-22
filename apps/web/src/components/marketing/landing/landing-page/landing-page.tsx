@@ -1,6 +1,10 @@
-﻿import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
+import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
 import { FaqSection } from "@/components/marketing/landing/faq-section/faq-section";
-import { LandingFunnelTracker } from "@/components/shared/analytics/landing-funnel-tracker/landing-funnel-tracker";
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsFormPlacement } from "@/common/constants/analytics/analytics-form";
+import { AnalyticsPage } from "@/common/constants/analytics/analytics-page";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { SectionReachTracker } from "@/components/shared/analytics/section-reach-tracker/section-reach-tracker";
 import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
@@ -17,7 +21,11 @@ import {
   LANDING_HEADER_NAVIGATION,
   LANDING_SECTION_IDS,
 } from "@/config/navigation/landing";
-import { CONTACT_SECTION_ID, SECTION_HREFS } from "@/config/navigation/home";
+import {
+  CONTACT_SECTION_ID,
+  FOOTER_SECTION_ID,
+  SECTION_HREFS,
+} from "@/config/navigation/home";
 import { getLandingAudienceContent } from "@/i18n/dictionaries/landing/audience";
 import { getLandingFaqContent } from "@/i18n/dictionaries/landing/faq";
 import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
@@ -29,6 +37,11 @@ import { getLandingProblemSolutionContent } from "@/i18n/dictionaries/landing/pr
 import { getLandingProcessContent } from "@/i18n/dictionaries/landing/process";
 import { getLandingTrustContent } from "@/i18n/dictionaries/landing/trust";
 import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
+
+const LANDING_REACH_SECTION_IDS = [
+  ...LANDING_FUNNEL_SECTION_IDS,
+  FOOTER_SECTION_ID,
+];
 
 type LandingPageProps = {
   locale: Locale;
@@ -65,7 +78,10 @@ export function LandingPage({ locale }: LandingPageProps) {
           <span className="page-noise" />
         </div>
 
-        <LandingFunnelTracker />
+        <SectionReachTracker
+          page={AnalyticsPage.Landing}
+          sectionIds={LANDING_REACH_SECTION_IDS}
+        />
 
         <LandingVisualStage
           hero={
@@ -77,12 +93,17 @@ export function LandingPage({ locale }: LandingPageProps) {
               heroTag={hero.tag}
               heroTrustLine={hero.trustLine}
               heroVideoSrc="/assets/landing-page/spotlight.mp4"
-              primaryCtaAnalyticsTarget={CONTACT_SECTION_ID}
+              primaryCtaAnalytics={{
+                cta: AnalyticsCtaId.LandingHeroPrimary,
+                target: AnalyticsTarget.ContactForm,
+              }}
               primaryCtaHref={SECTION_HREFS.contact}
-              secondaryCtaAnalyticsTarget="process"
+              secondaryCtaAnalytics={{
+                cta: AnalyticsCtaId.LandingHeroSecondary,
+                target: AnalyticsTarget.Process,
+              }}
               secondaryCtaHref={SECTION_HREFS.process}
               title={hero.title}
-              trackingLocation="landing_hero"
               visualBleed
               visualSlot={null}
             />
@@ -98,7 +119,6 @@ export function LandingPage({ locale }: LandingPageProps) {
         <TrustSection
           id={LANDING_SECTION_IDS.trust}
           locale={locale}
-          replyAnalyticsTarget={CONTACT_SECTION_ID}
           replyHref={SECTION_HREFS.contact}
           {...trust}
         />
@@ -125,7 +145,7 @@ export function LandingPage({ locale }: LandingPageProps) {
         <FaqSection id={LANDING_SECTION_IDS.faq} locale={locale} {...faq} />
 
         <FinalCtaSection
-          analyticsLocation="landing_final_cta"
+          analyticsPlacement={AnalyticsFormPlacement.LandingFinal}
           id={CONTACT_SECTION_ID}
           locale={locale}
           origin={ContactSubmissionOrigin.LandingPage}

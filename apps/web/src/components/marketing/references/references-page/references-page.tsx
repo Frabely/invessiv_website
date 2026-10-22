@@ -1,4 +1,8 @@
+import { AnalyticsPage } from "@/common/constants/analytics/analytics-page";
+import { REFERENCE_SECTION_IDS } from "@/common/constants/marketing/reference-section-ids";
 import { Breadcrumbs } from "@/components/legal/breadcrumbs/breadcrumbs";
+import { SectionReachTracker } from "@/components/shared/analytics/section-reach-tracker/section-reach-tracker";
+import { REFERENCES_PAGE_SECTION_IDS } from "@/config/navigation/references";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { LayoutShell } from "@/components/marketing/shared/layout-shell/layout-shell";
@@ -8,6 +12,7 @@ import type { Locale } from "@/config/i18n";
 import {
   getLocalizedSectionHref,
   type NavigationItem,
+  FOOTER_SECTION_ID,
   PRIMARY_NAVIGATION_SECTION_IDS,
 } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
@@ -32,9 +37,21 @@ export function ReferencesPage({ content, locale }: ReferencesPageProps) {
   );
   const footerSection = getHomeFooterSectionContent(locale);
   const homeHref = createLocalePathname(SITE_ROUTES.HOME, locale);
+  const sectionIds = [
+    REFERENCES_PAGE_SECTION_IDS.hero,
+    ...content.projects.map(
+      (project) => REFERENCE_SECTION_IDS[project.imageKey],
+    ),
+    REFERENCES_PAGE_SECTION_IDS.closingCta,
+    FOOTER_SECTION_ID,
+  ];
 
   return (
     <>
+      <SectionReachTracker
+        page={AnalyticsPage.References}
+        sectionIds={sectionIds}
+      />
       <SiteHeader
         brandHref={homeHref}
         ctaHref={getLocalizedSectionHref(locale, "contact")}
@@ -47,7 +64,10 @@ export function ReferencesPage({ content, locale }: ReferencesPageProps) {
         </div>
 
         <LayoutShell className={styles.pageShell}>
-          <section className={styles.pageHero}>
+          <section
+            className={styles.pageHero}
+            id={REFERENCES_PAGE_SECTION_IDS.hero}
+          >
             <div className={styles.breadcrumbs}>
               <Breadcrumbs
                 items={[

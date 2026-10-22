@@ -1,4 +1,7 @@
-import { CONTACT_CHANNEL_MODES } from "@/config/navigation/home";
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import styles from "./qna-contact-cta.module.css";
 
 type QnaContactCtaProps = {
@@ -13,10 +16,11 @@ export function QnaContactCta({ hint, href, label }: QnaContactCtaProps) {
       <span className={styles.hint}>{hint}</span>
       <a
         className={styles.link}
-        data-analytics-event="contact_click"
-        data-analytics-location="qna"
-        data-analytics-target={CONTACT_CHANNEL_MODES.Email}
         href={href}
+        {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+          cta: AnalyticsCtaId.HomeFaqContact,
+          target: AnalyticsTarget.ContactEmail,
+        })}
       >
         {label}
       </a>

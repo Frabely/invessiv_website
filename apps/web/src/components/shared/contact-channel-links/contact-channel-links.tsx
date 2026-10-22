@@ -15,11 +15,14 @@ import {
   COMPANY_TEL,
 } from "@/config/company";
 import { getContactChannelContent } from "@/i18n/dictionaries/shared/contact-channels";
+import type { AnalyticsArea } from "@/common/constants/analytics/analytics-area";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import styles from "./contact-channel-links.module.css";
 
 type ContactChannelLinksProps = {
-  analyticsLocation: string;
+  analyticsArea: AnalyticsArea;
   channels: readonly ContactChannelKey[];
   locale: Locale;
 };
@@ -43,8 +46,18 @@ const EXTERNAL_CHANNELS: readonly ContactChannelKey[] = [
   CONTACT_CHANNEL_KEY.Instagram,
 ];
 
+function getChannelAnalyticsAttributes(href: string, area: AnalyticsArea) {
+  const channel = getContactTarget(href);
+  return channel
+    ? analyticsAttributes(AnalyticsEventName.ContactChannelClicked, {
+        channel,
+        area,
+      })
+    : {};
+}
+
 export function ContactChannelLinks({
-  analyticsLocation,
+  analyticsArea,
   channels,
   locale,
 }: ContactChannelLinksProps) {
@@ -61,9 +74,7 @@ export function ContactChannelLinks({
             <a
               aria-label={labels[channel]}
               className={styles.link}
-              data-analytics-event="contact_click"
-              data-analytics-location={analyticsLocation}
-              data-analytics-target={getContactTarget(href) ?? channel}
+              {...getChannelAnalyticsAttributes(href, analyticsArea)}
               href={href}
               {...(isExternal ? { rel: "noreferrer", target: "_blank" } : {})}
             >

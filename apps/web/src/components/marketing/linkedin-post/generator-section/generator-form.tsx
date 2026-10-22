@@ -161,14 +161,7 @@ export function GeneratorForm({
         />
       </div>
 
-      <PrimaryCtaButton
-        className={styles.submitButton}
-        data-analytics-event="cta_click"
-        data-analytics-location="generator_form"
-        data-analytics-target="generator"
-        data-analytics-variant="primary"
-        type="submit"
-      >
+      <PrimaryCtaButton className={styles.submitButton} type="submit">
         {content.form.submit}
       </PrimaryCtaButton>
 

@@ -1,3 +1,4 @@
+import type { AnalyticsArea } from "@/common/constants/analytics/analytics-area";
 import type { ContactChannelKey } from "@/common/constants/contact/contact-channel-keys";
 import { COMPANY } from "@/config/company";
 import type { Locale } from "@/config/i18n";
@@ -7,13 +8,13 @@ import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import styles from "./contact-identity.module.css";
 
 type ContactIdentityProps = {
-  analyticsLocation: string;
+  analyticsArea: AnalyticsArea;
   channels: readonly ContactChannelKey[];
   locale: Locale;
 };
 
 export function ContactIdentity({
-  analyticsLocation,
+  analyticsArea,
   channels,
   locale,
 }: ContactIdentityProps) {
@@ -27,7 +28,7 @@ export function ContactIdentity({
       </a>
 
       <ContactChannelLinks
-        analyticsLocation={analyticsLocation}
+        analyticsArea={analyticsArea}
         channels={channels}
         locale={locale}
       />

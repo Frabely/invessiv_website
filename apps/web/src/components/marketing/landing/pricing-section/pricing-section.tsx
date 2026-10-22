@@ -1,5 +1,9 @@
 "use client";
 
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { useRef } from "react";
 
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
@@ -44,7 +48,14 @@ export function PricingSection({
 
       <div className={styles.afterCard} data-reveal-item="true">
         <p className={styles.hint}>{hint}</p>
-        <PrimaryCtaLink className={styles.cta} href={ctaHref}>
+        <PrimaryCtaLink
+          className={styles.cta}
+          href={ctaHref}
+          {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+            cta: AnalyticsCtaId.LandingPricingPrimary,
+            target: AnalyticsTarget.ContactForm,
+          })}
+        >
           {ctaLabel}
         </PrimaryCtaLink>
       </div>

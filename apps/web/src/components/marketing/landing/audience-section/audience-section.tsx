@@ -1,5 +1,8 @@
 "use client";
 
+import { AnalyticsOptionGroup } from "@/common/constants/analytics/analytics-option-group";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { useCallback, useRef, useState } from "react";
 
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
@@ -90,9 +93,12 @@ export function AudienceSection({
                 aria-expanded={isActive && !usesSheet}
                 className={styles.pill}
                 data-active={isActive ? "true" : undefined}
-                data-analytics-event="audience_select"
-                data-analytics-location="audience"
-                data-analytics-target={item.iconKey}
+                {...(isActive && !usesSheet
+                  ? {}
+                  : analyticsAttributes(AnalyticsEventName.OptionSelected, {
+                      group: AnalyticsOptionGroup.LandingAudience,
+                      option: item.iconKey,
+                    }))}
                 id={`${id}-pill-${index}`}
                 onClick={(event) => {
                   if (usesSheet) {

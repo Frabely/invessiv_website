@@ -6,11 +6,10 @@ import {
   type LinkedInPostGeneratorResult,
   linkedinPostGeneratorService,
 } from "@/client/linkedin-post/services/linkedin-post-generator-service";
-import {
-  GENERATOR_FORM_ID,
-  GeneratorAnalyticsEvent,
-  GeneratorErrorReason,
-} from "@/common/constants/generator/analytics/generator-analytics";
+import { GeneratorErrorReason } from "@/common/constants/generator/analytics/generator-analytics";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsGeneratorStep } from "@/common/constants/analytics/analytics-generator-step";
+import { trackAnalyticsEvent } from "@/lib/analytics/track-analytics-event";
 import { GeneratorSectionLayout } from "@/common/constants/generator/ui/generator-section-layout";
 import { GeneratorStateKind } from "@/common/constants/generator/ui/generator-state-kind";
 import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator/api/linkedin-post-generator-error-codes";
@@ -122,14 +121,10 @@ export function GeneratorSection({
   }, [state?.kind, id]);
 
   function emitAnalytics(
-    event: GeneratorAnalyticsEvent,
-    extra?: Record<string, string>,
+    step: AnalyticsGeneratorStep,
+    extra?: { reason: string },
   ) {
-    if (typeof window === "undefined") {
-      return;
-    }
-    const detail = { form_id: GENERATOR_FORM_ID, locale, ...extra };
-    window.dispatchEvent(new CustomEvent(event, { detail }));
+    trackAnalyticsEvent(AnalyticsEventName.GeneratorStep, { step, ...extra });
   }
 
   function handleStart() {
@@ -137,7 +132,7 @@ export function GeneratorSection({
       return;
     }
     setHasStarted(true);
-    emitAnalytics(GeneratorAnalyticsEvent.FormStart);
+    emitAnalytics(AnalyticsGeneratorStep.Start);
   }
 
   function handleCopyCaption(caption: string) {
@@ -146,12 +141,13 @@ export function GeneratorSection({
     }
     navigator.clipboard.writeText(caption).then(() => {
       setHasCopied(true);
+      emitAnalytics(AnalyticsGeneratorStep.Copy);
       window.setTimeout(() => setHasCopied(false), 2200);
     });
   }
 
   function handleDownloadPost() {
-    emitAnalytics(GeneratorAnalyticsEvent.PostDownload);
+    emitAnalytics(AnalyticsGeneratorStep.Download);
   }
 
   function handleRequestNewPost() {
@@ -225,7 +221,7 @@ export function GeneratorSection({
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    emitAnalytics(GeneratorAnalyticsEvent.SubmitAttempt);
+    emitAnalytics(AnalyticsGeneratorStep.Submit);
 
     if (values.company.trim() !== "") {
       // Honeypot — silently no-op (return to the initial, preview-less state)
@@ -247,7 +243,7 @@ export function GeneratorSection({
         kind: GeneratorStateKind.LimitReached,
         usageLimit,
       });
-      emitAnalytics(GeneratorAnalyticsEvent.Error, {
+      emitAnalytics(AnalyticsGeneratorStep.Error, {
         reason: LinkedInPostGeneratorErrorCode.UsageLimitReached,
       });
       return;
@@ -260,7 +256,7 @@ export function GeneratorSection({
       result = await submitGenerator(values, locale);
     } catch {
       setState({ kind: GeneratorStateKind.Error });
-      emitAnalytics(GeneratorAnalyticsEvent.Error, {
+      emitAnalytics(AnalyticsGeneratorStep.Error, {
         reason: GeneratorErrorReason.Network,
       });
       return;
@@ -282,7 +278,7 @@ export function GeneratorSection({
       } else {
         setState({ kind: GeneratorStateKind.Error });
       }
-      emitAnalytics(GeneratorAnalyticsEvent.Error, { reason: result.code });
+      emitAnalytics(AnalyticsGeneratorStep.Error, { reason: result.code });
       return;
     }
 
@@ -293,7 +289,7 @@ export function GeneratorSection({
       imageDataUrl: result.imageDataUrl,
       previewHtml: result.previewHtml,
     });
-    emitAnalytics(GeneratorAnalyticsEvent.Success);
+    emitAnalytics(AnalyticsGeneratorStep.Success);
   }
 
   const layout = state

@@ -2,78 +2,86 @@
 
 import { useCallback, useRef } from "react";
 
-import { type ContactFormAnalyticsOptions } from "@/common/contracts/analytics/contact-form-analytics-options";
-import { type ConversionEventPayload } from "@/common/contracts/analytics/conversion-event-payload";
-import type { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
-import { trackConversionEvent } from "@/lib/analytics/conversion-events";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import {
+  AnalyticsCalendarSource,
+  AnalyticsFormId,
+  type AnalyticsFormFailureReason,
+  type AnalyticsFormPlacement,
+} from "@/common/constants/analytics/analytics-form";
+import { trackAnalyticsEvent } from "@/lib/analytics/track-analytics-event";
 
-export function useContactFormAnalytics({
-  formId,
-  location,
-  target = "form",
-  variant = "primary",
-}: ContactFormAnalyticsOptions) {
+type ContactFormAnalyticsOptions = {
+  form: AnalyticsFormId;
+  placement: AnalyticsFormPlacement;
+};
+
+export function useContactFormStartTracking(placement: AnalyticsFormPlacement) {
   const hasStartedRef = useRef(false);
 
-  const getBasePayload = useCallback(
-    (payload?: ConversionEventPayload): ConversionEventPayload => ({
-      form_id: formId,
-      location,
-      target,
-      variant,
-      ...payload,
-    }),
-    [formId, location, target, variant],
-  );
+  const trackStarted = useCallback(() => {
+    if (hasStartedRef.current) {
+      return;
+    }
+    hasStartedRef.current = true;
+    trackAnalyticsEvent(AnalyticsEventName.FormStarted, {
+      form: AnalyticsFormId.Contact,
+      placement,
+    });
+  }, [placement]);
 
-  const trackFormStart = useCallback(
-    (payload?: ConversionEventPayload) => {
-      if (hasStartedRef.current) {
-        return;
-      }
-      hasStartedRef.current = true;
-      trackConversionEvent("form_start", getBasePayload(payload));
-    },
-    [getBasePayload],
-  );
-
-  const trackSubmitAttempt = useCallback(
-    (payload?: ConversionEventPayload) => {
-      trackFormStart(payload);
-      trackConversionEvent("form_submit_attempt", getBasePayload(payload));
-    },
-    [getBasePayload, trackFormStart],
-  );
-
-  const trackSubmitSuccess = useCallback(
-    (payload?: ConversionEventPayload) => {
-      trackConversionEvent("lead_submit_success", getBasePayload(payload));
-    },
-    [getBasePayload],
-  );
-
-  const trackSubmitError = useCallback(
-    (
-      errorType: ContactFormSubmitErrorType,
-      payload?: ConversionEventPayload,
-    ) => {
-      trackConversionEvent("form_submit_error", {
-        ...getBasePayload(payload),
-        error_type: errorType,
-      });
-    },
-    [getBasePayload],
-  );
-
-  const resetFormAnalytics = useCallback(() => {
+  const resetStarted = useCallback(() => {
     hasStartedRef.current = false;
   }, []);
 
+  return { resetStarted, trackStarted };
+}
+
+export function useContactFormAnalytics({
+  form,
+  placement,
+}: ContactFormAnalyticsOptions) {
+  const trackSubmitted = useCallback(() => {
+    trackAnalyticsEvent(AnalyticsEventName.FormSubmitted, { form, placement });
+  }, [form, placement]);
+
+  const trackInvalid = useCallback(
+    (invalidFieldNames: readonly string[]) => {
+      const [firstInvalidField] = invalidFieldNames;
+      if (!firstInvalidField) {
+        return;
+      }
+      trackAnalyticsEvent(AnalyticsEventName.FormInvalid, {
+        form,
+        field: firstInvalidField,
+      });
+    },
+    [form],
+  );
+
+  const trackFailed = useCallback(
+    (reason: AnalyticsFormFailureReason) => {
+      trackAnalyticsEvent(AnalyticsEventName.FormFailed, { form, reason });
+    },
+    [form],
+  );
+
+  const trackCompleted = useCallback(() => {
+    trackAnalyticsEvent(AnalyticsEventName.FormCompleted, { form, placement });
+  }, [form, placement]);
+
+  const trackCalendarOpened = useCallback(() => {
+    trackAnalyticsEvent(AnalyticsEventName.CalendarOpened, {
+      source: AnalyticsCalendarSource.AfterSubmit,
+      placement,
+    });
+  }, [placement]);
+
   return {
-    resetFormAnalytics,
-    trackFormStart,
-    trackSubmitAttempt,
-    trackSubmitError,
-    trackSubmitSuccess,
+    trackCalendarOpened,
+    trackCompleted,
+    trackFailed,
+    trackInvalid,
+    trackSubmitted,
   };
 }

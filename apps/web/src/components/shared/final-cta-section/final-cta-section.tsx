@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import type { AnalyticsFormPlacement } from "@/common/constants/analytics/analytics-form";
 import { ContactForm } from "@/components/marketing/home/sections/contact-section/contact-form/contact-form";
 import { LanguageProvider } from "@/components/providers/language-provider";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
@@ -17,7 +18,7 @@ import {
 import styles from "./final-cta-section.module.css";
 
 type FinalCtaSectionProps = FinalCtaContent & {
-  analyticsLocation: string;
+  analyticsPlacement: AnalyticsFormPlacement;
   id: string;
   locale: Locale;
   origin: ContactSubmissionOrigin;
@@ -60,7 +61,7 @@ function toContactFormCopy(content: FinalCtaContent): ContactFormCopy {
 }
 
 export function FinalCtaSection({
-  analyticsLocation,
+  analyticsPlacement,
   body,
   eyebrow,
   form,
@@ -102,7 +103,7 @@ export function FinalCtaSection({
       <div className={styles.stage} data-reveal-item="true">
         <LanguageProvider initialLocale={locale}>
           <ContactForm
-            analyticsLocation={analyticsLocation}
+            analyticsPlacement={analyticsPlacement}
             calendlyHref={COMPANY_CALENDLY}
             formCopy={formCopy}
             origin={origin}

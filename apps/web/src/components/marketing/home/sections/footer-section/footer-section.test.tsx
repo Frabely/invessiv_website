@@ -2,6 +2,7 @@
 
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
+import { parseAnalyticsPayloadAttribute } from "@/common/patterns/analytics/analytics-properties";
 
 import { FooterSection } from "./footer-section";
 
@@ -78,14 +79,19 @@ describe("FooterSection", () => {
       name: "E-Mail schreiben",
     });
 
-    expect(email.getAttribute("data-analytics-event")).toBe("contact_click");
-    expect(email.getAttribute("data-analytics-location")).toBe("footer");
-    expect(email.getAttribute("data-analytics-target")).toBe("email");
+    expect(email.getAttribute("data-analytics-event")).toBe(
+      "contact_channel_clicked",
+    );
+    expect(
+      parseAnalyticsPayloadAttribute(
+        email.getAttribute("data-analytics-payload") ?? undefined,
+      ),
+    ).toEqual({ area: "footer", channel: "email" });
 
     expect(
       within(shortcuts)
         .getByRole("link", { name: "LinkedIn-Profil öffnen" })
-        .getAttribute("data-analytics-target"),
-    ).toBe("linkedin");
+        .getAttribute("data-analytics-payload"),
+    ).toContain(`"channel":"linkedin"`);
   });
 });

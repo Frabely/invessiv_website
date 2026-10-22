@@ -32,7 +32,7 @@ describe("ContactChannelLinks", () => {
   it("renders one link per channel in the given order, pointing at the configured targets", () => {
     render(
       <ContactChannelLinks
-        analyticsLocation="footer"
+        analyticsArea="footer"
         channels={CONTACT_CHANNEL_KEYS}
         locale="de"
       />,
@@ -49,7 +49,7 @@ describe("ContactChannelLinks", () => {
   it("renders only the requested channels", () => {
     render(
       <ContactChannelLinks
-        analyticsLocation="contact"
+        analyticsArea="contact"
         channels={[CONTACT_CHANNEL_KEY.Email]}
         locale="de"
       />,
@@ -68,7 +68,7 @@ describe("ContactChannelLinks", () => {
 
       render(
         <ContactChannelLinks
-          analyticsLocation="footer"
+          analyticsArea="footer"
           channels={CONTACT_CHANNEL_KEYS}
           locale={locale}
         />,
@@ -89,7 +89,7 @@ describe("ContactChannelLinks", () => {
   it("opens external profiles in a new tab and keeps mail and phone in place", () => {
     render(
       <ContactChannelLinks
-        analyticsLocation="footer"
+        analyticsArea="footer"
         channels={CONTACT_CHANNEL_KEYS}
         locale="de"
       />,
@@ -120,10 +120,10 @@ describe("ContactChannelLinks", () => {
     }
   });
 
-  it("marks every link for contact click tracking with a resolved target", () => {
+  it("marks every link for contact channel tracking with the resolved channel", () => {
     render(
       <ContactChannelLinks
-        analyticsLocation="footer"
+        analyticsArea="footer"
         channels={CONTACT_CHANNEL_KEYS}
         locale="de"
       />,
@@ -132,20 +132,32 @@ describe("ContactChannelLinks", () => {
     const links = screen.getAllByRole("link");
 
     for (const link of links) {
-      expect(link.getAttribute("data-analytics-event")).toBe("contact_click");
-      expect(link.getAttribute("data-analytics-location")).toBe("footer");
+      expect(link.getAttribute("data-analytics-event")).toBe(
+        "contact_channel_clicked",
+      );
     }
 
-    // mailto/tel resolve through getContactTarget, profile URLs fall back to the channel key.
+    // Every channel href resolves through getContactTarget.
     expect(
-      links.map((link) => link.getAttribute("data-analytics-target")),
-    ).toEqual(["email", "phone", "linkedin", "instagram"]);
+      links.map(
+        (link) =>
+          JSON.parse(link.getAttribute("data-analytics-payload") ?? "{}") as {
+            area: string;
+            channel: string;
+          },
+      ),
+    ).toEqual(
+      ["email", "phone", "linkedin", "instagram"].map((channel) => ({
+        area: "footer",
+        channel,
+      })),
+    );
   });
 
   it("stays icon-only so the buttons carry no visible label", () => {
     render(
       <ContactChannelLinks
-        analyticsLocation="footer"
+        analyticsArea="footer"
         channels={CONTACT_CHANNEL_KEYS}
         locale="de"
       />,

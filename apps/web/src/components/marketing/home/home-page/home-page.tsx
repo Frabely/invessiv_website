@@ -2,6 +2,11 @@
 
 import { useRef } from "react";
 
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsPage } from "@/common/constants/analytics/analytics-page";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { SectionReachTracker } from "@/components/shared/analytics/section-reach-tracker/section-reach-tracker";
+
 import { COMPANY_CALENDLY } from "@/config/company";
 import { ContactSection } from "@/components/marketing/home/sections/contact-section/contact-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
@@ -76,6 +81,7 @@ export function HomePage() {
   return (
     <>
       <AnchorOffsetScroll />
+      <SectionReachTracker page={AnalyticsPage.Home} sectionIds={SECTION_IDS} />
       <SiteHeader navigation={PRIMARY_NAVIGATION} />
 
       <main className="marketing-main" id="main-content" tabIndex={-1}>
@@ -90,12 +96,17 @@ export function HomePage() {
           heroSecondaryCta={ui.heroSecondaryCta}
           heroTag={ui.heroTag}
           heroTrustChips={ui.heroTrustChips}
-          primaryCtaAnalyticsTarget="form"
+          primaryCtaAnalytics={{
+            cta: AnalyticsCtaId.HomeHeroPrimary,
+            target: AnalyticsTarget.ContactForm,
+          }}
           primaryCtaHref={SECTION_HREFS.contact}
-          secondaryCtaAnalyticsTarget="services"
+          secondaryCtaAnalytics={{
+            cta: AnalyticsCtaId.HomeHeroSecondary,
+            target: AnalyticsTarget.Services,
+          }}
           secondaryCtaHref={SECTION_HREFS.services}
           title={heroSection.title}
-          trackingLocation="hero"
           visualSlot={<HomeHeroPhoto alt={ui.heroVisualAriaLabel} />}
         />
 

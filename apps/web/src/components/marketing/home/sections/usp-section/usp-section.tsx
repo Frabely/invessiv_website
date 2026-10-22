@@ -5,6 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useRef } from "react";
 
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { UspChatAuthor } from "@/i18n/dictionaries/marketing/home-ui";
@@ -98,11 +102,11 @@ export function UspSection({ content, id }: UspSectionProps) {
           </span>
           <a
             className={styles.reply}
-            data-analytics-event="cta_click"
-            data-analytics-location="usp"
-            data-analytics-target="form"
-            data-analytics-variant="primary"
             href={SECTION_HREFS.contact}
+            {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+              cta: AnalyticsCtaId.HomeUspReply,
+              target: AnalyticsTarget.ContactForm,
+            })}
           >
             <span className={styles.replyLabel}>{content.replyCtaLabel}</span>
             <span aria-hidden="true" className={styles.replySend}>

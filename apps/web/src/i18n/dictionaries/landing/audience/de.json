@@ -3,8 +3,6 @@
   "bodyHighlight": "Wähl deine Branche",
   "closeLabel": "Schließen",
   "cta": {
-    "analyticsTarget": "contact",
-    "analyticsVariant": "primary",
     "href": "#contact",
     "label": "Kostenlose Ersteinschätzung anfragen"
   },

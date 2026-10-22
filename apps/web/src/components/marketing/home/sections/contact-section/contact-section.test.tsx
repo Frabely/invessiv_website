@@ -2,6 +2,7 @@
 
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { parseAnalyticsPayloadAttribute } from "@/common/patterns/analytics/analytics-properties";
 
 import type {
   ContactFormCopy,
@@ -21,8 +22,8 @@ vi.mock("@/client/contact/services/contact-form-service", () => ({
   submitQuickContact: vi.fn(),
 }));
 
-vi.mock("@/lib/analytics/conversion-events", () => ({
-  trackConversionEvent: vi.fn(),
+vi.mock("@/lib/analytics/track-analytics-event", () => ({
+  trackAnalyticsEvent: vi.fn(),
 }));
 
 afterEach(() => {
@@ -126,21 +127,24 @@ describe("ContactSection", () => {
     expect(linkedin.getAttribute("rel")).toBe("noreferrer");
   });
 
-  it("tracks the direct channels as contact clicks", () => {
+  it("tracks the direct channels as contact channel clicks", () => {
     renderContactSection();
 
     const emailLink = screen.getByRole("link", { name: "E-Mail schreiben" });
     expect(emailLink.getAttribute("data-analytics-event")).toBe(
-      "contact_click",
+      "contact_channel_clicked",
     );
-    expect(emailLink.getAttribute("data-analytics-location")).toBe("contact");
-    expect(emailLink.getAttribute("data-analytics-target")).toBe("email");
+    expect(
+      parseAnalyticsPayloadAttribute(
+        emailLink.getAttribute("data-analytics-payload") ?? undefined,
+      ),
+    ).toEqual({ area: "contact", channel: "email" });
 
     expect(
       screen
         .getByRole("link", { name: "Anrufen" })
-        .getAttribute("data-analytics-target"),
-    ).toBe("phone");
+        .getAttribute("data-analytics-payload"),
+    ).toContain(`"channel":"phone"`);
   });
 
   it("focuses the form when arriving from the #contact-email hash", () => {

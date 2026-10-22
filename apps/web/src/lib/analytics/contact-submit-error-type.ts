@@ -1,24 +1,24 @@
 import type { ContactSubmitErrorResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
 import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
-import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
+import { AnalyticsFormFailureReason } from "@/common/constants/analytics/analytics-form";
 
-export function getContactSubmitAnalyticsErrorType(
+export function getContactSubmitFailureReason(
   response: ContactSubmitErrorResponse,
-): (typeof ContactFormSubmitErrorType)[keyof typeof ContactFormSubmitErrorType] {
+): AnalyticsFormFailureReason {
   if (response.code === CONTACT_SUBMIT_ERROR_CODE.RateLimited) {
-    return ContactFormSubmitErrorType.RateLimited;
+    return AnalyticsFormFailureReason.RateLimited;
   }
 
   if (response.code === CONTACT_SUBMIT_ERROR_CODE.DeliveryUnavailable) {
-    return ContactFormSubmitErrorType.Delivery;
+    return AnalyticsFormFailureReason.Delivery;
   }
 
   if (
     response.code === CONTACT_SUBMIT_ERROR_CODE.ValidationError ||
     response.code === CONTACT_SUBMIT_ERROR_CODE.SpamDetected
   ) {
-    return ContactFormSubmitErrorType.Validation;
+    return AnalyticsFormFailureReason.Validation;
   }
 
-  return ContactFormSubmitErrorType.Generic;
+  return AnalyticsFormFailureReason.Generic;
 }

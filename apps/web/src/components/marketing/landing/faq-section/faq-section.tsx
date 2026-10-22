@@ -1,5 +1,11 @@
 "use client";
 
+import { AnalyticsArea } from "@/common/constants/analytics/analytics-area";
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
+import { getNavigationItem } from "@/lib/analytics/get-navigation-item";
 import { useEffect, useRef, useState } from "react";
 
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
@@ -84,9 +90,10 @@ export function FaqSection({
                   {item.link ? (
                     <a
                       className={styles.answerLink}
-                      data-analytics-event={item.link.analyticsEvent}
-                      data-analytics-location={item.link.analyticsLocation}
-                      data-analytics-target={item.link.analyticsTarget}
+                      {...analyticsAttributes(AnalyticsEventName.NavClicked, {
+                        item: getNavigationItem(item.link.href),
+                        area: AnalyticsArea.Faq,
+                      })}
                       href={item.link.href}
                     >
                       {item.link.label}
@@ -107,10 +114,10 @@ export function FaqSection({
         >
           <a
             className={styles.ctaLink}
-            data-analytics-event="cta_click"
-            data-analytics-location="faq"
-            data-analytics-target={cta.analyticsTarget}
-            data-analytics-variant={cta.analyticsVariant ?? "soft"}
+            {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+              cta: AnalyticsCtaId.LandingFaqContact,
+              target: AnalyticsTarget.ContactForm,
+            })}
             href={cta.href}
           >
             {cta.label}

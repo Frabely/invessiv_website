@@ -19,7 +19,6 @@ function renderFaqSection(items: LandingFaqItem[] = ITEMS) {
   return render(
     <FaqSection
       cta={{
-        analyticsTarget: "contact",
         href: "#contact",
         label: "Frage nicht dabei? Schreib mir kurz, worum es geht.",
       }}
@@ -107,7 +106,7 @@ describe("FaqSection", () => {
     ).toBeNull();
   });
 
-  it("verkabelt den Ausstiegslink mit den Tracking-Attributen aus dem Content", () => {
+  it("trackt den Ausstiegslink als Navigation aus der FAQ", () => {
     renderFaqSection([
       {
         question: "Für wen ist das nicht geeignet?",
@@ -115,9 +114,6 @@ describe("FaqSection", () => {
         link: {
           label: "Schau dir meine Leistungen an",
           href: "/de#services",
-          analyticsEvent: "faq_exit_services_click",
-          analyticsLocation: "faq",
-          analyticsTarget: "services",
         },
       },
     ]);
@@ -126,21 +122,26 @@ describe("FaqSection", () => {
       name: "Schau dir meine Leistungen an",
     });
     expect(exitLink.getAttribute("href")).toBe("/de#services");
-    expect(exitLink.dataset.analyticsEvent).toBe("faq_exit_services_click");
-    expect(exitLink.dataset.analyticsLocation).toBe("faq");
-    expect(exitLink.dataset.analyticsTarget).toBe("services");
+    expect(exitLink.dataset.analyticsEvent).toBe("nav_clicked");
+    expect(JSON.parse(exitLink.dataset.analyticsPayload ?? "{}")).toEqual({
+      item: "services",
+      area: "faq",
+    });
   });
 
-  it("setzt keine Tracking-Attribute auf Antwortlinks ohne Analytics-Content", () => {
+  it("leitet das Navigationsziel aus dem Linkpfad ab", () => {
     renderFaqSection([
       {
-        question: "Frage ohne Tracking?",
+        question: "Frage mit Unterseite?",
         answer: "Antwort.",
         link: { label: "Mehr lesen", href: "/de/info" },
       },
     ]);
 
     const link = screen.getByRole("link", { name: "Mehr lesen" });
-    expect(link.dataset.analyticsEvent).toBeUndefined();
+    expect(JSON.parse(link.dataset.analyticsPayload ?? "{}")).toEqual({
+      item: "info",
+      area: "faq",
+    });
   });
 });

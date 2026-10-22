@@ -1,6 +1,14 @@
-﻿"use client";
+"use client";
 
+import { faCommentDots } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import { AnalyticsArea } from "@/common/constants/analytics/analytics-area";
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
+import { getNavigationItem } from "@/lib/analytics/get-navigation-item";
 import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
@@ -39,6 +47,7 @@ type SiteHeaderContent = Omit<
 
 type SiteHeaderProps = {
   brandHref?: string;
+  ctaAnalyticsTarget?: AnalyticsTarget;
   ctaHref?: string;
   isMinimalHeader?: boolean;
   navigation?: NavigationItem[];
@@ -48,6 +57,7 @@ type SiteHeaderProps = {
 
 export function SiteHeader({
   brandHref = SECTION_HREFS.hero,
+  ctaAnalyticsTarget = AnalyticsTarget.ContactForm,
   ctaHref = SECTION_HREFS.contact,
   isMinimalHeader = false,
   navigation = [],
@@ -113,6 +123,15 @@ export function SiteHeader({
     return hashIndex >= 0 ? href.slice(hashIndex) : href;
   };
   const ctaLabelKey = getLabelKey(ctaHref);
+  const ctaAnalyticsAttributes = analyticsAttributes(
+    AnalyticsEventName.CtaClicked,
+    { cta: AnalyticsCtaId.HeaderPrimary, target: ctaAnalyticsTarget },
+  );
+  const getNavAnalyticsAttributes = (href: string, area: AnalyticsArea) =>
+    analyticsAttributes(AnalyticsEventName.NavClicked, {
+      item: getNavigationItem(href),
+      area,
+    });
   const mobileNavigation = navigation.filter(
     (item) => getLabelKey(item.href) !== ctaLabelKey,
   );
@@ -140,7 +159,14 @@ export function SiteHeader({
             <ul className={styles.navList}>
               {navigation.map((item) => (
                 <li key={item.href}>
-                  <a className={styles.navLink} href={item.href}>
+                  <a
+                    className={styles.navLink}
+                    href={item.href}
+                    {...getNavAnalyticsAttributes(
+                      item.href,
+                      AnalyticsArea.Header,
+                    )}
+                  >
                     {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
                   </a>
                 </li>
@@ -171,10 +197,7 @@ export function SiteHeader({
             <PrimaryCtaLink
               className={styles.navCta}
               href={ctaHref}
-              data-analytics-event="cta_click"
-              data-analytics-location="nav"
-              data-analytics-variant="primary"
-              data-analytics-target="form"
+              {...ctaAnalyticsAttributes}
             >
               {ui.ctaLabel}
             </PrimaryCtaLink>
@@ -196,38 +219,13 @@ export function SiteHeader({
                 className={`${styles.navCta} ${styles.mobileCta}`}
                 href={ctaHref}
                 title={ui.ctaLabel}
-                data-analytics-event="cta_click"
-                data-analytics-location="nav"
-                data-analytics-variant="primary"
-                data-analytics-target="form"
+                {...ctaAnalyticsAttributes}
               >
-                <span aria-hidden="true" className={styles.mobileCtaIcon}>
-                  <svg fill="none" viewBox="0 0 24 24">
-                    <path d="M7.5 19.5 3 21l1.5-4.5" />
-                    <path d="M7.5 19.5a9 9 0 1 0-3-6.72" />
-                    <circle
-                      cx="9.75"
-                      cy="12"
-                      fill="currentColor"
-                      r="0.9"
-                      stroke="none"
-                    />
-                    <circle
-                      cx="12.75"
-                      cy="12"
-                      fill="currentColor"
-                      r="0.9"
-                      stroke="none"
-                    />
-                    <circle
-                      cx="15.75"
-                      cy="12"
-                      fill="currentColor"
-                      r="0.9"
-                      stroke="none"
-                    />
-                  </svg>
-                </span>
+                <FontAwesomeIcon
+                  aria-hidden="true"
+                  className={styles.mobileCtaIcon}
+                  icon={faCommentDots}
+                />
                 <span className="sr-only">{ui.ctaLabel}</span>
               </PrimaryCtaLink>
               <details
@@ -261,6 +259,10 @@ export function SiteHeader({
                         className={styles.mobileMenuLink}
                         href={item.href}
                         onClick={handleMobileMenuLinkClick}
+                        {...getNavAnalyticsAttributes(
+                          item.href,
+                          AnalyticsArea.HeaderMobile,
+                        )}
                       >
                         {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
                       </a>
@@ -271,10 +273,7 @@ export function SiteHeader({
                       className={styles.mobileMenuCta}
                       href={ctaHref}
                       onClick={handleMobileMenuLinkClick}
-                      data-analytics-event="cta_click"
-                      data-analytics-location="nav"
-                      data-analytics-variant="primary"
-                      data-analytics-target="form"
+                      {...ctaAnalyticsAttributes}
                     >
                       {ui.ctaLabel}
                     </PrimaryCtaLink>

@@ -3,6 +3,10 @@
 import Image from "next/image";
 import { useRef } from "react";
 
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import type {
   ProcessCtaCopy,
   ProcessStepCopy,
@@ -143,10 +147,10 @@ export function ProcessSection({
             data-journey-visible="false"
             href={processCta.href}
             ref={endCtaRef}
-            data-analytics-event="cta_click"
-            data-analytics-location="process"
-            data-analytics-variant="primary"
-            data-analytics-target="form"
+            {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+              cta: AnalyticsCtaId.HomeProcessPrimary,
+              target: AnalyticsTarget.ContactForm,
+            })}
           >
             {processCta.label}
           </PrimaryCtaLink>

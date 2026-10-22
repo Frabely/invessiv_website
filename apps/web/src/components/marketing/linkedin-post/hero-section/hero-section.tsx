@@ -1,6 +1,10 @@
 "use client";
 
 import { useRef } from "react";
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
@@ -12,7 +16,6 @@ import styles from "./hero-section.module.css";
 type AiWorkflowsHeroSectionProps = LandingAiHeroContent & {
   primaryCtaHref: string;
   secondaryCtaHref: string;
-  trackingLocation: string;
 };
 
 export function AiWorkflowsHeroSection({
@@ -24,7 +27,6 @@ export function AiWorkflowsHeroSection({
   trustChips,
   primaryCtaHref,
   secondaryCtaHref,
-  trackingLocation,
 }: AiWorkflowsHeroSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
   useStaggeredSectionReveal(sectionRef, tag, { staggerMs: 60 });
@@ -60,20 +62,20 @@ export function AiWorkflowsHeroSection({
           <PrimaryCtaLink
             className={styles.primaryCta}
             href={primaryCtaHref}
-            data-analytics-event="cta_click"
-            data-analytics-location={trackingLocation}
-            data-analytics-variant="primary"
-            data-analytics-target="generator"
+            {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+              cta: AnalyticsCtaId.LinkedInHeroPrimary,
+              target: AnalyticsTarget.Generator,
+            })}
           >
             {primaryCta}
           </PrimaryCtaLink>
           <a
             className={`${buttonStyles.button} ${buttonStyles.ghost} ${styles.secondaryCta}`}
             href={secondaryCtaHref}
-            data-analytics-event="cta_click"
-            data-analytics-location={trackingLocation}
-            data-analytics-variant="secondary"
-            data-analytics-target="contact"
+            {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+              cta: AnalyticsCtaId.LinkedInHeroSecondary,
+              target: AnalyticsTarget.ContactForm,
+            })}
           >
             {secondaryCta}
           </a>

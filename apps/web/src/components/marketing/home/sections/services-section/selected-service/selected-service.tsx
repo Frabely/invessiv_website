@@ -1,6 +1,10 @@
 "use client";
 
 import type { CSSProperties } from "react";
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import type { PrimaryServiceCardData } from "@/common/contracts/marketing";
@@ -100,19 +104,25 @@ export function SelectedService({
         <div className={styles.actionRow}>
           <PrimaryCtaLink
             className={styles.primaryCta}
-            data-analytics-event="cta_click"
-            data-analytics-location="pricing"
-            data-analytics-target="form"
-            data-analytics-variant="primary"
             data-project-goal={ctaProjectGoal}
             data-project-offer={selectedCard.key}
             href={SECTION_HREFS.contact}
+            {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+              cta: AnalyticsCtaId.HomeServicesSelect,
+              target: AnalyticsTarget.ContactForm,
+            })}
           >
             {ctaLabel}
           </PrimaryCtaLink>
 
           {detailHref ? (
-            <ServiceActionCta href={detailHref}>
+            <ServiceActionCta
+              href={detailHref}
+              {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+                cta: AnalyticsCtaId.HomeServicesDetails,
+                target: AnalyticsTarget.LandingPage,
+              })}
+            >
               {detailPageCtaLabel}
             </ServiceActionCta>
           ) : null}

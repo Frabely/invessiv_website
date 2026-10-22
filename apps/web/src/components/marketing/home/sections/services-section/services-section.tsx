@@ -9,6 +9,9 @@ import { BrandMarkBackdrop } from "@/components/marketing/shared/brand-mark-back
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 import { PROJECT_OFFER_CHANGE_EVENT } from "@/common/constants/marketing";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsOptionGroup } from "@/common/constants/analytics/analytics-option-group";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import type {
   PrimaryServiceCardData,
   PrimaryServiceKey,
@@ -140,6 +143,12 @@ export function ServicesSection({
                 }
               }}
               type="button"
+              {...(isActive
+                ? {}
+                : analyticsAttributes(AnalyticsEventName.OptionSelected, {
+                    group: AnalyticsOptionGroup.HomeServices,
+                    option: optionServiceKey,
+                  }))}
             >
               {option.label}
             </button>

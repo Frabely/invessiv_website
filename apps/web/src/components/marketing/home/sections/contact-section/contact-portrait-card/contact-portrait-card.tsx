@@ -1,3 +1,4 @@
+import { AnalyticsArea } from "@/common/constants/analytics/analytics-area";
 import Image from "next/image";
 
 import { CONTACT_CHANNEL_KEYS } from "@/common/constants/contact/contact-channel-keys";
@@ -29,7 +30,7 @@ export function ContactPortraitCard({
 
       <div className={styles.identity}>
         <ContactIdentity
-          analyticsLocation="contact"
+          analyticsArea={AnalyticsArea.Contact}
           channels={CONTACT_CHANNEL_KEYS}
           locale={locale}
         />

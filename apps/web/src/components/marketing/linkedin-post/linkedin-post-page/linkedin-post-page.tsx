@@ -1,3 +1,8 @@
+import { AnalyticsFormPlacement } from "@/common/constants/analytics/analytics-form";
+import { AnalyticsPage } from "@/common/constants/analytics/analytics-page";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { SectionReachTracker } from "@/components/shared/analytics/section-reach-tracker/section-reach-tracker";
+import { HERO_SECTION_ID } from "@/config/navigation/home";
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { AiWorkflowsHeroSection } from "@/components/marketing/linkedin-post/hero-section/hero-section";
 import { ExampleSection } from "@/components/marketing/linkedin-post/example-section/example-section";
@@ -12,6 +17,7 @@ import type { Locale } from "@/config/i18n";
 import {
   LINKEDIN_POST_HEADER_NAVIGATION,
   LINKEDIN_POST_SECTION_HREFS,
+  LINKEDIN_POST_SECTION_IDS,
 } from "@/config/navigation/linkedin-post";
 import { getLinkedInPostHeaderContent } from "@/i18n/dictionaries/linkedin-post/header";
 import { getLinkedInPostExampleContent } from "@/i18n/dictionaries/linkedin-post/example";
@@ -20,6 +26,11 @@ import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-po
 import { getLinkedInPostFinalCtaContent } from "@/i18n/dictionaries/linkedin-post/final-cta";
 import { getLinkedInPostHeroContent } from "@/i18n/dictionaries/linkedin-post/hero";
 import { getLinkedInPostProblemExamplesContent } from "@/i18n/dictionaries/linkedin-post/problem-examples";
+
+const LINKEDIN_POST_REACH_SECTION_IDS = [
+  HERO_SECTION_ID,
+  ...LINKEDIN_POST_SECTION_IDS,
+];
 
 type LinkedInPostPageProps = {
   locale: Locale;
@@ -37,7 +48,12 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
   return (
     <>
       <AnchorOffsetScroll />
+      <SectionReachTracker
+        page={AnalyticsPage.LinkedIn}
+        sectionIds={LINKEDIN_POST_REACH_SECTION_IDS}
+      />
       <SiteHeader
+        ctaAnalyticsTarget={AnalyticsTarget.Generator}
         ctaHref={LINKEDIN_POST_SECTION_HREFS.generator}
         navigation={LINKEDIN_POST_HEADER_NAVIGATION}
         showThemeSwitch={false}
@@ -53,7 +69,6 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
           {...hero}
           primaryCtaHref={LINKEDIN_POST_SECTION_HREFS.generator}
           secondaryCtaHref={LINKEDIN_POST_SECTION_HREFS.contact}
-          trackingLocation="linkedin_post_hero"
         />
 
         <ProblemExamplesSection
@@ -81,7 +96,7 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
         />
 
         <FinalCtaSection
-          analyticsLocation="linkedin_post_final_cta"
+          analyticsPlacement={AnalyticsFormPlacement.LinkedInFinal}
           id={LINKEDIN_POST_SECTION_HREFS.contact.slice(1)}
           locale={locale}
           origin={ContactSubmissionOrigin.LinkedInPost}

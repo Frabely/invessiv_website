@@ -25,7 +25,6 @@ import { DEFAULT_CONTACT_FORM_VALUES } from "@invessiv/common/defaults/contact/c
 import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
 import { CONTACT_FORM_FIELD_NAME } from "@invessiv/common/constants/contact/contact-form-field-names";
 import { type ContactProjectScope } from "@invessiv/common/constants/contact/contact-project-scopes";
-import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import {
   ContactSubmissionOrigin,
   type ContactSubmissionOrigin as ContactSubmissionOriginValue,
@@ -40,18 +39,23 @@ import type { ContactFormCopy } from "@/i18n/dictionaries/marketing/home";
 import { PROJECT_OFFER_CHANGE_EVENT } from "@/common/constants/marketing/project-offer-change-event";
 import { toContactProjectScope } from "@/common/constants/marketing/service-key-project-scope";
 import type { ProjectOfferSyncDetail } from "@/common/contracts/marketing/project-offer-sync-detail";
-import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
-import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
-import { trackDiscoveryCallCalendarClick } from "@/lib/analytics/events/discovery-call-events";
-import { getContactTarget } from "@/lib/analytics/get-contact-target";
-import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
+import {
+  AnalyticsFormFailureReason,
+  AnalyticsFormId,
+  AnalyticsFormPlacement,
+} from "@/common/constants/analytics/analytics-form";
+import { getContactSubmitFailureReason } from "@/lib/analytics/contact-submit-error-type";
+import {
+  useContactFormAnalytics,
+  useContactFormStartTracking,
+} from "@/hooks/analytics/use-contact-form-analytics";
 import { SITE_ROUTES } from "@/config/routes";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import styles from "./contact-form.module.css";
 
 type ContactFormProps = {
   calendlyHref: string;
-  analyticsLocation?: string;
+  analyticsPlacement?: AnalyticsFormPlacement;
   formCopy: ContactFormCopy;
   origin?: ContactSubmissionOriginValue;
   privacyHref: string;
@@ -74,7 +78,7 @@ type ContactFormAction =
 
 export function ContactForm({
   calendlyHref,
-  analyticsLocation = "contact",
+  analyticsPlacement = AnalyticsFormPlacement.HomeContact,
   formCopy,
   origin = ContactSubmissionOrigin.Website,
   privacyHref,
@@ -93,15 +97,15 @@ export function ContactForm({
   const [pendingAction, setPendingAction] = useState<ContactFormAction | null>(
     null,
   );
+  const { resetStarted, trackStarted } =
+    useContactFormStartTracking(analyticsPlacement);
   const callAnalytics = useContactFormAnalytics({
-    formId: CONTACT_REQUEST_KIND.DiscoveryCall,
-    location: analyticsLocation,
-    target: "calendly",
+    form: AnalyticsFormId.DiscoveryCall,
+    placement: analyticsPlacement,
   });
   const emailAnalytics = useContactFormAnalytics({
-    formId: CONTACT_REQUEST_KIND.QuickContact,
-    location: analyticsLocation,
-    target: "email",
+    form: AnalyticsFormId.QuickContact,
+    placement: analyticsPlacement,
   });
   const {
     control,
@@ -199,7 +203,6 @@ export function ContactForm({
       }
 
       setPendingAction(ContactFormAction.Email);
-      emailAnalytics.trackSubmitAttempt();
 
       try {
         const response = await submitQuickContact(
@@ -216,36 +219,40 @@ export function ContactForm({
           setStatusMessage(
             getSubmitErrorMessage(response, ContactFormAction.Email),
           );
-          emailAnalytics.trackSubmitError(
-            getContactSubmitAnalyticsErrorType(response),
-          );
+          emailAnalytics.trackFailed(getContactSubmitFailureReason(response));
           return;
         }
 
-        emailAnalytics.trackSubmitSuccess();
+        emailAnalytics.trackCompleted();
         reset(DEFAULT_CONTACT_FORM_VALUES);
-        emailAnalytics.resetFormAnalytics();
+        resetStarted();
         window.location.assign(
           createLocalePathname(SITE_ROUTES.SUCCESS, locale),
         );
       } catch {
         setStatusMessage(formCopy.submitErrorGeneric);
-        emailAnalytics.trackSubmitError(ContactFormSubmitErrorType.Generic);
+        emailAnalytics.trackFailed(AnalyticsFormFailureReason.Generic);
       } finally {
         setPendingAction(null);
       }
     },
-    () => {
+    (invalidFields) => {
       setPendingAction(null);
-      emailAnalytics.trackSubmitError(ContactFormSubmitErrorType.Validation);
+      emailAnalytics.trackInvalid(Object.keys(invalidFields));
     },
   );
+
+  const handleEmailClick = () => {
+    emailAnalytics.trackSubmitted();
+    void handleEmailSubmit();
+  };
 
   const handleCallSubmit: NonNullable<ComponentProps<"form">["onSubmit"]> = (
     event,
   ) => {
     event.preventDefault();
     setStatusMessage(null);
+    callAnalytics.trackSubmitted();
 
     // Opened before the await so the browser still attributes it to the click.
     const pendingWindow = window.open("", "_blank");
@@ -260,7 +267,6 @@ export function ContactForm({
         }
 
         setPendingAction(ContactFormAction.Call);
-        callAnalytics.trackSubmitAttempt();
 
         const response = await submitDiscoveryCall(
           mapDiscoveryCallFormToDto(values, locale, origin),
@@ -271,9 +277,7 @@ export function ContactForm({
           pendingWindow?.close();
           setPendingAction(null);
           setStatusMessage(getSubmitErrorMessage(response));
-          callAnalytics.trackSubmitError(
-            getContactSubmitAnalyticsErrorType(response),
-          );
+          callAnalytics.trackFailed(getContactSubmitFailureReason(response));
           return;
         }
 
@@ -292,14 +296,14 @@ export function ContactForm({
           pendingWindow?.close();
           setPendingAction(null);
           setStatusMessage(formCopy.submitErrorGeneric);
-          callAnalytics.trackSubmitError(ContactFormSubmitErrorType.Generic);
+          callAnalytics.trackFailed(AnalyticsFormFailureReason.Generic);
           return;
         }
 
         setPendingAction(null);
         setStatusMessage(formCopy.callSubmitSuccess);
-        callAnalytics.trackSubmitSuccess();
-        trackDiscoveryCallCalendarClick(analyticsLocation);
+        callAnalytics.trackCompleted();
+        callAnalytics.trackCalendarOpened();
 
         if (pendingWindow) {
           pendingWindow.opener = null;
@@ -309,12 +313,12 @@ export function ContactForm({
         }
 
         reset(DEFAULT_CONTACT_FORM_VALUES);
-        callAnalytics.resetFormAnalytics();
+        resetStarted();
       },
-      async () => {
+      async (invalidFields) => {
         pendingWindow?.close();
         setPendingAction(null);
-        callAnalytics.trackSubmitError(ContactFormSubmitErrorType.Validation);
+        callAnalytics.trackInvalid(Object.keys(invalidFields));
       },
     );
 
@@ -329,6 +333,7 @@ export function ContactForm({
         <form
           className={sharedStyles.form}
           noValidate
+          onInput={trackStarted}
           onSubmit={handleCallSubmit}
         >
           <ContactIdentityFields
@@ -377,15 +382,7 @@ export function ContactForm({
 
             <FormActions
               buttons={
-                <PrimaryCtaButton
-                  data-analytics-event="contact_click"
-                  data-analytics-location={analyticsLocation}
-                  data-analytics-target={
-                    getContactTarget(calendlyHref) ?? "call"
-                  }
-                  disabled={isBusy}
-                  type="submit"
-                >
+                <PrimaryCtaButton disabled={isBusy} type="submit">
                   {pendingAction === ContactFormAction.Call
                     ? formCopy.callSubmittingLabel
                     : formCopy.callSubmitLabel}
@@ -412,11 +409,8 @@ export function ContactForm({
             <p className={styles.emailQuestion}>{formCopy.emailQuestion}</p>
             <p className={styles.emailNote}>{formCopy.emailNote}</p>
             <ButtonControl
-              data-analytics-event="contact_click"
-              data-analytics-location={analyticsLocation}
-              data-analytics-target="email"
               disabled={isBusy}
-              onClick={() => void handleEmailSubmit()}
+              onClick={handleEmailClick}
               type="button"
               variant="ghost"
             >

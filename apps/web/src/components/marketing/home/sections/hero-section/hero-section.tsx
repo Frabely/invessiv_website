@@ -1,4 +1,7 @@
-﻿import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import type { CtaClickedPayload } from "@/common/contracts/analytics/analytics-event-payloads";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
+import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
@@ -10,11 +13,10 @@ import styles from "./hero-section.module.css";
 type HeroSectionBaseProps = {
   compactMobile?: boolean;
   description: string;
-  primaryCtaAnalyticsTarget: string;
+  primaryCtaAnalytics: CtaClickedPayload;
   primaryCtaHref: string;
-  secondaryCtaAnalyticsTarget: string;
   secondaryCtaHref: string;
-  trackingLocation: string;
+  secondaryCtaAnalytics: CtaClickedPayload;
   heroPrimaryCta: string;
   heroSecondaryCta: string;
   heroTag: string;
@@ -48,11 +50,10 @@ export function HeroSection(props: HeroSectionProps) {
   const {
     compactMobile = false,
     description,
-    primaryCtaAnalyticsTarget,
+    primaryCtaAnalytics,
     primaryCtaHref,
-    secondaryCtaAnalyticsTarget,
     secondaryCtaHref,
-    trackingLocation,
+    secondaryCtaAnalytics,
     heroPrimaryCta,
     heroSecondaryCta,
     heroTag,
@@ -85,20 +86,20 @@ export function HeroSection(props: HeroSectionProps) {
             <PrimaryCtaLink
               className={`${styles.ctaButton} ${styles.primaryCta}`}
               href={primaryCtaHref}
-              data-analytics-event="cta_click"
-              data-analytics-location={trackingLocation}
-              data-analytics-variant="primary"
-              data-analytics-target={primaryCtaAnalyticsTarget}
+              {...analyticsAttributes(
+                AnalyticsEventName.CtaClicked,
+                primaryCtaAnalytics,
+              )}
             >
               {heroPrimaryCta}
             </PrimaryCtaLink>
             <a
               className={`${buttonStyles.button} ${buttonStyles.ghost} ${styles.ctaButton} ${styles.secondaryCta}`}
               href={secondaryCtaHref}
-              data-analytics-event="cta_click"
-              data-analytics-location={trackingLocation}
-              data-analytics-variant="secondary"
-              data-analytics-target={secondaryCtaAnalyticsTarget}
+              {...analyticsAttributes(
+                AnalyticsEventName.CtaClicked,
+                secondaryCtaAnalytics,
+              )}
             >
               {heroSecondaryCta}
             </a>

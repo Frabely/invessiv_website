@@ -8,6 +8,10 @@ import {
   REFERENCE_AVATAR_IMAGES,
   REFERENCE_IMAGES,
 } from "@/common/constants/marketing/reference-images";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsOptionGroup } from "@/common/constants/analytics/analytics-option-group";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { REFERENCE_IMAGE_DEVICE } from "@/common/constants/marketing/reference-image-device";
 import { REFERENCE_SECTION_HREFS } from "@/common/constants/marketing/reference-section-hrefs";
 import type { ReferenceEntry } from "@/common/contracts/marketing/reference-entry";
@@ -52,6 +56,13 @@ export function ReferencesShowcase({
   }
 
   const usesMotion = usesStack && !prefersReducedMotion;
+  const referenceOpenedAttributes = analyticsAttributes(
+    AnalyticsEventName.ReferenceOpened,
+    {
+      project: activeEntry.imageKey,
+      target: AnalyticsTarget.References,
+    },
+  );
 
   return (
     <div
@@ -69,6 +80,12 @@ export function ReferencesShowcase({
               key={entry.imageKey}
               onClick={() => setActiveIndex(index)}
               variant="ghost"
+              {...(index === activeIndex
+                ? {}
+                : analyticsAttributes(AnalyticsEventName.OptionSelected, {
+                    group: AnalyticsOptionGroup.HomeReferences,
+                    option: entry.imageKey,
+                  }))}
             >
               {entry.selectorLabel}
             </ButtonControl>
@@ -80,6 +97,7 @@ export function ReferencesShowcase({
         aria-label={`${activeEntry.linkLabel}: ${activeEntry.selectorLabel}`}
         className={styles.stage}
         href={activeProjectHref}
+        {...referenceOpenedAttributes}
       >
         {entries.map((entry, index) => {
           const isActive = index === activeIndex;
@@ -164,7 +182,11 @@ export function ReferencesShowcase({
             role={activeEntry.role}
           />
 
-          <Link className={styles.projectDetailsLink} href={activeProjectHref}>
+          <Link
+            className={styles.projectDetailsLink}
+            href={activeProjectHref}
+            {...referenceOpenedAttributes}
+          >
             {activeEntry.linkLabel}
           </Link>
         </div>

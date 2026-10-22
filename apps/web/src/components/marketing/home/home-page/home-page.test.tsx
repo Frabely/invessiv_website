@@ -30,8 +30,8 @@ vi.mock(
   }),
 );
 
-vi.mock("@/lib/analytics/conversion-events", () => ({
-  trackConversionEvent: vi.fn(),
+vi.mock("@/lib/analytics/track-analytics-event", () => ({
+  trackAnalyticsEvent: vi.fn(),
 }));
 
 vi.mock("@/hooks/marketing/use-process-journey", () => ({

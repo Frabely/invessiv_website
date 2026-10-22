@@ -1,3 +1,6 @@
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { REFERENCE_IMAGE_DEVICE } from "@/common/constants/marketing/reference-image-device";
 import { REFERENCE_SECTION_IDS } from "@/common/constants/marketing/reference-section-ids";
 import type { ReferenceLabels } from "@/common/contracts/marketing/reference-labels";
@@ -51,6 +54,10 @@ export function ReferenceProjectCard({
           href={project.href}
           rel="noreferrer"
           target="_blank"
+          {...analyticsAttributes(AnalyticsEventName.ReferenceOpened, {
+            project: project.imageKey,
+            target: AnalyticsTarget.External,
+          })}
         >
           {project.linkLabel}
         </a>

@@ -5,29 +5,28 @@ import {
   trackSiteHeaderThemeSwitch,
 } from "./site-header-events";
 
-const mockTrackConversionEvent = vi.fn();
+const mockTrackAnalyticsEvent = vi.fn();
 
-vi.mock("@/lib/analytics/conversion-events", () => ({
-  trackConversionEvent: (...args: unknown[]) =>
-    mockTrackConversionEvent(...args),
+vi.mock("@/lib/analytics/track-analytics-event", () => ({
+  trackAnalyticsEvent: (...args: unknown[]) => mockTrackAnalyticsEvent(...args),
 }));
 
 describe("site header analytics events", () => {
-  it("tracks language switches with the header location and target locale", () => {
+  it("tracks language switches as a preference change", () => {
     trackSiteHeaderLanguageSwitch("en");
 
-    expect(mockTrackConversionEvent).toHaveBeenCalledWith("language_switch", {
-      location: "header",
-      target: "en",
+    expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith("preference_changed", {
+      type: "language",
+      value: "en",
     });
   });
 
-  it("tracks theme switches with the header location and target theme", () => {
+  it("tracks theme switches as a preference change", () => {
     trackSiteHeaderThemeSwitch("light");
 
-    expect(mockTrackConversionEvent).toHaveBeenCalledWith("theme_switch", {
-      location: "header",
-      target: "light",
+    expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith("preference_changed", {
+      type: "theme",
+      value: "light",
     });
   });
 });

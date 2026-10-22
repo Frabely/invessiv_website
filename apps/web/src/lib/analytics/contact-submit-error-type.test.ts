@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import type { ContactSubmitErrorResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
 import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
-import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
-import { getContactSubmitAnalyticsErrorType } from "./contact-submit-error-type";
+import { AnalyticsFormFailureReason } from "@/common/constants/analytics/analytics-form";
+import { getContactSubmitFailureReason } from "./contact-submit-error-type";
 
 function createErrorResponse(
   code: ContactSubmitErrorResponse["code"],
@@ -15,32 +15,32 @@ function createErrorResponse(
   };
 }
 
-describe("getContactSubmitAnalyticsErrorType", () => {
-  it("maps contact submit errors to the controlled analytics error types", () => {
+describe("getContactSubmitFailureReason", () => {
+  it("maps contact submit errors to the controlled analytics failure reasons", () => {
     expect(
-      getContactSubmitAnalyticsErrorType(
+      getContactSubmitFailureReason(
         createErrorResponse(CONTACT_SUBMIT_ERROR_CODE.RateLimited),
       ),
-    ).toBe(ContactFormSubmitErrorType.RateLimited);
+    ).toBe(AnalyticsFormFailureReason.RateLimited);
     expect(
-      getContactSubmitAnalyticsErrorType(
+      getContactSubmitFailureReason(
         createErrorResponse(CONTACT_SUBMIT_ERROR_CODE.DeliveryUnavailable),
       ),
-    ).toBe(ContactFormSubmitErrorType.Delivery);
+    ).toBe(AnalyticsFormFailureReason.Delivery);
     expect(
-      getContactSubmitAnalyticsErrorType(
+      getContactSubmitFailureReason(
         createErrorResponse(CONTACT_SUBMIT_ERROR_CODE.ValidationError),
       ),
-    ).toBe(ContactFormSubmitErrorType.Validation);
+    ).toBe(AnalyticsFormFailureReason.Validation);
     expect(
-      getContactSubmitAnalyticsErrorType(
+      getContactSubmitFailureReason(
         createErrorResponse(CONTACT_SUBMIT_ERROR_CODE.SpamDetected),
       ),
-    ).toBe(ContactFormSubmitErrorType.Validation);
+    ).toBe(AnalyticsFormFailureReason.Validation);
     expect(
-      getContactSubmitAnalyticsErrorType(
+      getContactSubmitFailureReason(
         createErrorResponse(CONTACT_SUBMIT_ERROR_CODE.InternalError),
       ),
-    ).toBe(ContactFormSubmitErrorType.Generic);
+    ).toBe(AnalyticsFormFailureReason.Generic);
   });
 });

@@ -2,6 +2,7 @@
 
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
+import { parseAnalyticsPayloadAttribute } from "@/common/patterns/analytics/analytics-properties";
 
 import { FAQ_SECTION_ID } from "@/config/navigation/home";
 import { QAndASection } from "./q-and-a-section";
@@ -199,6 +200,10 @@ describe("QAndASection", () => {
     });
 
     expect(mailLink.getAttribute("href")).toBe("#contact-email");
-    expect(mailLink.getAttribute("data-analytics-location")).toBe("qna");
+    expect(
+      parseAnalyticsPayloadAttribute(
+        mailLink.getAttribute("data-analytics-payload") ?? undefined,
+      ),
+    ).toEqual({ cta: "home_faq_contact", target: "contact_email" });
   });
 });

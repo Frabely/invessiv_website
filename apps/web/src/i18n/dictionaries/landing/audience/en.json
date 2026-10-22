@@ -3,8 +3,6 @@
   "bodyHighlight": "Pick your field",
   "closeLabel": "Close",
   "cta": {
-    "analyticsTarget": "contact",
-    "analyticsVariant": "primary",
     "href": "#contact",
     "label": "Request a free initial assessment"
   },

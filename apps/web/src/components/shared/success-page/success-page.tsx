@@ -5,6 +5,10 @@ import {
   faCheckDouble,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsCalendarSource } from "@/common/constants/analytics/analytics-form";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { ButtonLink, PrimaryCtaLink } from "@/components/shared/button/button";
 import type { SuccessPageContent } from "@/i18n/dictionaries/shared/success-page";
 import styles from "./success-page.module.css";
@@ -82,6 +86,10 @@ export function SuccessPage({
             className={styles.contactLink}
             href={contactHref}
             rel="noreferrer"
+            {...analyticsAttributes(AnalyticsEventName.CalendarOpened, {
+              source: AnalyticsCalendarSource.SuccessPage,
+              placement: AnalyticsCtaId.SuccessCalendar,
+            })}
             target="_blank"
           >
             <FontAwesomeIcon

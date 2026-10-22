@@ -8,7 +8,11 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { GeneratorAnalyticsEvent } from "@/common/constants";
+const mockTrackAnalyticsEvent = vi.fn();
+
+vi.mock("@/lib/analytics/track-analytics-event", () => ({
+  trackAnalyticsEvent: (...args: unknown[]) => mockTrackAnalyticsEvent(...args),
+}));
 import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/post/generator-color-pairs";
 import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import type {
@@ -221,8 +225,7 @@ describe("GeneratorSection", () => {
 
   it("transitions through loading and shows the download step on success", async () => {
     let resolveSubmit:
-      | ((value: LinkedInPostGeneratorResult) => void)
-      | undefined;
+      ((value: LinkedInPostGeneratorResult) => void) | undefined;
     const submit = vi.fn<SubmitGenerator>(
       () =>
         new Promise<LinkedInPostGeneratorResult>((resolve) => {
@@ -384,11 +387,9 @@ describe("GeneratorSection", () => {
     });
   });
 
-  it("emits a post download event when the zip download action is used", async () => {
+  it("tracks a generator download step when the zip download action is used", async () => {
     const { linkedinPostZipDownloadService } =
       await import("@/client/linkedin-post/services/linkedin-post-zip-download-service");
-    const eventSpy = vi.fn();
-    window.addEventListener(GeneratorAnalyticsEvent.PostDownload, eventSpy);
 
     renderSection();
     fillValidValues();
@@ -404,7 +405,9 @@ describe("GeneratorSection", () => {
       }),
     );
 
-    expect(eventSpy).toHaveBeenCalledTimes(1);
+    expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith("generator_step", {
+      step: "download",
+    });
     expect(
       linkedinPostZipDownloadService.downloadLinkedInPostZip,
     ).toHaveBeenCalledWith(
@@ -412,7 +415,6 @@ describe("GeneratorSection", () => {
         downloadFileName: "post.png",
       }),
     );
-    window.removeEventListener(GeneratorAnalyticsEvent.PostDownload, eventSpy);
   });
 
   it("shows the remaining usage in the meter after returning to the generator", async () => {

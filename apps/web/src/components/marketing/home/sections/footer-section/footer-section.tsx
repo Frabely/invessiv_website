@@ -3,6 +3,12 @@ import { FOOTER_SECTION_ID, SECTION_HREFS } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
+import { getNavigationItem } from "@/lib/analytics/get-navigation-item";
+import { AnalyticsArea } from "@/common/constants/analytics/analytics-area";
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import type { Locale } from "@/config/i18n";
 import type { FooterColumnCopy } from "@/i18n/dictionaries/marketing/home";
 import { getFooterStaticContent } from "@/i18n/dictionaries/shared/footer";
@@ -28,23 +34,23 @@ export function FooterSection({
     href.includes("placeholder") || href.includes("PLATZHALTER");
 
   const getLinkAnalyticsProps = (href: string) => {
-    const contactTarget = getContactTarget(href);
-    if (contactTarget) {
-      return {
-        "data-analytics-event": "contact_click",
-        "data-analytics-location": "footer",
-        "data-analytics-target": contactTarget,
-      };
+    const channel = getContactTarget(href);
+    if (channel) {
+      return analyticsAttributes(AnalyticsEventName.ContactChannelClicked, {
+        channel,
+        area: AnalyticsArea.Footer,
+      });
     }
     if (href === SECTION_HREFS.contact) {
-      return {
-        "data-analytics-event": "cta_click",
-        "data-analytics-location": "footer",
-        "data-analytics-variant": "primary",
-        "data-analytics-target": "form",
-      };
+      return analyticsAttributes(AnalyticsEventName.CtaClicked, {
+        cta: AnalyticsCtaId.FooterContact,
+        target: AnalyticsTarget.ContactForm,
+      });
     }
-    return {};
+    return analyticsAttributes(AnalyticsEventName.NavClicked, {
+      item: getNavigationItem(href),
+      area: AnalyticsArea.Footer,
+    });
   };
 
   const filteredNavColumn: FooterColumnCopy = {
@@ -114,7 +120,7 @@ export function FooterSection({
               <section className={styles.column} role="listitem">
                 <h3 className={styles.heading}>{copy.contactTitle}</h3>
                 <ContactIdentity
-                  analyticsLocation="footer"
+                  analyticsArea={AnalyticsArea.Footer}
                   channels={CONTACT_CHANNEL_KEYS}
                   locale={locale}
                 />

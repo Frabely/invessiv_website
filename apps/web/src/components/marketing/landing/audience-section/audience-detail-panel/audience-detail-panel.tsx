@@ -1,3 +1,7 @@
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import type {
   AudienceIconKey,
@@ -53,10 +57,10 @@ export function AudienceDetailPanel({
       {cta ? (
         <PrimaryCtaLink
           className={styles.cta}
-          data-analytics-event="cta_click"
-          data-analytics-location="audience"
-          data-analytics-target={cta.analyticsTarget}
-          data-analytics-variant={cta.analyticsVariant ?? "primary"}
+          {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+            cta: AnalyticsCtaId.LandingAudiencePrimary,
+            target: AnalyticsTarget.ContactForm,
+          })}
           href={cta.href}
         >
           {cta.label}

@@ -2,6 +2,7 @@
 
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
+import { parseAnalyticsPayloadAttribute } from "@/common/patterns/analytics/analytics-properties";
 import { getHomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
 import { UspSection } from "./usp-section";
 
@@ -78,9 +79,12 @@ describe("UspSection", () => {
 
     const cta = screen.getByRole("link", { name: content.replyCtaLabel });
     expect(cta.getAttribute("href")).toBe("#contact");
-    expect(cta.getAttribute("data-analytics-event")).toBe("cta_click");
-    expect(cta.getAttribute("data-analytics-location")).toBe("usp");
-    expect(cta.getAttribute("data-analytics-target")).toBe("form");
+    expect(cta.getAttribute("data-analytics-event")).toBe("cta_clicked");
+    expect(
+      parseAnalyticsPayloadAttribute(
+        cta.getAttribute("data-analytics-payload") ?? undefined,
+      ),
+    ).toEqual({ cta: "home_usp_reply", target: "contact_form" });
   });
 
   it("keeps the backdrop and avatars out of the accessibility tree", () => {

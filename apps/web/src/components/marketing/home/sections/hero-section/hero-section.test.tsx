@@ -44,12 +44,17 @@ describe("HeroSection", () => {
           "Direkter Ansprechpartner",
           "Softwareentwicklungs-Background",
         ]}
-        primaryCtaAnalyticsTarget="form"
+        primaryCtaAnalytics={{
+          cta: "home_hero_primary",
+          target: "contact_form",
+        }}
         primaryCtaHref="#contact"
-        secondaryCtaAnalyticsTarget="services"
+        secondaryCtaAnalytics={{
+          cta: "home_hero_secondary",
+          target: "services",
+        }}
         secondaryCtaHref="#services"
         title="Websites, die Vertrauen schaffen und Dir Anfragen bringen."
-        trackingLocation="hero"
         visualSlot={
           <span
             aria-label="Moritz Hecht, persönlicher Ansprechpartner für Webdesign aus Chemnitz"
@@ -72,7 +77,11 @@ describe("HeroSection", () => {
       name: "Leistungen ansehen",
     });
     expect(secondaryLink.getAttribute("href")).toBe("#services");
-    expect(secondaryLink.dataset.analyticsTarget).toBe("services");
+    expect(secondaryLink.dataset.analyticsEvent).toBe("cta_clicked");
+    expect(JSON.parse(secondaryLink.dataset.analyticsPayload ?? "{}")).toEqual({
+      cta: "home_hero_secondary",
+      target: "services",
+    });
     const directContactChip = screen.getByText("Direkter Ansprechpartner");
     expect(directContactChip).toBeTruthy();
     expect(screen.getByText("Softwareentwicklungs-Background")).toBeTruthy();
@@ -99,9 +108,14 @@ describe("HeroSection", () => {
         heroVisualAriaLabel="Hero visual preview"
         primaryCtaHref="#footer"
         secondaryCtaHref="#footer"
-        trackingLocation="landing_hero"
-        primaryCtaAnalyticsTarget="footer"
-        secondaryCtaAnalyticsTarget="footer"
+        primaryCtaAnalytics={{
+          cta: "landing_hero_primary",
+          target: "contact_form",
+        }}
+        secondaryCtaAnalytics={{
+          cta: "landing_hero_secondary",
+          target: "process",
+        }}
         title="Landingpages"
       />,
     );
@@ -110,11 +124,15 @@ describe("HeroSection", () => {
     const secondaryLink = screen.getByRole("link", { name: "Footer ansehen" });
 
     expect(primaryLink.getAttribute("href")).toBe("#footer");
-    expect(primaryLink.dataset.analyticsLocation).toBe("landing_hero");
-    expect(primaryLink.dataset.analyticsTarget).toBe("footer");
+    expect(JSON.parse(primaryLink.dataset.analyticsPayload ?? "{}")).toEqual({
+      cta: "landing_hero_primary",
+      target: "contact_form",
+    });
     expect(secondaryLink.getAttribute("href")).toBe("#footer");
-    expect(secondaryLink.dataset.analyticsLocation).toBe("landing_hero");
-    expect(secondaryLink.dataset.analyticsTarget).toBe("footer");
+    expect(JSON.parse(secondaryLink.dataset.analyticsPayload ?? "{}")).toEqual({
+      cta: "landing_hero_secondary",
+      target: "process",
+    });
   });
 
   it("renders an optional decorative background video in dark mode", () => {
@@ -128,9 +146,14 @@ describe("HeroSection", () => {
         heroVisualAriaLabel="Hero visual preview"
         primaryCtaHref="#footer"
         secondaryCtaHref="#footer"
-        trackingLocation="landing_hero"
-        primaryCtaAnalyticsTarget="footer"
-        secondaryCtaAnalyticsTarget="footer"
+        primaryCtaAnalytics={{
+          cta: "landing_hero_primary",
+          target: "contact_form",
+        }}
+        secondaryCtaAnalytics={{
+          cta: "landing_hero_secondary",
+          target: "process",
+        }}
         title="Landingpages"
       />,
     );

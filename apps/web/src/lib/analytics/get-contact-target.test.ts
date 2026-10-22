@@ -27,3 +27,12 @@ describe("getContactTarget", () => {
     expect(getContactTarget("https://invessiv.de")).toBeUndefined();
   });
 });
+
+describe("getContactTarget social channels", () => {
+  it("detects linkedin and instagram profiles", () => {
+    expect(getContactTarget("https://www.linkedin.com/in/example")).toBe(
+      "linkedin",
+    );
+    expect(getContactTarget("https://instagram.com/example")).toBe("instagram");
+  });
+});

@@ -8,6 +8,7 @@ import {
   within,
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { parseAnalyticsPayloadAttribute } from "@/common/patterns/analytics/analytics-properties";
 
 import { AudienceSection } from "./audience-section";
 
@@ -29,7 +30,6 @@ const CONTENT = {
   bodyHighlight: "Wähl deine Branche",
   closeLabel: "Schließen",
   cta: {
-    analyticsTarget: "contact",
     href: "#contact",
     label: "Kostenlose Ersteinschätzung anfragen",
   },
@@ -131,9 +131,13 @@ describe("AudienceSection", () => {
     renderSection();
 
     const second = screen.getByRole("button", { name: /Anwälte/ });
-    expect(second.dataset.analyticsEvent).toBe("audience_select");
-    expect(second.dataset.analyticsLocation).toBe("audience");
-    expect(second.dataset.analyticsTarget).toBe("scales");
+    expect(second.dataset.analyticsEvent).toBe("option_selected");
+    expect(
+      parseAnalyticsPayloadAttribute(second.dataset.analyticsPayload),
+    ).toEqual({
+      group: "landing_audience",
+      option: "scales",
+    });
   });
 
   it("highlights the call to action inside the intro copy", () => {
@@ -150,7 +154,7 @@ describe("AudienceSection", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
     const cta = screen.getByRole("link", { name: CONTENT.cta.label });
     expect(cta.getAttribute("href")).toBe("#contact");
-    expect(cta.dataset.analyticsEvent).toBe("cta_click");
+    expect(cta.dataset.analyticsEvent).toBe("cta_clicked");
   });
 });
 

@@ -1,7 +1,12 @@
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { AnalyticsArea } from "@/common/constants/analytics/analytics-area";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsPage } from "@/common/constants/analytics/analytics-page";
 import type { QnaItemCopy } from "@/common/contracts/marketing/qna-copy";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
+import { getNavigationItem } from "@/lib/analytics/get-navigation-item";
 import styles from "./qna-question-bubble.module.css";
 
 type QnaQuestionBubbleProps = {
@@ -27,6 +32,12 @@ export function QnaQuestionBubble({
         className={styles.disclosure}
         onClick={onToggle}
         type="button"
+        {...(isOpen
+          ? {}
+          : analyticsAttributes(AnalyticsEventName.FaqOpened, {
+              page: AnalyticsPage.Home,
+              question: questionId,
+            }))}
       >
         <span className={styles.question} id={questionId}>
           {item.question}
@@ -46,7 +57,14 @@ export function QnaQuestionBubble({
         <div className={styles.answerContent}>
           <p className={styles.answer}>{item.answer}</p>
           {item.link && isOpen ? (
-            <a className={styles.answerLink} href={item.link.href}>
+            <a
+              className={styles.answerLink}
+              href={item.link.href}
+              {...analyticsAttributes(AnalyticsEventName.NavClicked, {
+                item: getNavigationItem(item.link.href),
+                area: AnalyticsArea.Faq,
+              })}
+            >
               {item.link.label}
             </a>
           ) : null}

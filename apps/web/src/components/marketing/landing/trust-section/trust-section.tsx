@@ -5,6 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useRef, useState } from "react";
 
+import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
@@ -14,7 +18,6 @@ import styles from "./trust-section.module.css";
 type TrustSectionProps = LandingTrustContent & {
   id: string;
   locale: Locale;
-  replyAnalyticsTarget: string;
   replyHref: string;
 };
 
@@ -52,7 +55,6 @@ export function TrustSection({
   eyebrow,
   id,
   locale,
-  replyAnalyticsTarget,
   replyHref,
   title,
   titleHighlight,
@@ -127,10 +129,10 @@ export function TrustSection({
             </span>
             <a
               className={styles.reply}
-              data-analytics-event="cta_click"
-              data-analytics-location="trust"
-              data-analytics-target={replyAnalyticsTarget}
-              data-analytics-variant="secondary"
+              {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
+                cta: AnalyticsCtaId.LandingTrustReply,
+                target: AnalyticsTarget.ContactForm,
+              })}
               href={replyHref}
             >
               <span className={styles.replyLabel}>{chat.replyCtaLabel}</span>

@@ -3,111 +3,98 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
-import { useContactFormAnalytics } from "./use-contact-form-analytics";
+import {
+  useContactFormAnalytics,
+  useContactFormStartTracking,
+} from "./use-contact-form-analytics";
 
-const mockTrackConversionEvent = vi.fn();
+const mockTrackAnalyticsEvent = vi.fn();
 
-vi.mock("@/lib/analytics/conversion-events", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("@/lib/analytics/conversion-events")>();
+vi.mock("@/lib/analytics/track-analytics-event", () => ({
+  trackAnalyticsEvent: (...args: unknown[]) => mockTrackAnalyticsEvent(...args),
+}));
 
-  return {
-    ...actual,
-    trackConversionEvent: (...args: unknown[]) =>
-      mockTrackConversionEvent(...args),
-  };
+describe("useContactFormStartTracking", () => {
+  afterEach(() => {
+    mockTrackAnalyticsEvent.mockReset();
+  });
+
+  it("tracks the form start only once until reset", () => {
+    const { result } = renderHook(() =>
+      useContactFormStartTracking("home_contact"),
+    );
+
+    act(() => {
+      result.current.trackStarted();
+      result.current.trackStarted();
+    });
+
+    expect(mockTrackAnalyticsEvent).toHaveBeenCalledTimes(1);
+    expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith("form_started", {
+      form: "contact",
+      placement: "home_contact",
+    });
+
+    act(() => {
+      result.current.resetStarted();
+      result.current.trackStarted();
+    });
+
+    expect(mockTrackAnalyticsEvent).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe("useContactFormAnalytics", () => {
   afterEach(() => {
-    mockTrackConversionEvent.mockReset();
+    mockTrackAnalyticsEvent.mockReset();
   });
 
-  it("tracks form start only once until reset", () => {
+  it("tracks submit, invalid, failure, completion and calendar with two properties each", () => {
     const { result } = renderHook(() =>
       useContactFormAnalytics({
-        formId: "project_request",
-        location: "contact",
+        form: "discovery_call",
+        placement: "landing_final",
       }),
     );
 
     act(() => {
-      result.current.trackFormStart();
-      result.current.trackFormStart();
+      result.current.trackSubmitted();
+      result.current.trackInvalid(["email", "consentAccepted"]);
+      result.current.trackFailed("rate_limited");
+      result.current.trackCompleted();
+      result.current.trackCalendarOpened();
     });
 
-    expect(mockTrackConversionEvent).toHaveBeenCalledTimes(1);
-    expect(mockTrackConversionEvent).toHaveBeenCalledWith("form_start", {
-      form_id: "project_request",
-      location: "contact",
-      target: "form",
-      variant: "primary",
-    });
-
-    act(() => {
-      result.current.resetFormAnalytics();
-      result.current.trackFormStart({ step: "details" });
-    });
-
-    expect(mockTrackConversionEvent).toHaveBeenCalledTimes(2);
-    expect(mockTrackConversionEvent).toHaveBeenLastCalledWith("form_start", {
-      form_id: "project_request",
-      location: "contact",
-      step: "details",
-      target: "form",
-      variant: "primary",
-    });
+    expect(mockTrackAnalyticsEvent.mock.calls).toEqual([
+      [
+        "form_submitted",
+        { form: "discovery_call", placement: "landing_final" },
+      ],
+      ["form_invalid", { form: "discovery_call", field: "email" }],
+      ["form_failed", { form: "discovery_call", reason: "rate_limited" }],
+      [
+        "form_completed",
+        { form: "discovery_call", placement: "landing_final" },
+      ],
+      [
+        "calendar_opened",
+        { source: "after_submit", placement: "landing_final" },
+      ],
+    ]);
   });
 
-  it("tracks submit attempt, success, and error payloads", () => {
+  it("skips the invalid event when no field name is known", () => {
     const { result } = renderHook(() =>
       useContactFormAnalytics({
-        formId: "discovery_call",
-        location: "contact",
-        target: "calendly",
-        variant: "secondary",
+        form: "quick_contact",
+        placement: "home_contact",
       }),
     );
 
     act(() => {
-      result.current.trackSubmitAttempt({ step: "calendar" });
-      result.current.trackSubmitSuccess();
-      result.current.trackSubmitError(ContactFormSubmitErrorType.Delivery);
+      result.current.trackInvalid([]);
     });
 
-    expect(mockTrackConversionEvent).toHaveBeenCalledWith("form_start", {
-      form_id: "discovery_call",
-      location: "contact",
-      step: "calendar",
-      target: "calendly",
-      variant: "secondary",
-    });
-    expect(mockTrackConversionEvent).toHaveBeenCalledWith(
-      "form_submit_attempt",
-      {
-        form_id: "discovery_call",
-        location: "contact",
-        step: "calendar",
-        target: "calendly",
-        variant: "secondary",
-      },
-    );
-    expect(mockTrackConversionEvent).toHaveBeenCalledWith(
-      "lead_submit_success",
-      {
-        form_id: "discovery_call",
-        location: "contact",
-        target: "calendly",
-        variant: "secondary",
-      },
-    );
-    expect(mockTrackConversionEvent).toHaveBeenCalledWith("form_submit_error", {
-      error_type: ContactFormSubmitErrorType.Delivery,
-      form_id: "discovery_call",
-      location: "contact",
-      target: "calendly",
-      variant: "secondary",
-    });
+    expect(mockTrackAnalyticsEvent).not.toHaveBeenCalled();
   });
 });
