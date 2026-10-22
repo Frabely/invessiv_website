@@ -1,6 +1,6 @@
 # Ordner 21 — Datenschutz, Backup und Produktivrollout
 
-> **Status:** offen · **Abhängigkeiten:** 01–20 · **Aufwand:** 4–5 Tage · **Reviewziel:** 60–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 01–20 sowie 20-0 · **Aufwand:** 4–5 Tage · **Reviewziel:** 60–100 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -37,15 +37,16 @@ Freigabe für alle einzeln geprüften Kunden möglich.
   zerstört.
 - Backupkopien werden nicht umgeschrieben, sondern bleiben gesperrt bis zum regulären Fristablauf.
 
-## Backup und Restore
+## Backup und Restore — vorgezogen
 
-- GitHub Actions erstellt täglich verschlüsselten `pg_dump` in separatem Vercel-Blob-Store.
-- Rotation: täglich 30 Tage, monatlich 12 Monate; Dateikopien 90 Tage.
-- Manifest enthält Datei-ID, Storage-Key, Größe, SHA-256 und Sicherungszeitpunkt.
-- Tokens für Primär- und Backup-Store sind getrennt und minimal berechtigt.
-- Quartalsweise isolierter Restore von DB und Dateien; Ziel RPO 24 Stunden, RTO 4 Stunden.
-- Runbook dokumentiert Neon-Free-Einschränkung, gemeinsames Vercel-Kontorisiko, Verantwortlichen,
-  Eskalation, Restore, Validierung und Rückkehr in Produktion.
+Die verbindliche Sicherungsarchitektur und der erste vollständige Restore liegen seit 22.10.2026 in
+[Ordner 20-0](../20-0-kundendaten-backup/README.md), vor 20a. Diese Einheit verwendet sie weiter:
+Neon Free, separates externes Speicherkonto, gemeinsame 30-Tage-Aufbewahrung, versionierter Schlüsseltresor,
+Code-/Migrationsmanifest und monatlicher Drill. Die frühere Planung eines zweiten Vercel-Stores mit
+12 Monatskopien und nur 90 Tagen Dateikopien ist ersetzt.
+
+Export und Purge ergänzen das Runbook: Zwischenzeitliche Löschungen und Zugriffswiderrufe müssen nach einem
+Restore vor erneuter Portalöffnung durchgesetzt werden. Neue Daten-/Dateidomänen erweitern das Backupinventar.
 
 ## Produktivabnahme
 

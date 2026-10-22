@@ -20,10 +20,10 @@ getesteten Owner-Command.
 | Reihenfolge     | Zugriffe sperren → Manifest → Primär-Blobs löschen → DB-Zeilen löschen     |
 | Teilfehler      | Zustand `purge_pending`, Writes gesperrt, idempotent fortsetzbar           |
 | DB-Backup       | täglicher verschlüsselter `pg_dump` per GitHub Actions                     |
-| Backupziel      | separater Vercel-Blob-Store mit getrenntem Token                           |
-| Rotation        | täglich 30 Tage, monatlich 12 Monate, Dateikopien 90 Tage                  |
+| Backupziel      | separates externes Speicherkonto gemäß Ordner 20-0                         |
+| Rotation        | gemeinsame 30-Tage-Aufbewahrung gemäß Ordner 20-0                          |
 | Ziel            | RPO höchstens 24 Stunden, RTO höchstens 4 Stunden                          |
-| Restore-Test    | quartalsweise in isolierter Umgebung, niemals über Produktion              |
+| Restore-Test    | monatlich gemäß Ordner 20-0, niemals über Produktion                       |
 
 ## Exportinhalt
 
@@ -60,24 +60,12 @@ einen nicht zuordenbaren Wert und `active = false`. Die Historie bleibt konsiste
 entfernt. Das zugehörige Clerk-Konto wird separat über die Clerk Backend API gelöscht; ein Fehler dort bleibt als
 wiederholbarer Saga-Schritt sichtbar.
 
-## Backup-Pipeline
+## Backup-Pipeline und Restore — vorgezogen in Task 34a
 
-- GitHub-OIDC oder minimaler Secretzugriff; keine Zugangsdaten in Workflowlogs.
-- Dump zunächst in temporäres, verschlüsseltes Artefakt; Upload erst nach erfolgreicher Prüfung.
-- Dateibackup kopiert neue/geänderte Blobs und schreibt Manifest. Gelöschte Produktivdateien bleiben
-  nur bis zum Ende der 90-Tage-Generation.
-- Retentionjob arbeitet ausschließlich im Backupstore und löscht nur eindeutig klassifizierte,
-  abgelaufene Generationen.
-- Alert, wenn letzter erfolgreicher DB- oder Datei-Backupzeitpunkt älter als 26 Stunden ist.
-
-## Restore-Drill
-
-- Neue isolierte Neon-/Postgres-Zieldatenbank und separater Restore-Blob-Store.
-- DB-Dump entschlüsseln, restore, Migrationstand prüfen und Anwendung im isolierten Modus starten.
-- Dateien anhand Manifest kopieren und jeden SHA-256 prüfen.
-- Stichprobe Kunde mit Portal, Projekt, Aufgabe, Feedback, Chat, Credential-Metadaten und Stunden.
-- Gemessene RPO/RTO, Abweichungen und Korrekturmaßnahmen protokollieren.
-- Restoreumgebung nach Abnahme kontrolliert entfernen; niemals Produktions-Keys verwenden.
+Verbindlich ist [Ordner 20-0](../20-0-kundendaten-backup/README.md): vollständige DB, Blob-Dateien,
+Code-/Migrationsstand, versionierter separater Schlüsseltresor, unabhängiges Monitoring und erster Restore.
+Task 34 verwendet diese Infrastruktur und ergänzt die Wiederherstellung um Export-/Purge-Fälle.
+Ein Restore darf zwischenzeitliche Löschungen und Zugriffswiderrufe nicht still rückgängig machen.
 
 ## Tickets
 
@@ -91,14 +79,14 @@ wiederholbarer Saga-Schritt sichtbar.
 - Preview, Statussperre, Jobhandler, Batchlöschung, DB-Finalisierung und Replay.
 - Fault-Injection vor/nach jedem externen Schritt.
 
-### CRM-34-T3 — Backupautomation
+### CRM-34-T3 — Backupautomation (vorgezogen)
 
-- GitHub-Workflow, Verschlüsselung, Blobziel, Manifest, Rotation und Altersmonitoring.
-- Env-/Secret-Dokumentation ohne committed Werte.
+- Umsetzung und Erstabnahme in CRM-34a-T1 bis T4, Ordner 20-0.
+- Hier nur neue Export-/Purge-Anforderungen integrieren; keine zweite Backup-Pipeline bauen.
 
 ### CRM-34-T4 — Restore und Produktiv-Gate
 
-- Ausführbares Runbook, erster erfolgreicher Drill und Abnahmeprotokoll.
+- Runbook und Drill aus Ordner 20-0 um Export/Purge ergänzen und erneut prüfen.
 - Clerk Restricted, Portalvorschau, Security-/A11y-Smokes und Rollbackweg bestätigen.
 
 ## End-to-End-Akzeptanz

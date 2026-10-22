@@ -71,7 +71,7 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
 - Optimistische Nebenläufigkeitskontrolle für bearbeitbare Kerndaten.
 - Transaktionale Outbox und idempotenter Job-Runner.
 - Vercel-Blob-Adapter, Inhaltsprüfung und vorbereiteter Inspection-Adapter.
-- Tägliche verschlüsselte DB-Sicherung, Dateikopie und quartalsweiser Restore-Test.
+- Vorgezogen vor 20a: tägliche verschlüsselte Gesamtsicherung auf Neon Free (Ordner 20-0), inklusive Blob-Dateien, Code-/Migrationsstand und getrenntem Schlüsseltresor; monatlicher vollständiger Restore-Test.
 - Reversibles Archiv und nichtöffentlicher Owner-Purge mit Storage-Bereinigung.
 - Der Zugangsstatus „Keine Berechtigung“ bietet zum Produktivrollout optional einen sicheren
   Kontaktweg zum zuständigen Administrator; ohne konfiguriertes Ziel bleibt die passive,
