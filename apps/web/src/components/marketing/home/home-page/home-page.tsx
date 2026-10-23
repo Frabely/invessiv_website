@@ -164,11 +164,12 @@ export function HomePage() {
             if (section.id === REFERENCES_SECTION_ID) {
               return (
                 <ReferencesSection
-                  entries={section.referenceEntries}
                   id={section.id}
                   key={section.id}
                   kicker={section.kicker}
-                  labels={ui.referencesLabels}
+                  labels={section.labels}
+                  linkLabel={section.linkLabel}
+                  references={section.references}
                   referencesHref={referencesHref}
                   title={section.title}
                 />

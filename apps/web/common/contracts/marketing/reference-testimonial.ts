@@ -4,6 +4,7 @@ export type ReferenceTestimonialContent = {
   authorName: string;
   avatarAlt?: string;
   avatarKey?: ReferenceAvatarKey;
+  highlight?: string;
   quote: string;
   role: string;
 };

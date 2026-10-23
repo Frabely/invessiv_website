@@ -34,3 +34,24 @@
   font-weight: 500;
   line-height: 1.4;
 }
+
+.highlight {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--color-text);
+  font-family: var(--font-family-display), sans-serif;
+  font-size: clamp(1.2rem, 1.8vw, 1.45rem);
+  font-weight: 500;
+  line-height: 1.38;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.highlight q::before,
+.highlight q::after {
+  color: var(--color-accent-orange);
+}
+
+.testimonial[data-variant="highlight"] .author {
+  font-size: var(--font-size-heading-md);
+}

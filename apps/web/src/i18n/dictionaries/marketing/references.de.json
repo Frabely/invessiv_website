@@ -5,103 +5,127 @@
     "currentLabel": "Referenzen"
   },
   "hero": {
-    "kicker": "Referenzen",
-    "title": "Webdesign Referenzen",
-    "intro": "Ausgewählte Kundenprojekte, Ergebnisse und Stimmen aus der Zusammenarbeit — jedes davon kannst du dir live ansehen.",
-    "highlights": [
-      "{count} umgesetzte Projekte",
-      "Kontext, Fokus und Ergebnis",
-      "jedes Projekt live einsehbar"
+    "kicker": "Webdesign-Referenzen",
+    "title": "Wie sehen die Webseiten meiner Kunden aus?",
+    "questions": [
+      { "lead": "Was hat vorher ", "keyword": "gefehlt", "trail": "?" },
+      { "lead": "Was ist daraus ", "keyword": "entstanden", "trail": "?" },
+      { "lead": "Was sagen die ", "keyword": "Kunden", "trail": "?" }
     ],
-    "supportingNote": "Weitere Projekte werden hier ergänzt, sobald sie umgesetzt sind. Entscheidend ist, wie Positionierung, Leseführung und Nutzbarkeit zusammenspielen."
+    "note": "Jede Seite kannst du dir live ansehen.",
+    "indexLabel": "Projekte auf dieser Seite"
   },
-  "sectionIntro": {
-    "eyebrow": "Projektübersicht",
-    "title": "Umgesetzte Projekte mit klarem Fokus auf Wirkung und Nutzbarkeit.",
-    "description": "Jedes Projekt wird als kompakte Fallstudie dargestellt: mit Kontext, Fokus, konkreten Deliverables und dem Ergebnis, das die Seite oder das Tool im Einsatz klarer macht."
-  },
-  "testimonialLabels": {
+  "labels": {
+    "problem": "Problem",
+    "solution": "Lösung",
+    "result": "Ergebnis",
+    "scope": "Was ich konkret umgesetzt habe",
+    "gallery": "Einblicke in die Seite",
     "collapseQuote": "Zitat einklappen",
     "expandQuote": "Ganzes Zitat lesen"
   },
   "projects": [
     {
       "imageKey": "allmacher",
-      "imageAlt": "Vorschau der Webseite von Allmacher Coaching mit dem Verhandlungsseminar in Chemnitz",
-      "kicker": "Webseiten-Projekt",
-      "category": "Seminarangebot & Anfragen",
+      "clientName": "Allmacher Coaching",
+      "industry": "Verhandlungsseminar in Chemnitz",
       "title": "Allmacher Coaching: Webseite für ein Verhandlungsseminar",
-      "summary": "Ein klarer Auftritt für Dr. Christoph Allmacher und sein Verhandlungsseminar in Chemnitz. Inhalte, Besonderheiten und Ticket-Optionen sind so geordnet, dass Führungskräfte den Nutzen sofort erfassen. Die Seite entsteht aktuell gemeinsam und wächst weiter.",
-      "focusLabel": "Projektfokus",
-      "focus": "Das Seminar so beschreiben, dass Ablauf und Nutzen sofort verständlich sind und die Anfrage der naheliegende nächste Schritt ist.",
-      "deliverablesLabel": "Leistungsbausteine",
-      "deliverables": [
+      "problem": "Das Seminar überzeugt im Raum, online war aber nicht schnell klar, warum es sich für Führungskräfte lohnt.",
+      "solution": "Eine Seite, die Inhalte, Trainer und das Seminarangebot in klarer Reihenfolge zeigt und direkt zur Anfrage führt.",
+      "result": "Das Seminar ist auf einen Blick greifbar, und Dr. Allmacher steht als Trainer im Mittelpunkt.",
+      "shots": [
+        {
+          "shotKey": "allmacher-overview",
+          "label": "Start",
+          "caption": "Der Einstieg: Thema, Nutzen und Anfrage auf einen Blick.",
+          "alt": "Startbereich der Webseite von Allmacher Coaching mit Seminartitel, Kurzbeschreibung und Anfrage-Button"
+        },
+        {
+          "shotKey": "allmacher-highlights",
+          "label": "Besonderheit",
+          "caption": "Gegenüberstellungen zeigen, was dieses Seminar anders macht.",
+          "alt": "Abschnitt „Besonderheit“ mit Gegenüberstellungen wie „Mitmachen statt Zuhören“ rund um ein Seminarfoto"
+        },
+        {
+          "shotKey": "allmacher-trainer",
+          "label": "Trainer",
+          "caption": "Dr. Christoph Allmacher als Gesicht und Vertrauensanker des Seminars.",
+          "alt": "Abschnitt über den Seminarleiter Dr. Christoph Allmacher mit Porträt und Kurzvorstellung"
+        }
+      ],
+      "scope": [
         "Seminarangebot in klare Abschnitte gegliedert",
-        "Trainer und Methode als Vertrauensanker sichtbar",
-        "durchgehende Führung zur Seminaranfrage"
+        "Trainer und Methode als Vertrauensanker sichtbar gemacht",
+        "Durchgehende Führung zur Seminaranfrage"
       ],
-      "outcomesLabel": "Was das Ergebnis leistet",
-      "outcomes": [
-        "macht Inhalt und Ablauf des Seminars auf Anhieb greifbar",
-        "stellt Dr. Christoph Allmacher als Trainer nach vorn",
-        "führt Interessenten ohne Umwege zur Anfrage"
-      ],
-      "linkLabel": "Zu Allmacher Coaching",
+      "linkLabel": "Allmacher Coaching live ansehen",
       "href": "https://www.allmacher-coaching.de"
     },
     {
       "imageKey": "kolja",
-      "imageAlt": "Vorschau der Finanzmakler-Webseite von Kolja Wienigk mit klarer Struktur",
-      "kicker": "Webseiten-Projekt",
-      "category": "Positionierung & Anfrageführung",
+      "clientName": "Kolja Wienigk",
+      "industry": "Finanzmakler aus Dresden",
       "title": "Finanzmakler-Webseite mit klarer Positionierung",
-      "summary": "Ein ruhiger, vertrauenswürdiger Auftritt für einen Finanzmakler, der Leistungen schnell verständlich macht, relevante Einstiege klar setzt und Anfragen strukturiert vorbereitet.",
-      "focusLabel": "Projektfokus",
-      "focus": "Vertrauen aufbauen, Leistungen lesbar ordnen und Interessenten ohne Umwege zur passenden Anfrage führen.",
-      "deliverablesLabel": "Leistungsbausteine",
-      "deliverables": [
+      "problem": "Finanzthemen wirken schnell kompliziert, und Interessenten brauchen Vertrauen, bevor sie anfragen.",
+      "solution": "Ein ruhiger Auftritt, der typische Sorgen aufgreift, Leistungen verständlich ordnet und zum Erstgespräch führt.",
+      "result": "Die Seite wirkt seriös, gibt schnell Orientierung und macht die Anfrage zum naheliegenden Schritt.",
+      "shots": [
+        {
+          "shotKey": "kolja-overview",
+          "label": "Start",
+          "caption": "Der Einstieg: Beratung ohne Verkaufsdruck als klares Versprechen.",
+          "alt": "Startbereich der Finanzmakler-Webseite von Kolja Wienigk mit Überschrift und Button zum Erstgespräch"
+        },
+        {
+          "shotKey": "kolja-problem-solution",
+          "label": "Sorgen",
+          "caption": "Typische Sorgen von Interessenten werden offen angesprochen.",
+          "alt": "Abschnitt „Das höre ich am häufigsten“ mit drei Kundenzitaten"
+        },
+        {
+          "shotKey": "kolja-services",
+          "label": "Leistungen",
+          "caption": "Beratungsfelder in einer verständlichen Reihenfolge statt einer Produktliste.",
+          "alt": "Abschnitt mit den Beratungsfeldern Finanzmanagement und Immobilien als Karten"
+        }
+      ],
+      "scope": [
         "Positionierung und Seiteneinstieg geschärft",
-        "klare Angebots- und CTA-Hierarchie",
-        "ruhige, mobiletaugliche Leseführung"
+        "Klare Angebots- und CTA-Hierarchie",
+        "Ruhige, mobiltaugliche Leseführung"
       ],
-      "outcomesLabel": "Was das Ergebnis leistet",
-      "outcomes": [
-        "macht den Angebotsrahmen auf Anhieb verständlicher",
-        "reduziert visuelle Unruhe zugunsten klarer Orientierung",
-        "führt Anfragen nachvollziehbar in den Kontakt"
-      ],
-      "linkLabel": "Zu Kolja Wienigk – Finanzmakler",
+      "linkLabel": "Kolja Wienigk live ansehen",
       "href": "https://www.kolja-wienigk.de"
     },
     {
       "imageKey": "consumption",
-      "imageAlt": "Vorschau eines Tools zur Erfassung von Verbrauchsdaten",
-      "kicker": "Software-Projekt",
-      "category": "Erfassung & Verbrauchsdaten",
+      "clientName": "Consumption Trial",
+      "industry": "Tool für Verbrauchsdaten",
       "title": "Consumption Trial zur strukturierten Erfassung von Verbrauchsdaten",
-      "summary": "Ein fokussiertes Tool, das technische Daten und Verbräuche in einer klaren Oberfläche bündelt, Eingaben vereinfacht und den laufenden Prozess lesbarer macht.",
-      "focusLabel": "Projektfokus",
-      "focus": "Wiederkehrende Eingaben vereinfachen, Status sichtbar machen und technische Daten in eine nutzbare Arbeitsoberfläche überführen.",
-      "deliverablesLabel": "Leistungsbausteine",
-      "deliverables": [
-        "kompakte Eingabelogik statt unnötiger Reibung",
-        "klare Oberfläche für technische Verbrauchsdaten",
-        "bessere Lesbarkeit im laufenden Workflow"
+      "problem": "Verbrauchsdaten wurden mühsam erfasst und waren im laufenden Prozess schwer zu lesen.",
+      "solution": "Ein schlankes Tool, das Eingaben vereinfacht und den Status jederzeit sichtbar macht.",
+      "result": "Weniger manueller Aufwand und Verbrauchsdaten, die sich schneller auswerten lassen.",
+      "shots": [
+        {
+          "shotKey": "consumption-overview",
+          "label": "Erfassung",
+          "caption": "Die mobile Übersicht: jede Eintragung mit Datum, Menge und Ort.",
+          "alt": "Mobile Ansicht des Consumption Trial mit erfassten Ladevorgängen"
+        }
       ],
-      "outcomesLabel": "Was das Ergebnis leistet",
-      "outcomes": [
-        "senkt manuellen Aufwand in der Erfassung",
-        "macht Verbrauchsdaten schneller auswertbar",
-        "ordnet den Prozess in einer klaren UI"
+      "scope": [
+        "Kompakte Eingabelogik statt unnötiger Reibung",
+        "Klare Oberfläche für technische Verbrauchsdaten",
+        "Bessere Lesbarkeit im laufenden Workflow"
       ],
-      "linkLabel": "Zum Consumption Trial",
+      "linkLabel": "Consumption Trial öffnen",
       "href": "https://consumption-trial.invessiv.com/"
     }
   ],
   "closingCta": {
-    "title": "Wenn dein nächstes Projekt dieselbe Klarheit braucht, ist der nächste Schritt kurz.",
-    "supportingText": "Ob neue Webseite, Relaunch oder internes Tool: entscheidend ist eine klare Führung vor dem ersten Build, nicht mehr visuelle Lautstärke.",
-    "primaryLabel": "Angebot einschätzen lassen",
-    "secondaryLabel": "Leistungsmodelle"
+    "title": "Und wie soll deine Webseite aussehen?",
+    "supportingText": "Erzähl mir kurz, was du anbietest und wo es gerade hakt. Im kostenlosen Erstgespräch schauen wir gemeinsam, was deine Seite braucht, ob neu oder als Relaunch.",
+    "primaryLabel": "Kostenloses Erstgespräch anfragen",
+    "secondaryLabel": "Leistungen ansehen"
   }
 }

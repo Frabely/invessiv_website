@@ -9,6 +9,7 @@ import de from "./reference-testimonials.de.json";
 import en from "./reference-testimonials.en.json";
 
 type ReferenceTestimonialCopy = {
+  highlight?: string;
   quote: string;
   role: string;
 };

@@ -9,19 +9,21 @@ import styles from "./contact-identity.module.css";
 
 type ContactIdentityProps = {
   analyticsArea: AnalyticsArea;
+  centerOnMobile?: boolean;
   channels: readonly ContactChannelKey[];
   locale: Locale;
 };
 
 export function ContactIdentity({
   analyticsArea,
+  centerOnMobile = false,
   channels,
   locale,
 }: ContactIdentityProps) {
   const companyDetailsHref = `${createLocalePathname(SITE_ROUTES.IMPRINT, locale)}#company-details`;
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-center-mobile={centerOnMobile}>
       <p className={styles.name}>{COMPANY.owner}</p>
       <a className={styles.brand} href={companyDetailsHref}>
         {COMPANY.brandName}

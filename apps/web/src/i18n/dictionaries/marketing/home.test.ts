@@ -349,8 +349,16 @@ describe("home dictionary", () => {
         throw new Error("Expected references section to be available.");
       }
 
-      const sectionCopy = referencesSection.referenceEntries
-        .flatMap((entry) => [entry.authorName, entry.quote, entry.role])
+      const sectionCopy = referencesSection.references
+        .flatMap((reference) =>
+          reference.testimonial
+            ? [
+                reference.testimonial.authorName,
+                reference.testimonial.quote,
+                reference.testimonial.role,
+              ]
+            : [],
+        )
         .join(" ");
 
       expect(sectionCopy).not.toContain("★");
@@ -411,11 +419,9 @@ describe("home dictionary", () => {
       }
 
       expect(
-        referencesSection.referenceEntries.map((entry) => entry.imageKey),
+        referencesSection.references.map((reference) => reference.imageKey),
       ).toEqual(["allmacher", "kolja"]);
-      expect(
-        referencesSection.referenceEntries.map((entry) => entry.linkLabel),
-      ).toEqual([expectedLinkLabel, expectedLinkLabel]);
+      expect(referencesSection.linkLabel).toBe(expectedLinkLabel);
     },
   );
 });

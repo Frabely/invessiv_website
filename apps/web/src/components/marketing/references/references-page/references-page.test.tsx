@@ -1,20 +1,24 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import type { ImgHTMLAttributes } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { REFERENCE_SECTION_IDS } from "@/common/constants/marketing/reference-section-ids";
+import { getReferencesPageContent } from "@/i18n/dictionaries/marketing/references";
 import { ReferencesPage } from "./references-page";
 
 vi.mock("next/image", () => ({
   default: (
     props: ImgHTMLAttributes<HTMLImageElement> & {
       fill?: boolean;
+      placeholder?: string;
       priority?: boolean;
     },
   ) => {
-    const { fill, priority, ...imgProps } = props;
+    const { fill, placeholder, priority, ...imgProps } = props;
     void fill;
+    void placeholder;
     void priority;
 
     // eslint-disable-next-line @next/next/no-img-element
@@ -34,154 +38,72 @@ vi.mock(
 );
 
 describe("ReferencesPage", () => {
-  it("renders breadcrumbs, both case studies, and primary actions", () => {
-    render(
-      <ReferencesPage
-        content={{
-          breadcrumbs: {
-            navLabel: "Breadcrumb-Navigation",
-            homeLabel: "Start",
-            currentLabel: "Projekte",
-          },
-          hero: {
-            kicker: "Ausgewählte Projekte",
-            title:
-              "Webseiten und Tools, die sichtbar ordnen, statt nur gut auszusehen.",
-            intro:
-              "Die Projektseite zeigt bewusst nur zwei live einsehbare Beispiele.",
-            highlights: [
-              "2 live einsehbare Referenzen",
-              "Webseite + Software",
-              "fokussiert statt überladen",
-            ],
-            supportingNote: "Die Mockups treten bewusst einen Schritt zurück.",
-          },
-          sectionIntro: {
-            eyebrow: "Kuratierte Übersicht",
-            title:
-              "Zwei Umsetzungen, zwei Kontexte, ein gemeinsamer Qualitätsanspruch.",
-            description:
-              "Jedes Projekt wird als kompakte Fallstudie dargestellt.",
-          },
-          testimonialLabels: {
-            collapseQuote: "Zitat einklappen",
-            expandQuote: "Ganzes Zitat lesen",
-          },
-          projects: [
-            {
-              imageKey: "kolja",
-              imageAlt:
-                "Vorschau einer Finanzmakler-Webseite mit klarer Struktur",
-              kicker: "Webseiten-Projekt",
-              category: "Positionierung & Anfragen",
-              title: "Finanzmakler-Webseite mit klarer Positionierung",
-              summary:
-                "Ein ruhiger, vertrauenswürdiger Auftritt für einen Finanzmakler.",
-              focusLabel: "Projektfokus",
-              focus:
-                "Vertrauen aufbauen und Interessenten klar zur passenden Anfrage führen.",
-              deliverablesLabel: "Leistungsbausteine",
-              deliverables: [
-                "Positionierung und Seiteneinstieg geschärft",
-                "klare Angebots- und CTA-Hierarchie",
-              ],
-              outcomesLabel: "Was das Ergebnis leistet",
-              outcomes: [
-                "macht den Angebotsrahmen verständlicher",
-                "führt Anfragen nachvollziehbar in den Kontakt",
-              ],
-              testimonial: {
-                authorName: "Kolja Wienigk",
-                avatarAlt: "Porträt von Kolja Wienigk",
-                avatarKey: "kolja",
-                quote: "Die Umsetzung wirkte strukturiert und schnell.",
-                role: "Finanzmakler aus Dresden",
-              },
-              linkLabel: "Zur Webseite",
-              href: "https://www.kolja-wienigk.de",
-            },
-            {
-              imageKey: "consumption",
-              imageAlt:
-                "Vorschau eines Tools zur Erfassung von Verbrauchsdaten",
-              kicker: "Software-Projekt",
-              category: "Datenerfassung & Verbrauch",
-              title:
-                "Consumption Trial zur strukturierten Erfassung von Verbrauchsdaten",
-              summary:
-                "Ein fokussiertes Tool, das technische Daten in einer klaren Oberfläche bündelt.",
-              focusLabel: "Projektfokus",
-              focus:
-                "Wiederkehrende Eingaben vereinfachen und technische Daten lesbar machen.",
-              deliverablesLabel: "Leistungsbausteine",
-              deliverables: [
-                "kompakte Eingabelogik statt unnötiger Reibung",
-                "bessere Lesbarkeit im laufenden Workflow",
-              ],
-              outcomesLabel: "Was das Ergebnis leistet",
-              outcomes: [
-                "senkt manuellen Aufwand in der Erfassung",
-                "ordnet den Prozess in einer klaren UI",
-              ],
-              linkLabel: "Zum Projekt",
-              href: "https://consumption-trial.invessiv.com/",
-            },
-          ],
-          closingCta: {
-            title:
-              "Wenn dein nächstes Projekt dieselbe Klarheit braucht, ist der nächste Schritt kurz.",
-            supportingText:
-              "Ob neue Webseite, Relaunch oder internes Tool: entscheidend ist eine klare Führung vor dem ersten Build.",
-            primaryLabel: "Angebot einschätzen lassen",
-            secondaryLabel: "Leistungsmodelle",
-          },
-        }}
-        locale="de"
-      />,
+  const content = getReferencesPageContent("de");
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  it("shows the hero questions with their highlighted keyword", () => {
+    render(<ReferencesPage content={content} locale="de" />);
+
+    for (const question of content.hero.questions) {
+      const keyword = screen.getByText(question.keyword, {
+        selector: "strong",
+      });
+
+      expect(keyword.parentElement).toHaveTextContent(
+        `${question.lead}${question.keyword}${question.trail}`,
+      );
+    }
+  });
+
+  it("renders one h1 and a project index that jumps to every case", () => {
+    render(<ReferencesPage content={content} locale="de" />);
+
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+    expect(
+      screen.getByRole("heading", { level: 1, name: content.hero.title }),
+    ).toBeInTheDocument();
+
+    const index = screen.getByRole("list", { name: content.hero.indexLabel });
+    const indexLinks = within(index).getAllByRole("link");
+
+    expect(indexLinks.map((link) => link.getAttribute("href"))).toEqual(
+      content.projects.map(
+        (project) => `#${REFERENCE_SECTION_IDS[project.imageKey]}`,
+      ),
+    );
+    expect(
+      indexLinks.map((link) => [
+        link.getAttribute("data-analytics-event"),
+        link.getAttribute("data-analytics-payload"),
+      ]),
+    ).toEqual(
+      content.projects.map((project) => [
+        "reference_opened",
+        JSON.stringify({ project: project.imageKey, target: "references" }),
+      ]),
     );
 
-    expect(screen.getByTestId("site-header")).toBeInTheDocument();
+    for (const project of content.projects) {
+      expect(
+        document.getElementById(REFERENCE_SECTION_IDS[project.imageKey]),
+      ).toHaveAttribute(
+        "aria-labelledby",
+        `${REFERENCE_SECTION_IDS[project.imageKey]}-title`,
+      );
+    }
+  });
+
+  it("keeps breadcrumbs, the closing call to action and the footer", () => {
+    render(<ReferencesPage content={content} locale="de" />);
+
     expect(
-      screen.getByRole("navigation", { name: "Breadcrumb-Navigation" }),
+      screen.getByRole("navigation", { name: content.breadcrumbs.navLabel }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", {
-        name: "Webseiten und Tools, die sichtbar ordnen, statt nur gut auszusehen.",
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText("Finanzmakler-Webseite mit klarer Positionierung"),
-    ).toBeInTheDocument();
-    expect(document.getElementById("kolja")).toHaveAttribute(
-      "aria-labelledby",
-      "kolja-title",
-    );
-    expect(document.getElementById("consumption")).toHaveAttribute(
-      "aria-labelledby",
-      "consumption-title",
-    );
-    expect(
-      screen.getByText(
-        "Consumption Trial zur strukturierten Erfassung von Verbrauchsdaten",
-      ),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Zur Webseite" })).toHaveAttribute(
-      "href",
-      "https://www.kolja-wienigk.de",
-    );
-    expect(
-      screen.getByRole("img", { name: "Porträt von Kolja Wienigk" }),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Kolja Wienigk")).toBeInTheDocument();
-    expect(
-      screen.getByText("Die Umsetzung wirkte strukturiert und schnell."),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Zum Projekt" })).toHaveAttribute(
-      "href",
-      "https://consumption-trial.invessiv.com/",
-    );
-    expect(
-      screen.getByRole("link", { name: "Angebot einschätzen lassen" }),
+      screen.getByRole("link", { name: content.closingCta.primaryLabel }),
     ).toHaveAttribute("href", "/de#contact");
     expect(screen.getByTestId("footer-section")).toBeInTheDocument();
   });

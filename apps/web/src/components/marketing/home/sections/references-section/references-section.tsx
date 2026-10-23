@@ -1,23 +1,25 @@
-import type { ReferenceEntry } from "@/common/contracts/marketing/reference-entry";
-import type { ReferenceLabels } from "@/common/contracts/marketing/reference-labels";
+import type { ReferenceCaseStudyContent } from "@/common/contracts/marketing/reference-case-study";
+import type { ReferenceCaseStudyLabels } from "@/common/contracts/marketing/reference-case-study-labels";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
-import { ReferencesShowcase } from "./references-showcase/references-showcase";
+import { ReferenceTeaser } from "./reference-teaser/reference-teaser";
 import styles from "./references-section.module.css";
 
 type ReferencesSectionProps = {
-  entries: ReferenceEntry[];
   id: string;
   kicker: string;
-  labels: ReferenceLabels;
+  labels: ReferenceCaseStudyLabels;
+  linkLabel: string;
+  references: ReferenceCaseStudyContent[];
   referencesHref: string;
   title: string;
 };
 
 export function ReferencesSection({
-  entries,
   id,
   kicker,
   labels,
+  linkLabel,
+  references,
   referencesHref,
   title,
 }: ReferencesSectionProps) {
@@ -28,11 +30,18 @@ export function ReferencesSection({
         <h2 className={styles.title}>{title}</h2>
       </div>
 
-      <ReferencesShowcase
-        entries={entries}
-        labels={labels}
-        referencesHref={referencesHref}
-      />
+      <div className={styles.list}>
+        {references.map((reference, index) => (
+          <ReferenceTeaser
+            isReversed={index % 2 === 0}
+            key={reference.imageKey}
+            labels={labels}
+            linkLabel={linkLabel}
+            reference={reference}
+            referencesHref={referencesHref}
+          />
+        ))}
+      </div>
     </section>
   );
 }

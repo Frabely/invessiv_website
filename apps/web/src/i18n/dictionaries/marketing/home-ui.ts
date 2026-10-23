@@ -1,4 +1,3 @@
-import type { ReferenceLabels } from "@/common/contracts/marketing/reference-labels";
 import type { Locale } from "@/config/i18n";
 import type { ServiceOption } from "@/common/contracts/marketing";
 import de from "./home-ui.de.json";
@@ -59,7 +58,6 @@ export type HomeUiContent = {
   processKicker: string;
   problemContent: ProblemContent;
   uspContent: UspContent;
-  referencesLabels: ReferenceLabels;
   servicesFitLabel: string;
   servicesMoreItemsPluralLabel: string;
   servicesMoreItemsSingularLabel: string;

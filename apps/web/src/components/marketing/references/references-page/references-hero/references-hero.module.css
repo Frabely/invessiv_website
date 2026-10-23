@@ -1,0 +1,132 @@
+.hero.hero {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-areas:
+    "crumbs"
+    "copy"
+    "index";
+  align-content: start;
+  gap: 28px;
+  margin-top: 0;
+  padding-bottom: 56px;
+}
+
+.crumbs {
+  grid-area: crumbs;
+}
+
+.copy {
+  grid-area: copy;
+  display: grid;
+  gap: 16px;
+}
+
+.title,
+.questions,
+.note {
+  margin: 0;
+}
+
+.title {
+  max-width: 14ch;
+  font-size: var(--font-size-hero-title);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+
+.questions {
+  display: grid;
+  max-width: 30ch;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.question {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  color: color-mix(in srgb, var(--text) 72%, var(--muted) 28%);
+  font-size: var(--font-size-body-lg);
+  line-height: 1.35;
+}
+
+.keyword {
+  padding: 0 0.12em;
+  background: linear-gradient(
+      transparent 58%,
+      color-mix(in srgb, var(--color-cta) 34%, transparent) 58%
+    )
+    no-repeat;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 1.14em;
+  letter-spacing: -0.01em;
+}
+
+.note {
+  color: var(--muted);
+  font-size: var(--font-size-body-sm);
+}
+
+.index {
+  grid-area: index;
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:global([data-theme="light"]) .title {
+  color: color-mix(in srgb, var(--text) 92%, var(--color-cta) 8%);
+}
+
+:global([data-theme="light"]) .question {
+  color: color-mix(in srgb, var(--text) 80%, var(--muted) 20%);
+}
+
+:global([data-theme="light"]) .keyword {
+  background-image: linear-gradient(
+    transparent 58%,
+    color-mix(in srgb, var(--color-cta) 22%, transparent) 58%
+  );
+}
+
+@media (min-width: 640px) {
+  .index {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .hero.hero {
+    min-height: calc(100svh - 110px);
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "crumbs crumbs"
+      "copy index";
+    align-items: center;
+    column-gap: 56px;
+    row-gap: 24px;
+    padding-bottom: 72px;
+  }
+
+  .index {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 900px) {
+  .title {
+    font-size: clamp(2.2rem, 10vw, 3.5rem);
+  }
+}
+
+@media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
+  .title {
+    font-size: var(--font-size-hero-title-wide);
+  }
+}

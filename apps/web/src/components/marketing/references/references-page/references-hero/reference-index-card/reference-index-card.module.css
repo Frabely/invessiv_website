@@ -1,0 +1,44 @@
+.card {
+  display: grid;
+  gap: 14px;
+  height: 100%;
+  border-radius: 14px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 0 4%;
+}
+
+.name {
+  transition: color 180ms ease;
+  font-size: var(--font-size-heading-lg);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.card:hover .name {
+  color: var(--color-cta);
+}
+
+.industry {
+  color: color-mix(in srgb, var(--text) 66%, var(--muted) 34%);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .name {
+    transition: none;
+  }
+}

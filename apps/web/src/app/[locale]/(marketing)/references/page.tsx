@@ -34,16 +34,7 @@ function getVisibleReferencesContent(locale: Locale): ReferencesPageContent {
         (project) => project.imageKey !== REFERENCE_IMAGE_KEY.Consumption,
       );
 
-  return {
-    ...content,
-    hero: {
-      ...content.hero,
-      highlights: content.hero.highlights.map((highlight) =>
-        highlight.replace("{count}", String(projects.length)),
-      ),
-    },
-    projects,
-  };
+  return { ...content, projects };
 }
 
 export async function generateStaticParams() {
@@ -58,11 +49,19 @@ export async function generateMetadata({
     return {};
   }
 
-  const { description, imageAlt, imageHeight, imageUrl, imageWidth, title } =
-    getReferencesMetaContent(locale);
+  const {
+    description,
+    imageAlt,
+    imageHeight,
+    imageUrl,
+    imageWidth,
+    openGraphTitle,
+    title,
+  } = getReferencesMetaContent(locale);
   return createPageMetadata({
     title,
     description,
+    openGraphTitle,
     canonicalPath: createLocalePathname(SITE_ROUTES.REFERENCES, locale),
     languages: createRouteAlternates(SITE_ROUTES.REFERENCES),
     openGraphLocale: OPEN_GRAPH_LOCALE[locale],

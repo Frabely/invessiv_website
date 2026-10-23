@@ -1,7 +1,7 @@
-import type { ReferenceImageKey } from "@/common/constants/marketing/reference-image-key";
 import type { Locale } from "@/config/i18n";
-import type { ReferenceLabels } from "@/common/contracts/marketing/reference-labels";
-import type { ReferenceTestimonialContent } from "@/common/contracts/marketing/reference-testimonial";
+import type { ReferenceCaseStudyContent } from "@/common/contracts/marketing/reference-case-study";
+import type { ReferenceCaseStudyLabels } from "@/common/contracts/marketing/reference-case-study-labels";
+import type { ReferencesHeroQuestion } from "@/common/contracts/marketing/references-hero-question";
 import { findReferenceTestimonial } from "./reference-testimonials";
 import de from "./references.de.json";
 import en from "./references.en.json";
@@ -13,34 +13,10 @@ export type ReferencesBreadcrumbsContent = {
 };
 
 export type ReferencesHeroContent = {
-  intro: string;
+  indexLabel: string;
   kicker: string;
-  highlights: string[];
-  supportingNote: string;
-  title: string;
-};
-
-export type ReferencesSectionIntroContent = {
-  eyebrow: string;
-  title: string;
-  description: string;
-};
-
-export type ReferencesCaseStudyContent = {
-  category: string;
-  deliverables: string[];
-  deliverablesLabel: string;
-  focus: string;
-  focusLabel: string;
-  href: string;
-  imageAlt: string;
-  imageKey: ReferenceImageKey;
-  kicker: string;
-  linkLabel: string;
-  outcomes: string[];
-  outcomesLabel: string;
-  summary: string;
-  testimonial?: ReferenceTestimonialContent;
+  note: string;
+  questions: ReferencesHeroQuestion[];
   title: string;
 };
 
@@ -55,13 +31,12 @@ export type ReferencesPageContent = {
   breadcrumbs: ReferencesBreadcrumbsContent;
   closingCta: ReferencesClosingCtaContent;
   hero: ReferencesHeroContent;
-  projects: ReferencesCaseStudyContent[];
-  sectionIntro: ReferencesSectionIntroContent;
-  testimonialLabels: Pick<ReferenceLabels, "collapseQuote" | "expandQuote">;
+  labels: ReferenceCaseStudyLabels;
+  projects: ReferenceCaseStudyContent[];
 };
 
 type ReferencesPageDictionary = Omit<ReferencesPageContent, "projects"> & {
-  projects: Array<Omit<ReferencesCaseStudyContent, "testimonial">>;
+  projects: Array<Omit<ReferenceCaseStudyContent, "testimonial">>;
 };
 
 const REFERENCES_PAGE_CONTENT: Record<Locale, ReferencesPageDictionary> = {
