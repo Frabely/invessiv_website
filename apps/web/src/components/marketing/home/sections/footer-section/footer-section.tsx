@@ -121,6 +121,7 @@ export function FooterSection({
                 <h3 className={styles.heading}>{copy.contactTitle}</h3>
                 <ContactIdentity
                   analyticsArea={AnalyticsArea.Footer}
+                  centerOnMobile
                   channels={CONTACT_CHANNEL_KEYS}
                   locale={locale}
                 />
