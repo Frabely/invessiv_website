@@ -7,6 +7,14 @@ type ReferenceCaseStoryProps = {
   resultLabel: string;
   solution: string;
   solutionLabel: string;
+  solutionSteps: string[];
+  solutionStepsLabel: string;
+};
+
+type StoryRow = {
+  label: string;
+  steps?: string[];
+  text: string;
 };
 
 export function ReferenceCaseStory({
@@ -16,10 +24,12 @@ export function ReferenceCaseStory({
   resultLabel,
   solution,
   solutionLabel,
+  solutionSteps,
+  solutionStepsLabel,
 }: ReferenceCaseStoryProps) {
-  const rows = [
+  const rows: StoryRow[] = [
     { label: problemLabel, text: problem },
-    { label: solutionLabel, text: solution },
+    { label: solutionLabel, steps: solutionSteps, text: solution },
     { label: resultLabel, text: result },
   ];
 
@@ -28,7 +38,18 @@ export function ReferenceCaseStory({
       {rows.map((row) => (
         <div className={styles.row} key={row.label}>
           <dt className={styles.label}>{row.label}</dt>
-          <dd className={styles.text}>{row.text}</dd>
+          <dd className={styles.body}>
+            <p className={styles.text}>{row.text}</p>
+            {row.steps?.length ? (
+              <ul aria-label={solutionStepsLabel} className={styles.steps}>
+                {row.steps.map((step) => (
+                  <li className={styles.step} key={step}>
+                    {step}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </dd>
         </div>
       ))}
     </dl>

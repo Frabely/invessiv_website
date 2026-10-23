@@ -12,8 +12,36 @@
 }
 
 .label,
+.body,
 .text {
   margin: 0;
+}
+
+.steps {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  position: relative;
+  padding-left: 18px;
+  color: color-mix(in srgb, var(--text) 80%, var(--muted) 20%);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+}
+
+.step::before {
+  content: "";
+  position: absolute;
+  top: 0.72em;
+  left: 0;
+  width: 8px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-accent-orange-text);
 }
 
 .label {

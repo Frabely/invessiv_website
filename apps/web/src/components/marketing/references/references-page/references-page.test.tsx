@@ -44,6 +44,20 @@ describe("ReferencesPage", () => {
     cleanup();
   });
 
+  it("shows the hero questions with their highlighted keyword", () => {
+    render(<ReferencesPage content={content} locale="de" />);
+
+    for (const question of content.hero.questions) {
+      const keyword = screen.getByText(question.keyword, {
+        selector: "strong",
+      });
+
+      expect(keyword.parentElement).toHaveTextContent(
+        `${question.lead}${question.keyword}${question.trail}`,
+      );
+    }
+  });
+
   it("renders one h1 and a project index that jumps to every case", () => {
     render(<ReferencesPage content={content} locale="de" />);
 

@@ -6,9 +6,9 @@ import { REFERENCE_SECTION_IDS } from "@/common/constants/marketing/reference-se
 import type { ReferenceCaseStudyContent } from "@/common/contracts/marketing/reference-case-study";
 import type { ReferenceCaseStudyLabels } from "@/common/contracts/marketing/reference-case-study-labels";
 import { ReferenceTestimonial } from "@/components/marketing/shared/reference-testimonial/reference-testimonial";
+import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { ReferenceCaseStory } from "./reference-case-story/reference-case-story";
 import { ReferenceResultGallery } from "./reference-result-gallery/reference-result-gallery";
-import { ReferenceScopeDetails } from "./reference-scope-details/reference-scope-details";
 import styles from "./reference-project-card.module.css";
 
 type ReferenceProjectCardProps = {
@@ -34,7 +34,7 @@ export function ReferenceProjectCard({
       id={sectionId}
     >
       <header className={styles.projectHeader}>
-        <p className={styles.projectIndustry}>{project.industry}</p>
+        <EyebrowPill variant="subtle">{project.industry}</EyebrowPill>
         <h2 className={styles.projectTitle} id={titleId}>
           {project.title}
         </h2>
@@ -48,6 +48,8 @@ export function ReferenceProjectCard({
           resultLabel={labels.result}
           solution={project.solution}
           solutionLabel={labels.solution}
+          solutionSteps={project.scope}
+          solutionStepsLabel={labels.scope}
         />
       </div>
 
@@ -72,7 +74,6 @@ export function ReferenceProjectCard({
         >
           {project.linkLabel}
         </a>
-        <ReferenceScopeDetails items={project.scope} label={labels.scope} />
       </div>
 
       {project.testimonial ? (

@@ -57,3 +57,20 @@
     var(--color-accent-warm) 16%
   );
 }
+
+.subtle,
+:global([data-theme="light"]) .subtle {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+}
+
+.subtle .dot {
+  width: 6px;
+  height: 6px;
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-accent-warm) 18%, transparent);
+}

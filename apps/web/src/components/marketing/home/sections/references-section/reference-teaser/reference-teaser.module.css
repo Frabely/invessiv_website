@@ -35,17 +35,10 @@
   gap: 6px;
 }
 
-.industry,
 .name,
 .resultLabel,
 .resultText {
   margin: 0;
-}
-
-.industry {
-  color: color-mix(in srgb, var(--text) 66%, var(--muted) 34%);
-  font-size: var(--font-size-body-sm);
-  font-weight: 600;
 }
 
 .name {

@@ -9,6 +9,7 @@ import type { ReferenceCaseStudyLabels } from "@/common/contracts/marketing/refe
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { ReferenceCollage } from "@/components/marketing/shared/reference-collage/reference-collage";
 import { ReferenceTestimonial } from "@/components/marketing/shared/reference-testimonial/reference-testimonial";
+import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import styles from "./reference-teaser.module.css";
 
 type ReferenceTeaserProps = {
@@ -42,7 +43,7 @@ export function ReferenceTeaser({
     <article className={styles.teaser} data-reversed={isReversed}>
       <div className={styles.intro}>
         <div className={styles.header}>
-          <p className={styles.industry}>{reference.industry}</p>
+          <EyebrowPill variant="subtle">{reference.industry}</EyebrowPill>
           <h3 className={styles.name}>{reference.clientName}</h3>
         </div>
         <div className={styles.result}>

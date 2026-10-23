@@ -9,7 +9,8 @@ Ergänzt `apps/web/src/components/AGENTS.md` und die Marketing-Routen-Regeln.
   Fließtext-Felder wie Summary oder Fokus wieder einführen.
 - Das Ergebnis wird visuell belegt: 2–3 Section-Screenshots pro Projekt (`shots`) mit kurzem Label und einer
   Bildunterschrift. Solange keine belastbaren Zahlen vorliegen, keine Kennzahlen behaupten.
-- Details zum Leistungsumfang (`scope`) bleiben hinter einem nativen `<details>` eingeklappt.
+- Der Leistungsumfang (`scope`, 2–4 kurze Stichpunkte, großgeschrieben) steht sichtbar als Liste direkt unter dem
+  Lösungssatz in der Zeile „Lösung“, nicht eingeklappt und nicht als loser Block unter dem Live-Link.
 
 ## Kundenstimmen
 
@@ -26,10 +27,13 @@ Ergänzt `apps/web/src/components/AGENTS.md` und die Marketing-Routen-Regeln.
 
 ## Hero
 
-- Der Hero ist ein bildschirmhoher Projekt-Index (ab 900 px `min-height`): links H1 im Frage-Stil und ein Satz Intro,
+- Der Hero ist ein bildschirmhoher Projekt-Index (ab 900 px `min-height`): links H1 im Frage-Stil, darunter drei kurze Fragen
+  (gefehlt → entstanden → Kunden) mit hervorgehobenem Kernwort (`lead`/`keyword`/`trail`) und ein Satz Hinweis,
   rechts pro Projekt eine Karte mit Collage aus den ersten drei `shots` (Übersicht vorn) und Name/Branche direkt
   darunter in derselben Karte. Die Karte ist der Sprunglink zur Referenz. Keine zweite Einleitung daneben.
-- Das Keyword „Webdesign-Referenzen“ steht in Meta-Title und Description, nicht zwingend in der H1.
+- Das Keyword „Webdesign-Referenzen“ steht in Meta-Title, Description und als `kicker` über der H1. Der Kicker nutzt
+  die geteilte `EyebrowPill` (`components/shared/eyebrow-pill/`), kein eigenes Kicker-Markup.
+- Die drei Hero-Fragen heben ihr Kernwort mit einem blauen Marker (`--color-cta`) hervor.
 
 ## Home-Referenzabschnitt
 

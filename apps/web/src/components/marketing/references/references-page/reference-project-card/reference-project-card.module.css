@@ -31,15 +31,8 @@
   gap: 10px;
 }
 
-.projectIndustry,
 .projectTitle {
   margin: 0;
-}
-
-.projectIndustry {
-  color: color-mix(in srgb, var(--text) 66%, var(--muted) 34%);
-  font-size: var(--font-size-body-sm);
-  font-weight: 600;
 }
 
 .projectTitle {

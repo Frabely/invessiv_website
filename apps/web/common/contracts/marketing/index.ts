@@ -10,4 +10,5 @@ export * from "./reference-case-study";
 export * from "./reference-case-study-labels";
 export * from "./reference-shot";
 export * from "./reference-testimonial";
+export * from "./references-hero-question";
 export * from "./service-option";

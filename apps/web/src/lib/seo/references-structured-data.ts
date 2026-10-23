@@ -43,6 +43,9 @@ export function createReferencesStructuredData(
         isPartOf: {
           "@id": organizationId,
         },
+        breadcrumb: {
+          "@id": breadcrumbId,
+        },
         mainEntity: {
           "@type": "ItemList",
           numberOfItems: content.projects.length,

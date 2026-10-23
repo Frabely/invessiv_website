@@ -5,8 +5,14 @@
     "currentLabel": "References"
   },
   "hero": {
-    "title": "What does this look like for others?",
-    "intro": "What was missing before, what I built, and what my clients say about it. You can see every site live.",
+    "kicker": "Web design references",
+    "title": "What do my clients' websites look like?",
+    "questions": [
+      { "lead": "What was ", "keyword": "missing", "trail": " before?" },
+      { "lead": "What came ", "keyword": "out of it", "trail": "?" },
+      { "lead": "What do the ", "keyword": "clients", "trail": " say?" }
+    ],
+    "note": "You can see every site live.",
     "indexLabel": "Projects on this page"
   },
   "labels": {
@@ -24,8 +30,8 @@
       "clientName": "Allmacher Coaching",
       "industry": "Negotiation seminar in Chemnitz",
       "title": "Allmacher Coaching: website for a negotiation seminar",
-      "problem": "A strong seminar, but no place that quickly shows leaders why it is worth their time.",
-      "solution": "A seminar site that walks through content, trainer, and tickets in a clear order and leads straight to the inquiry.",
+      "problem": "The seminar works in the room, but online it was hard to see why leaders should book it.",
+      "solution": "A site that shows content, trainer, and the seminar offer in a clear order and leads straight to the inquiry.",
       "result": "The seminar is easy to grasp at a glance, with Dr. Allmacher front and centre as the trainer.",
       "shots": [
         {
@@ -48,9 +54,9 @@
         }
       ],
       "scope": [
-        "seminar offer split into clear sections",
-        "trainer and method made visible as trust anchors",
-        "consistent guidance toward the seminar inquiry"
+        "Seminar offer split into clear sections",
+        "Trainer and method made visible as trust anchors",
+        "Consistent guidance toward the seminar inquiry"
       ],
       "linkLabel": "See Allmacher Coaching live",
       "href": "https://www.allmacher-coaching.de"
@@ -84,9 +90,9 @@
         }
       ],
       "scope": [
-        "sharpened positioning and page entry",
-        "clear offer and CTA hierarchy",
-        "calm, mobile-ready reading flow"
+        "Sharpened positioning and page entry",
+        "Clear offer and CTA hierarchy",
+        "Calm, mobile-ready reading flow"
       ],
       "linkLabel": "See Kolja Wienigk live",
       "href": "https://www.kolja-wienigk.de"
@@ -108,18 +114,18 @@
         }
       ],
       "scope": [
-        "compact input logic with less friction",
-        "clear interface for technical consumption data",
-        "better readability across the active workflow"
+        "Compact input logic with less friction",
+        "Clear interface for technical consumption data",
+        "Better readability across the active workflow"
       ],
       "linkLabel": "Open Consumption Trial",
       "href": "https://consumption-trial.invessiv.com/"
     }
   ],
   "closingCta": {
-    "title": "If your next project needs the same level of clarity, the next step stays short.",
-    "supportingText": "Whether it is a new website, a relaunch, or an internal tool, the strongest leverage comes from clear guidance before the first build, not louder visuals.",
+    "title": "And what should your website look like?",
+    "supportingText": "Tell me briefly what you offer and where things get stuck. In a free first call, we work out together what your site needs, whether it is new or a relaunch.",
     "primaryLabel": "Request a free consultation",
-    "secondaryLabel": "View service models"
+    "secondaryLabel": "See services"
   }
 }

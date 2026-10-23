@@ -1,13 +1,24 @@
 import styles from "./eyebrow-pill.module.css";
 
+type EyebrowPillVariant = "default" | "subtle";
+
 type EyebrowPillProps = {
   children: string;
   className?: string;
+  variant?: EyebrowPillVariant;
 };
 
-export function EyebrowPill({ children, className }: EyebrowPillProps) {
+export function EyebrowPill({
+  children,
+  className,
+  variant = "default",
+}: EyebrowPillProps) {
   return (
-    <p className={className ? `${styles.root} ${className}` : styles.root}>
+    <p
+      className={[styles.root, styles[variant], className]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <span aria-hidden="true" className={styles.dot} />
       <span>{children}</span>
     </p>

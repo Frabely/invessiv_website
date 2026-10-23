@@ -79,10 +79,11 @@ describe("ReferencesLocalePage", () => {
       params: Promise.resolve({ locale: "de" }),
     });
 
-    expect(metadata.title).toBe("Webdesign-Referenzen");
+    expect(metadata.title).toBe("Webdesign-Referenzen von Moritz Hecht");
     expect(metadata.description).toBe(
-      "Webdesign-Referenzen von Moritz Hecht aus Chemnitz: was vorher gefehlt hat, was ich gebaut habe und was meine Kunden sagen. Jede Seite kannst du live ansehen.",
+      "Webdesign-Referenzen von Moritz Hecht aus Chemnitz: was vorher gefehlt hat, was daraus entstanden ist und was Kunden sagen. Alle Seiten live ansehen.",
     );
+    expect(metadata.openGraph?.title).toBe("Webdesign-Referenzen | Invessiv");
     expect(metadata.alternates?.canonical).toBe(
       "https://www.invessiv.com/de/references",
     );

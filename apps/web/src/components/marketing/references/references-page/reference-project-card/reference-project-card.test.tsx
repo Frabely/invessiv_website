@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import type { ImgHTMLAttributes } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -93,7 +93,7 @@ describe("ReferenceProjectCard", () => {
     expect(screen.getByText("Die Seite wirkt seriös.")).toBeInTheDocument();
   });
 
-  it("links the live site and keeps the scope behind a disclosure", () => {
+  it("links the live site and lists the scope under the solution", () => {
     render(
       <ReferenceProjectCard
         isReversed={false}
@@ -105,9 +105,11 @@ describe("ReferenceProjectCard", () => {
     expect(
       screen.getByRole("link", { name: "Kolja Wienigk live ansehen" }),
     ).toHaveAttribute("href", "https://www.kolja-wienigk.de");
-    expect(
-      screen.getByText("Positionierung geschärft").closest("details"),
-    ).not.toHaveAttribute("open");
+
+    const scope = screen.getByRole("list", { name: LABELS.scope });
+
+    expect(within(scope).getByText("Positionierung geschärft")).toBeVisible();
+    expect(scope.closest("dd")).toHaveTextContent("Ein ruhiger Auftritt.");
   });
 
   it("shows the highlighted sentence and keeps the full quote available", () => {

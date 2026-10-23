@@ -1,5 +1,6 @@
 import type { ReferenceCaseStudyContent } from "@/common/contracts/marketing/reference-case-study";
 import { Breadcrumbs } from "@/components/legal/breadcrumbs/breadcrumbs";
+import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { REFERENCES_PAGE_SECTION_IDS } from "@/config/navigation/references";
 import type {
   ReferencesBreadcrumbsContent,
@@ -34,8 +35,18 @@ export function ReferencesHero({
       </div>
 
       <div className={styles.copy}>
+        <EyebrowPill>{content.kicker}</EyebrowPill>
         <h1 className={styles.title}>{content.title}</h1>
-        <p className={styles.intro}>{content.intro}</p>
+        <ol className={styles.questions}>
+          {content.questions.map((question) => (
+            <li className={styles.question} key={question.keyword}>
+              {question.lead}
+              <strong className={styles.keyword}>{question.keyword}</strong>
+              {question.trail}
+            </li>
+          ))}
+        </ol>
+        <p className={styles.note}>{content.note}</p>
       </div>
 
       <ul aria-label={content.indexLabel} className={styles.index}>

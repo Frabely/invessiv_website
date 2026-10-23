@@ -49,11 +49,19 @@ export async function generateMetadata({
     return {};
   }
 
-  const { description, imageAlt, imageHeight, imageUrl, imageWidth, title } =
-    getReferencesMetaContent(locale);
+  const {
+    description,
+    imageAlt,
+    imageHeight,
+    imageUrl,
+    imageWidth,
+    openGraphTitle,
+    title,
+  } = getReferencesMetaContent(locale);
   return createPageMetadata({
     title,
     description,
+    openGraphTitle,
     canonicalPath: createLocalePathname(SITE_ROUTES.REFERENCES, locale),
     languages: createRouteAlternates(SITE_ROUTES.REFERENCES),
     openGraphLocale: OPEN_GRAPH_LOCALE[locale],

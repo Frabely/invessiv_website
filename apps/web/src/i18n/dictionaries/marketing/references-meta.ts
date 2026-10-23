@@ -12,6 +12,7 @@ export type ReferencesMetaContent = {
   imageTitle: string;
   imageUrl: string;
   imageWidth: number;
+  openGraphTitle: string;
   title: string;
 };
 

@@ -1,6 +1,7 @@
 import type { Locale } from "@/config/i18n";
 import type { ReferenceCaseStudyContent } from "@/common/contracts/marketing/reference-case-study";
 import type { ReferenceCaseStudyLabels } from "@/common/contracts/marketing/reference-case-study-labels";
+import type { ReferencesHeroQuestion } from "@/common/contracts/marketing/references-hero-question";
 import { findReferenceTestimonial } from "./reference-testimonials";
 import de from "./references.de.json";
 import en from "./references.en.json";
@@ -13,7 +14,9 @@ export type ReferencesBreadcrumbsContent = {
 
 export type ReferencesHeroContent = {
   indexLabel: string;
-  intro: string;
+  kicker: string;
+  note: string;
+  questions: ReferencesHeroQuestion[];
   title: string;
 };
 

@@ -5,8 +5,14 @@
     "currentLabel": "Referenzen"
   },
   "hero": {
-    "title": "Wie sieht das bei anderen aus?",
-    "intro": "Was vorher gefehlt hat, was ich gebaut habe und was meine Kunden dazu sagen. Jede Seite kannst du dir live ansehen.",
+    "kicker": "Webdesign-Referenzen",
+    "title": "Wie sehen die Webseiten meiner Kunden aus?",
+    "questions": [
+      { "lead": "Was hat vorher ", "keyword": "gefehlt", "trail": "?" },
+      { "lead": "Was ist daraus ", "keyword": "entstanden", "trail": "?" },
+      { "lead": "Was sagen die ", "keyword": "Kunden", "trail": "?" }
+    ],
+    "note": "Jede Seite kannst du dir live ansehen.",
     "indexLabel": "Projekte auf dieser Seite"
   },
   "labels": {
@@ -24,8 +30,8 @@
       "clientName": "Allmacher Coaching",
       "industry": "Verhandlungsseminar in Chemnitz",
       "title": "Allmacher Coaching: Webseite für ein Verhandlungsseminar",
-      "problem": "Ein starkes Seminar, aber kein Ort, der Führungskräften schnell zeigt, warum es sich lohnt.",
-      "solution": "Eine Seminarseite, die Inhalt, Trainer und Tickets in klarer Reihenfolge erzählt und direkt zur Anfrage führt.",
+      "problem": "Das Seminar überzeugt im Raum, online war aber nicht schnell klar, warum es sich für Führungskräfte lohnt.",
+      "solution": "Eine Seite, die Inhalte, Trainer und das Seminarangebot in klarer Reihenfolge zeigt und direkt zur Anfrage führt.",
       "result": "Das Seminar ist auf einen Blick greifbar, und Dr. Allmacher steht als Trainer im Mittelpunkt.",
       "shots": [
         {
@@ -50,7 +56,7 @@
       "scope": [
         "Seminarangebot in klare Abschnitte gegliedert",
         "Trainer und Methode als Vertrauensanker sichtbar gemacht",
-        "durchgehende Führung zur Seminaranfrage"
+        "Durchgehende Führung zur Seminaranfrage"
       ],
       "linkLabel": "Allmacher Coaching live ansehen",
       "href": "https://www.allmacher-coaching.de"
@@ -85,8 +91,8 @@
       ],
       "scope": [
         "Positionierung und Seiteneinstieg geschärft",
-        "klare Angebots- und CTA-Hierarchie",
-        "ruhige, mobiletaugliche Leseführung"
+        "Klare Angebots- und CTA-Hierarchie",
+        "Ruhige, mobiltaugliche Leseführung"
       ],
       "linkLabel": "Kolja Wienigk live ansehen",
       "href": "https://www.kolja-wienigk.de"
@@ -108,18 +114,18 @@
         }
       ],
       "scope": [
-        "kompakte Eingabelogik statt unnötiger Reibung",
-        "klare Oberfläche für technische Verbrauchsdaten",
-        "bessere Lesbarkeit im laufenden Workflow"
+        "Kompakte Eingabelogik statt unnötiger Reibung",
+        "Klare Oberfläche für technische Verbrauchsdaten",
+        "Bessere Lesbarkeit im laufenden Workflow"
       ],
       "linkLabel": "Consumption Trial öffnen",
       "href": "https://consumption-trial.invessiv.com/"
     }
   ],
   "closingCta": {
-    "title": "Wenn dein nächstes Projekt dieselbe Klarheit braucht, ist der nächste Schritt kurz.",
-    "supportingText": "Ob neue Webseite, Relaunch oder internes Tool: entscheidend ist eine klare Führung vor dem ersten Build, nicht mehr visuelle Lautstärke.",
+    "title": "Und wie soll deine Webseite aussehen?",
+    "supportingText": "Erzähl mir kurz, was du anbietest und wo es gerade hakt. Im kostenlosen Erstgespräch schauen wir gemeinsam, was deine Seite braucht, ob neu oder als Relaunch.",
     "primaryLabel": "Kostenloses Erstgespräch anfragen",
-    "secondaryLabel": "Leistungsmodelle"
+    "secondaryLabel": "Leistungen ansehen"
   }
 }
