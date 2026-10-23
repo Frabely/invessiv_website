@@ -1,6 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { REFERENCE_AVATAR_IMAGES } from "@/common/constants/marketing/reference-images";
 import { REFERENCE_SECTION_HREFS } from "@/common/constants/marketing/reference-section-hrefs";
 import type { ReferenceCaseStudyContent } from "@/common/contracts/marketing/reference-case-study";
 import type { ReferenceCaseStudyLabels } from "@/common/contracts/marketing/reference-case-study-labels";
@@ -18,6 +20,7 @@ type ReferenceTeaserProps = {
 };
 
 const COLLAGE_IMAGE_SIZES = "(max-width: 899px) 70vw, 420px";
+const PORTRAIT_IMAGE_SIZES = "(max-width: 899px) 70vw, 360px";
 
 export function ReferenceTeaser({
   isReversed,
@@ -65,17 +68,31 @@ export function ReferenceTeaser({
 
       <div className={styles.details}>
         {reference.testimonial ? (
-          <ReferenceTestimonial
-            authorName={reference.testimonial.authorName}
-            avatarAlt={reference.testimonial.avatarAlt}
-            avatarKey={reference.testimonial.avatarKey}
-            className={styles.testimonial}
-            collapseLabel={labels.collapseQuote}
-            expandLabel={labels.expandQuote}
-            highlight={reference.testimonial.highlight}
-            quote={reference.testimonial.quote}
-            role={reference.testimonial.role}
-          />
+          <div className={styles.quoteCard}>
+            {reference.testimonial.avatarKey ? (
+              <div aria-hidden="true" className={styles.portraitBackdrop}>
+                <Image
+                  alt=""
+                  className={styles.portraitImage}
+                  data-avatar={reference.testimonial.avatarKey}
+                  fill
+                  sizes={PORTRAIT_IMAGE_SIZES}
+                  src={REFERENCE_AVATAR_IMAGES[reference.testimonial.avatarKey]}
+                />
+              </div>
+            ) : null}
+            <ReferenceTestimonial
+              authorName={reference.testimonial.authorName}
+              avatarAlt={reference.testimonial.avatarAlt}
+              avatarKey={reference.testimonial.avatarKey}
+              className={styles.testimonial}
+              collapseLabel={labels.collapseQuote}
+              expandLabel={labels.expandQuote}
+              highlight={reference.testimonial.highlight}
+              quote={reference.testimonial.quote}
+              role={reference.testimonial.role}
+            />
+          </div>
         ) : null}
 
         <Link

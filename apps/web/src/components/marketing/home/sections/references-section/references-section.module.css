@@ -9,12 +9,6 @@
   margin-top: calc(var(--section-space) + clamp(5rem, 7vw, 8rem));
 }
 
-@media (max-width: 759px) {
-  .section {
-    gap: 1.35rem;
-  }
-}
-
 .headerCopy {
   display: grid;
   justify-items: start;
@@ -32,4 +26,14 @@
 .list {
   display: grid;
   gap: clamp(3rem, 6vw, 5.5rem);
+}
+
+@media (max-width: 759px) {
+  .section {
+    gap: 2.5rem;
+  }
+
+  .list {
+    gap: 4.5rem;
+  }
 }

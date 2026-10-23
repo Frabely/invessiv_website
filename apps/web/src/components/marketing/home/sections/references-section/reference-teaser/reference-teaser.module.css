@@ -74,12 +74,50 @@
   text-wrap: pretty;
 }
 
-.testimonial {
+.quoteCard {
+  position: relative;
+  isolation: isolate;
   width: 100%;
+  overflow: hidden;
   padding: 14px 18px;
   border: 1px solid color-mix(in srgb, var(--border) 64%, transparent);
   border-radius: 18px;
   background: color-mix(in srgb, var(--color-surface-1) 78%, transparent);
+}
+
+.testimonial {
+  position: relative;
+  z-index: 1;
+}
+
+.portraitBackdrop {
+  position: absolute;
+  top: -10%;
+  right: -12%;
+  bottom: -10%;
+  z-index: 0;
+  width: 68%;
+  opacity: 0.18;
+  filter: grayscale(0.35) contrast(1.08);
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(
+    50% 50% at 50% 50%,
+    #000 0%,
+    transparent 82%
+  );
+  mask-image: radial-gradient(50% 50% at 50% 50%, #000 0%, transparent 82%);
+}
+
+.portraitImage {
+  object-fit: cover;
+}
+
+.portraitImage[data-avatar="allmacher"] {
+  object-position: 65% 28%;
+}
+
+.portraitImage[data-avatar="kolja"] {
+  object-position: 50% 8%;
 }
 
 .link {
@@ -106,7 +144,7 @@
   color: color-mix(in srgb, var(--text) 92%, var(--color-cta) 8%);
 }
 
-:global([data-theme="light"]) .testimonial {
+:global([data-theme="light"]) .quoteCard {
   border-color: color-mix(in srgb, var(--color-cta) 12%, var(--border) 88%);
   background: color-mix(in srgb, #ffffff 82%, var(--color-cta) 3%);
 }
