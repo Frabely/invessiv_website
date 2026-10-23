@@ -49,13 +49,7 @@
 
 @media (min-width: 900px) {
   .closingCta {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
-    gap: 42px;
-  }
-
-  .closingActions {
-    align-self: end;
+    gap: 28px;
   }
 }
 

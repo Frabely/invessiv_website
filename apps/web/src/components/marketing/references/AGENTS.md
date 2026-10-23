@@ -19,9 +19,10 @@ Ergänzt `apps/web/src/components/AGENTS.md` und die Marketing-Routen-Regeln.
 
 ## Screenshots
 
-- Section-Screenshots entstehen ausschließlich über `node apps/web/scripts/capture-reference-shots.mjs` (Live-Seiten,
-  1280 × 934, Light-Mode, reduzierte Bewegung) und liegen unter `apps/web/assets/references/<projekt>/`.
-- Neue Shots: Eintrag im Skript, Key in `REFERENCE_SHOT_KEY`, Bild in `REFERENCE_SHOT_IMAGES`, Texte in DE und EN.
+- Section-Screenshots werden manuell erstellt und liegen unter `apps/web/assets/references/<projekt>/`. Querformat im
+  Seitenverhältnis 1280 × 934 beibehalten, damit Galerie-Frame und Collage passen.
+- Neue Shots: Key in `REFERENCE_SHOT_KEY`, Bild in `REFERENCE_SHOT_IMAGES`, Label/Bildunterschrift/Alt in DE und EN.
+  Bildunterschriften beim Austausch eines Bildes mitprüfen.
 
 ## Hero
 

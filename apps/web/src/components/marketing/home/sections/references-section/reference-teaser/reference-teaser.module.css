@@ -78,7 +78,8 @@
   position: relative;
   isolation: isolate;
   width: 100%;
-  overflow: hidden;
+  /* clip instead of hidden: a hidden box can still be scrolled by focus or scrollIntoView. */
+  overflow: clip;
   padding: 14px 18px;
   border: 1px solid color-mix(in srgb, var(--border) 64%, transparent);
   border-radius: 18px;

@@ -130,3 +130,5 @@ Gebaut auf `feat/references-redesign`, ungecommittet. Abweichungen vom Plan:
   folgt bewusst der Mobilansicht (Story → Bild → Aktionen → Stimme).
 
 Offen: Sichtprüfung durch den User, Lighthouse mobil, ggf. Shots nach Relaunch der Kundenseiten neu erzeugen.
+
+**Nachtrag:** `capture-reference-shots.mjs` wurde wieder entfernt; die Section-Screenshots werden manuell gepflegt.
