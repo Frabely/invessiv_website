@@ -25,6 +25,7 @@ Ergänzt `apps/web/src/components/AGENTS.md` und die Marketing-Routen-Regeln.
 
 ## Hero
 
-- Der Hero bleibt ein Projekt-Index: eine H1 im Frage-Stil, ein Satz Intro, Kacheln mit Sprunglink zur jeweiligen
-  Referenz. Keine zweite Einleitung und keine Highlight-/Hinweisblöcke daneben.
+- Der Hero ist ein bildschirmhoher Projekt-Index (ab 900 px `min-height`): links H1 im Frage-Stil und ein Satz Intro,
+  rechts pro Projekt eine Karte mit Collage aus den ersten drei `shots` (Übersicht vorn) und Name/Branche direkt
+  darunter in derselben Karte. Die Karte ist der Sprunglink zur Referenz. Keine zweite Einleitung daneben.
 - Das Keyword „Webdesign-Referenzen“ steht in Meta-Title und Description, nicht zwingend in der H1.

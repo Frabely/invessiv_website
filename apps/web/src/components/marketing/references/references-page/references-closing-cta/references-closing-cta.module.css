@@ -64,4 +64,12 @@
     gap: 18px;
     padding-top: 22px;
   }
+
+  .closingActions {
+    flex-direction: column;
+  }
+
+  .closingAction {
+    width: 100%;
+  }
 }

@@ -46,7 +46,7 @@
 }
 
 .thumb:hover {
-  border-color: color-mix(in srgb, var(--accent) 40%, var(--border) 60%);
+  border-color: color-mix(in srgb, var(--color-cta) 45%, var(--border) 55%);
   color: var(--text);
 }
 
@@ -56,7 +56,7 @@
 }
 
 .thumb[aria-pressed="true"] {
-  border-color: var(--color-accent-orange);
+  border-color: var(--color-cta);
   color: var(--text);
 }
 
@@ -96,7 +96,7 @@
 }
 
 :global([data-theme="light"]) .thumb[aria-pressed="true"] {
-  border-color: var(--color-accent-orange);
+  border-color: var(--color-cta);
 }
 
 @keyframes shot-in {

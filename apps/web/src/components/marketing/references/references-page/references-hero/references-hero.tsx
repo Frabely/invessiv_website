@@ -23,13 +23,15 @@ export function ReferencesHero({
 }: ReferencesHeroProps) {
   return (
     <section className={styles.hero} id={REFERENCES_PAGE_SECTION_IDS.hero}>
-      <Breadcrumbs
-        items={[
-          { href: homeHref, isLink: true, label: breadcrumbs.homeLabel },
-          { isLink: false, label: breadcrumbs.currentLabel },
-        ]}
-        navLabel={breadcrumbs.navLabel}
-      />
+      <div className={styles.crumbs}>
+        <Breadcrumbs
+          items={[
+            { href: homeHref, isLink: true, label: breadcrumbs.homeLabel },
+            { isLink: false, label: breadcrumbs.currentLabel },
+          ]}
+          navLabel={breadcrumbs.navLabel}
+        />
+      </div>
 
       <div className={styles.copy}>
         <h1 className={styles.title}>{content.title}</h1>
@@ -44,6 +46,7 @@ export function ReferencesHero({
               imageKey={project.imageKey}
               industry={project.industry}
               priority={index === 0}
+              shots={project.shots}
             />
           </li>
         ))}
