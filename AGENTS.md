@@ -23,6 +23,7 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `apps/web/src/app/[locale]/(marketing)/`            | Marketing-Routen, route-spezifische Positionierung, SEO, i18n, interne Service-Verlinkung                       |
 | `apps/web/src/components/`                          | UI-Komponenten: Ordnerstruktur, `*.module.css`, Client/Server-Schnitt                                           |
+| `apps/web/src/components/marketing/references/`     | Referenzseite: Problem → Lösung → Ergebnis → Kundenstimme, Zitate ungekürzt, Screenshots nur per Skript         |
 | `apps/web/src/client/`                              | Clientseitige Services                                                                                          |
 | `apps/<app>/src/lib/`, `apps/<app>/src/hooks/`      | Logik/Hooks: exportierte Typen/Konstanten/Patterns nach `common`; rein lokale (nicht exportiert) dürfen bleiben |
 | `apps/web/src/lib/analytics/`                       | Vercel-Eventmodell: max. 2 Properties, Konstanten statt Strings, nur Client-Events, UTM-Filter                  |

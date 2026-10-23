@@ -26,7 +26,6 @@ function renderedContent() {
   const [props] = mockReferencesPage.mock.calls[0] as unknown as [
     {
       content: {
-        hero: { highlights: string[] };
         projects: { imageKey: string }[];
       };
     },
@@ -75,26 +74,14 @@ describe("ReferencesLocalePage", () => {
     ).toContain("consumption");
   });
 
-  it("resolves the project count highlight from the visible references", async () => {
-    render(
-      await ReferencesLocalePage({
-        params: Promise.resolve({ locale: "de" }),
-      }),
-    );
-
-    expect(renderedContent().hero.highlights).toContain(
-      "2 umgesetzte Projekte",
-    );
-  });
-
   it("creates locale-specific references metadata with an indexable canonical", async () => {
     const metadata = await generateMetadata({
       params: Promise.resolve({ locale: "de" }),
     });
 
-    expect(metadata.title).toBe("Webdesign Referenzen & Kundenprojekte");
+    expect(metadata.title).toBe("Webdesign-Referenzen");
     expect(metadata.description).toBe(
-      "Webdesign Referenzen von Invessiv: umgesetzte Kundenprojekte aus Chemnitz und Umgebung mit Kontext, Ergebnis und ehrlichen Stimmen aus der Zusammenarbeit.",
+      "Webdesign-Referenzen von Moritz Hecht aus Chemnitz: was vorher gefehlt hat, was ich gebaut habe und was meine Kunden sagen. Jede Seite kannst du live ansehen.",
     );
     expect(metadata.alternates?.canonical).toBe(
       "https://www.invessiv.com/de/references",

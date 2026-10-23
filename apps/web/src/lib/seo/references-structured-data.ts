@@ -52,7 +52,7 @@ export function createReferencesStructuredData(
             item: {
               "@type": "CreativeWork",
               name: project.title,
-              description: project.summary,
+              description: project.solution,
               url: project.href,
               image: `${SITE_URL}${REFERENCE_IMAGES[project.imageKey].src}`,
               creator: {

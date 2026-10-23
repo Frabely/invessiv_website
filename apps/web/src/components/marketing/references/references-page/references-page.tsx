@@ -1,13 +1,10 @@
 import { AnalyticsPage } from "@/common/constants/analytics/analytics-page";
 import { REFERENCE_SECTION_IDS } from "@/common/constants/marketing/reference-section-ids";
-import { Breadcrumbs } from "@/components/legal/breadcrumbs/breadcrumbs";
 import { SectionReachTracker } from "@/components/shared/analytics/section-reach-tracker/section-reach-tracker";
 import { REFERENCES_PAGE_SECTION_IDS } from "@/config/navigation/references";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
-import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { LayoutShell } from "@/components/marketing/shared/layout-shell/layout-shell";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
-import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
 import {
   getLocalizedSectionHref,
@@ -21,6 +18,7 @@ import { getHomeFooterSectionContent } from "@/lib/navigation/home-footer-sectio
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { ReferenceProjectCard } from "./reference-project-card/reference-project-card";
 import { ReferencesClosingCta } from "./references-closing-cta/references-closing-cta";
+import { ReferencesHero } from "./references-hero/references-hero";
 import styles from "./references-page.module.css";
 
 type ReferencesPageProps = {
@@ -64,65 +62,20 @@ export function ReferencesPage({ content, locale }: ReferencesPageProps) {
         </div>
 
         <LayoutShell className={styles.pageShell}>
-          <section
-            className={styles.pageHero}
-            id={REFERENCES_PAGE_SECTION_IDS.hero}
-          >
-            <div className={styles.breadcrumbs}>
-              <Breadcrumbs
-                items={[
-                  {
-                    href: homeHref,
-                    isLink: true,
-                    label: content.breadcrumbs.homeLabel,
-                  },
-                  {
-                    isLink: false,
-                    label: content.breadcrumbs.currentLabel,
-                  },
-                ]}
-                navLabel={content.breadcrumbs.navLabel}
-              />
-            </div>
+          <ReferencesHero
+            breadcrumbs={content.breadcrumbs}
+            content={content.hero}
+            homeHref={homeHref}
+            projects={content.projects}
+          />
 
-            <div className={styles.heroGrid}>
-              <div className={styles.heroContent}>
-                <EyebrowPill>{content.hero.kicker}</EyebrowPill>
-                <h1 className={styles.title}>{content.hero.title}</h1>
-                <p className={styles.intro}>{content.hero.intro}</p>
-                <SectionScanPoints
-                  ariaLabel={content.hero.kicker}
-                  className={styles.heroHighlights}
-                  fallbackClassName={styles.intro}
-                  fallbackText={content.hero.intro}
-                  points={content.hero.highlights}
-                />
-              </div>
-
-              <aside className={styles.heroAside}>
-                <EyebrowPill>{content.sectionIntro.eyebrow}</EyebrowPill>
-                <h2 className={styles.sectionTitle}>
-                  {content.sectionIntro.title}
-                </h2>
-                <p className={styles.sectionDescription}>
-                  {content.sectionIntro.description}
-                </p>
-              </aside>
-            </div>
-
-            <p className={styles.supportingNote}>
-              {content.hero.supportingNote}
-            </p>
-          </section>
-
-          <section className={styles.projectsSection}>
-            <div className={styles.projectsGrid}>
-              {content.projects.map((project, index) => (
+          <div className={styles.projectsSection}>
+            <div className={styles.projectsList}>
+              {content.projects.map((project) => (
                 <ReferenceProjectCard
-                  isPriorityMedia={index === 0}
                   key={project.imageKey}
+                  labels={content.labels}
                   project={project}
-                  testimonialLabels={content.testimonialLabels}
                 />
               ))}
             </div>
@@ -132,7 +85,7 @@ export function ReferencesPage({ content, locale }: ReferencesPageProps) {
               locale={locale}
               titleId={CLOSING_CTA_TITLE_ID}
             />
-          </section>
+          </div>
         </LayoutShell>
       </main>
 

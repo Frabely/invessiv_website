@@ -1,0 +1,48 @@
+.details {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.summary {
+  width: fit-content;
+  color: var(--color-accent-orange);
+  cursor: pointer;
+  font-size: var(--font-size-ui-sm);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary:hover {
+  color: color-mix(in srgb, var(--color-accent-orange) 82%, white 18%);
+}
+
+.summary:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.details[open] .expandLabel,
+.details:not([open]) .collapseLabel {
+  display: none;
+}
+
+.quote {
+  margin: 0;
+  padding-left: clamp(1rem, 1.6vw, 1.35rem);
+  border-left: 2px solid color-mix(in srgb, var(--accent) 42%, transparent);
+}
+
+.text {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
+  font-size: var(--font-size-body-md);
+  font-style: italic;
+  line-height: 1.68;
+  text-wrap: pretty;
+}

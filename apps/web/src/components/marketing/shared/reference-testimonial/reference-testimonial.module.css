@@ -34,3 +34,20 @@
   font-weight: 500;
   line-height: 1.4;
 }
+
+.highlight {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--color-text);
+  font-family: var(--font-family-display), sans-serif;
+  font-size: clamp(1.35rem, 2.1vw, 1.7rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.highlight q::before,
+.highlight q::after {
+  color: var(--color-accent-orange);
+}

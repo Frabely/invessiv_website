@@ -34,16 +34,7 @@ function getVisibleReferencesContent(locale: Locale): ReferencesPageContent {
         (project) => project.imageKey !== REFERENCE_IMAGE_KEY.Consumption,
       );
 
-  return {
-    ...content,
-    hero: {
-      ...content.hero,
-      highlights: content.hero.highlights.map((highlight) =>
-        highlight.replace("{count}", String(projects.length)),
-      ),
-    },
-    projects,
-  };
+  return { ...content, projects };
 }
 
 export async function generateStaticParams() {

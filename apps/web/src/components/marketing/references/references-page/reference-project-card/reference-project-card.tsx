@@ -3,22 +3,22 @@ import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { REFERENCE_IMAGE_DEVICE } from "@/common/constants/marketing/reference-image-device";
 import { REFERENCE_SECTION_IDS } from "@/common/constants/marketing/reference-section-ids";
-import type { ReferenceLabels } from "@/common/contracts/marketing/reference-labels";
+import type { ReferenceCaseStudyContent } from "@/common/contracts/marketing/reference-case-study";
+import type { ReferenceCaseStudyLabels } from "@/common/contracts/marketing/reference-case-study-labels";
 import { ReferenceTestimonial } from "@/components/marketing/shared/reference-testimonial/reference-testimonial";
-import type { ReferencesCaseStudyContent } from "@/i18n/dictionaries/marketing/references";
-import { ReferenceProjectFrame } from "./reference-project-frame/reference-project-frame";
+import { ReferenceCaseStory } from "./reference-case-story/reference-case-story";
+import { ReferenceResultGallery } from "./reference-result-gallery/reference-result-gallery";
+import { ReferenceScopeDetails } from "./reference-scope-details/reference-scope-details";
 import styles from "./reference-project-card.module.css";
 
 type ReferenceProjectCardProps = {
-  isPriorityMedia: boolean;
-  project: ReferencesCaseStudyContent;
-  testimonialLabels: Pick<ReferenceLabels, "collapseQuote" | "expandQuote">;
+  labels: ReferenceCaseStudyLabels;
+  project: ReferenceCaseStudyContent;
 };
 
 export function ReferenceProjectCard({
-  isPriorityMedia,
+  labels,
   project,
-  testimonialLabels,
 }: ReferenceProjectCardProps) {
   const sectionId = REFERENCE_SECTION_IDS[project.imageKey];
   const titleId = `${sectionId}-title`;
@@ -30,25 +30,33 @@ export function ReferenceProjectCard({
       data-device={REFERENCE_IMAGE_DEVICE[project.imageKey]}
       id={sectionId}
     >
-      <div className={styles.projectLead}>
-        <div className={styles.projectHeader}>
-          <div className={styles.projectMetaLine}>
-            <p className={styles.projectKicker}>{project.kicker}</p>
-            <span aria-hidden="true" className={styles.projectMetaDivider} />
-            <p className={styles.projectCategory}>{project.category}</p>
-          </div>
-        </div>
-
+      <header className={styles.projectHeader}>
+        <p className={styles.projectIndustry}>{project.industry}</p>
         <h2 className={styles.projectTitle} id={titleId}>
           {project.title}
         </h2>
-        <p className={styles.projectSummary}>{project.summary}</p>
+      </header>
 
-        <div className={styles.focusBlock}>
-          <p className={styles.detailLabel}>{project.focusLabel}</p>
-          <p className={styles.focusText}>{project.focus}</p>
-        </div>
+      <div className={styles.projectStory}>
+        <ReferenceCaseStory
+          problem={project.problem}
+          problemLabel={labels.problem}
+          result={project.result}
+          resultLabel={labels.result}
+          solution={project.solution}
+          solutionLabel={labels.solution}
+        />
+      </div>
 
+      <div className={styles.projectMedia}>
+        <ReferenceResultGallery
+          imageKey={project.imageKey}
+          label={labels.gallery}
+          shots={project.shots}
+        />
+      </div>
+
+      <div className={styles.projectActions}>
         <a
           className={styles.projectLink}
           href={project.href}
@@ -61,53 +69,22 @@ export function ReferenceProjectCard({
         >
           {project.linkLabel}
         </a>
-
-        {project.testimonial ? (
-          <ReferenceTestimonial
-            authorName={project.testimonial.authorName}
-            avatarAlt={project.testimonial.avatarAlt}
-            avatarKey={project.testimonial.avatarKey}
-            className={styles.projectTestimonial}
-            collapseLabel={testimonialLabels.collapseQuote}
-            expandLabel={testimonialLabels.expandQuote}
-            quote={project.testimonial.quote}
-            role={project.testimonial.role}
-          />
-        ) : null}
+        <ReferenceScopeDetails items={project.scope} label={labels.scope} />
       </div>
 
-      <div
-        className={styles.projectMediaColumn}
-        data-device={REFERENCE_IMAGE_DEVICE[project.imageKey]}
-      >
-        <div className={styles.projectVisual}>
-          <ReferenceProjectFrame
-            imageAlt={project.imageAlt}
-            imageKey={project.imageKey}
-            priority={isPriorityMedia}
-          />
-        </div>
-
-        <div className={styles.projectMeta}>
-          <div className={styles.detailBlock}>
-            <p className={styles.detailLabel}>{project.deliverablesLabel}</p>
-            <ul className={styles.detailList}>
-              {project.deliverables.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div className={styles.detailBlock}>
-            <p className={styles.detailLabel}>{project.outcomesLabel}</p>
-            <ul className={styles.detailList}>
-              {project.outcomes.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
+      {project.testimonial ? (
+        <ReferenceTestimonial
+          authorName={project.testimonial.authorName}
+          avatarAlt={project.testimonial.avatarAlt}
+          avatarKey={project.testimonial.avatarKey}
+          className={styles.projectTestimonial}
+          collapseLabel={labels.collapseQuote}
+          expandLabel={labels.expandQuote}
+          highlight={project.testimonial.highlight}
+          quote={project.testimonial.quote}
+          role={project.testimonial.role}
+        />
+      ) : null}
     </section>
   );
 }

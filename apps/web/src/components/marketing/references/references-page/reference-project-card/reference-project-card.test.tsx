@@ -5,82 +5,106 @@ import { cleanup, render, screen } from "@testing-library/react";
 import type { ImgHTMLAttributes } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { ReferencesCaseStudyContent } from "@/i18n/dictionaries/marketing/references";
+import type { ReferenceCaseStudyContent } from "@/common/contracts/marketing/reference-case-study";
+import type { ReferenceCaseStudyLabels } from "@/common/contracts/marketing/reference-case-study-labels";
 import { ReferenceProjectCard } from "./reference-project-card";
 
 vi.mock("next/image", () => ({
-  default: (props: ImgHTMLAttributes<HTMLImageElement>) => (
+  default: (
+    props: ImgHTMLAttributes<HTMLImageElement> & {
+      placeholder?: string;
+      priority?: boolean;
+    },
+  ) => {
+    const { placeholder, priority, ...imgProps } = props;
+    void placeholder;
+    void priority;
+
     // eslint-disable-next-line @next/next/no-img-element
-    <img alt={props.alt ?? ""} {...props} />
-  ),
+    return <img alt={imgProps.alt ?? ""} {...imgProps} />;
+  },
 }));
 
-const PROJECT: ReferencesCaseStudyContent = {
-  category: "Positionierung & Anfrageführung",
-  deliverables: ["Positionierung geschärft"],
-  deliverablesLabel: "Leistungsbausteine",
-  focus: "Vertrauen aufbauen und Anfragen führen.",
-  focusLabel: "Projektfokus",
+const LABELS: ReferenceCaseStudyLabels = {
+  collapseQuote: "Zitat einklappen",
+  expandQuote: "Ganzes Zitat lesen",
+  gallery: "Einblicke in die Seite",
+  problem: "Problem",
+  result: "Ergebnis",
+  scope: "Was ich konkret umgesetzt habe",
+  solution: "Lösung",
+};
+
+const PROJECT: ReferenceCaseStudyContent = {
+  clientName: "Kolja Wienigk",
   href: "https://www.kolja-wienigk.de",
-  imageAlt: "Vorschau der Finanzmakler-Webseite",
   imageKey: "kolja",
-  kicker: "Webseiten-Projekt",
-  linkLabel: "Zur Webseite",
-  outcomes: ["führt Anfragen nachvollziehbar in den Kontakt"],
-  outcomesLabel: "Was das Ergebnis leistet",
-  summary: "Ein ruhiger, vertrauenswürdiger Auftritt.",
+  industry: "Finanzmakler aus Dresden",
+  linkLabel: "Kolja Wienigk live ansehen",
+  problem: "Finanzthemen wirken kompliziert.",
+  result: "Die Seite wirkt seriös.",
+  scope: ["Positionierung geschärft"],
+  shots: [
+    {
+      alt: "Startbereich",
+      caption: "Der Einstieg.",
+      label: "Start",
+      shotKey: "kolja-overview",
+    },
+    {
+      alt: "Leistungen",
+      caption: "Die Leistungen.",
+      label: "Leistungen",
+      shotKey: "kolja-services",
+    },
+  ],
+  solution: "Ein ruhiger Auftritt.",
   testimonial: {
     authorName: "Kolja Wienigk",
     avatarAlt: "Porträt von Kolja Wienigk",
     avatarKey: "kolja",
-    quote: "Die Umsetzung wirkte strukturiert und schnell.",
+    highlight: "Ich bin sehr zufrieden.",
+    quote: "Die Zusammenarbeit war klar. Ich bin sehr zufrieden.",
     role: "Finanzmakler aus Dresden",
   },
   title: "Finanzmakler-Webseite mit klarer Positionierung",
 };
-
-const TESTIMONIAL_LABELS = {
-  collapseQuote: "Zitat einklappen",
-  expandQuote: "Zitat ausklappen",
-};
-
-function renderCard(project: ReferencesCaseStudyContent) {
-  render(
-    <ReferenceProjectCard
-      isPriorityMedia={false}
-      project={project}
-      testimonialLabels={TESTIMONIAL_LABELS}
-    />,
-  );
-}
 
 describe("ReferenceProjectCard", () => {
   afterEach(() => {
     cleanup();
   });
 
-  it("shows the testimonial that belongs to the project", () => {
-    renderCard(PROJECT);
+  it("tells the case as problem, solution and result", () => {
+    render(<ReferenceProjectCard labels={LABELS} project={PROJECT} />);
 
-    expect(screen.getByText("Kolja Wienigk")).toBeInTheDocument();
+    const terms = screen.getAllByRole("term").map((term) => term.textContent);
+    expect(terms).toEqual(["Problem", "Lösung", "Ergebnis"]);
     expect(
-      screen.getByText("Die Umsetzung wirkte strukturiert und schnell."),
+      screen.getByText("Finanzthemen wirken kompliziert."),
     ).toBeInTheDocument();
+    expect(screen.getByText("Ein ruhiger Auftritt.")).toBeInTheDocument();
+    expect(screen.getByText("Die Seite wirkt seriös.")).toBeInTheDocument();
   });
 
-  it("shows the person next to the project title and the live link", () => {
-    renderCard(PROJECT);
+  it("links the live site and keeps the scope behind a disclosure", () => {
+    render(<ReferenceProjectCard labels={LABELS} project={PROJECT} />);
 
     expect(
-      screen.getByRole("img", { name: "Porträt von Kolja Wienigk" }),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Finanzmakler aus Dresden")).toBeInTheDocument();
+      screen.getByRole("link", { name: "Kolja Wienigk live ansehen" }),
+    ).toHaveAttribute("href", "https://www.kolja-wienigk.de");
     expect(
-      screen.getByText("Finanzmakler-Webseite mit klarer Positionierung"),
+      screen.getByText("Positionierung geschärft").closest("details"),
+    ).not.toHaveAttribute("open");
+  });
+
+  it("shows the highlighted sentence and keeps the full quote available", () => {
+    render(<ReferenceProjectCard labels={LABELS} project={PROJECT} />);
+
+    expect(screen.getByText("Ich bin sehr zufrieden.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Die Zusammenarbeit war klar. Ich bin sehr zufrieden."),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Zur Webseite" })).toHaveAttribute(
-      "href",
-      "https://www.kolja-wienigk.de",
-    );
+    expect(screen.getByText("Ganzes Zitat lesen")).toBeInTheDocument();
   });
 });
