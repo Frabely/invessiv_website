@@ -48,7 +48,7 @@ export function ReferenceTestimonial({
 
   if (highlight) {
     return (
-      <div className={testimonialClassName}>
+      <div className={testimonialClassName} data-variant="highlight">
         <p className={styles.highlight}>
           <q>{highlight}</q>
         </p>

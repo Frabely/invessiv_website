@@ -71,8 +71,9 @@ export function ReferencesPage({ content, locale }: ReferencesPageProps) {
 
           <div className={styles.projectsSection}>
             <div className={styles.projectsList}>
-              {content.projects.map((project) => (
+              {content.projects.map((project, index) => (
                 <ReferenceProjectCard
+                  isReversed={index % 2 === 1}
                   key={project.imageKey}
                   labels={content.labels}
                   project={project}

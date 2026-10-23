@@ -8,8 +8,6 @@ export * from "./project-offer-sync-detail";
 export * from "./qna-copy";
 export * from "./reference-case-study";
 export * from "./reference-case-study-labels";
-export * from "./reference-entry";
-export * from "./reference-labels";
 export * from "./reference-shot";
 export * from "./reference-testimonial";
 export * from "./service-option";

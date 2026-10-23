@@ -5,7 +5,7 @@
 
 .summary {
   width: fit-content;
-  color: var(--color-cta);
+  color: var(--color-accent-orange);
   cursor: pointer;
   font-size: var(--font-size-ui-sm);
   font-weight: 700;
@@ -18,7 +18,7 @@
 }
 
 .summary:hover {
-  color: var(--color-cta-hover);
+  color: color-mix(in srgb, var(--color-accent-orange) 82%, white 18%);
 }
 
 .summary:focus-visible {

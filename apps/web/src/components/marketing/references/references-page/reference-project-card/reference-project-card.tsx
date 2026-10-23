@@ -12,11 +12,13 @@ import { ReferenceScopeDetails } from "./reference-scope-details/reference-scope
 import styles from "./reference-project-card.module.css";
 
 type ReferenceProjectCardProps = {
+  isReversed: boolean;
   labels: ReferenceCaseStudyLabels;
   project: ReferenceCaseStudyContent;
 };
 
 export function ReferenceProjectCard({
+  isReversed,
   labels,
   project,
 }: ReferenceProjectCardProps) {
@@ -28,6 +30,7 @@ export function ReferenceProjectCard({
       aria-labelledby={titleId}
       className={styles.projectCard}
       data-device={REFERENCE_IMAGE_DEVICE[project.imageKey]}
+      data-reversed={isReversed}
       id={sectionId}
     >
       <header className={styles.projectHeader}>

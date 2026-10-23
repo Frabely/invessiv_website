@@ -76,7 +76,13 @@ describe("ReferenceProjectCard", () => {
   });
 
   it("tells the case as problem, solution and result", () => {
-    render(<ReferenceProjectCard labels={LABELS} project={PROJECT} />);
+    render(
+      <ReferenceProjectCard
+        isReversed={false}
+        labels={LABELS}
+        project={PROJECT}
+      />,
+    );
 
     const terms = screen.getAllByRole("term").map((term) => term.textContent);
     expect(terms).toEqual(["Problem", "Lösung", "Ergebnis"]);
@@ -88,7 +94,13 @@ describe("ReferenceProjectCard", () => {
   });
 
   it("links the live site and keeps the scope behind a disclosure", () => {
-    render(<ReferenceProjectCard labels={LABELS} project={PROJECT} />);
+    render(
+      <ReferenceProjectCard
+        isReversed={false}
+        labels={LABELS}
+        project={PROJECT}
+      />,
+    );
 
     expect(
       screen.getByRole("link", { name: "Kolja Wienigk live ansehen" }),
@@ -99,7 +111,13 @@ describe("ReferenceProjectCard", () => {
   });
 
   it("shows the highlighted sentence and keeps the full quote available", () => {
-    render(<ReferenceProjectCard labels={LABELS} project={PROJECT} />);
+    render(
+      <ReferenceProjectCard
+        isReversed={false}
+        labels={LABELS}
+        project={PROJECT}
+      />,
+    );
 
     expect(screen.getByText("Ich bin sehr zufrieden.")).toBeInTheDocument();
     expect(

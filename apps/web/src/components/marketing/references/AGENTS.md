@@ -29,3 +29,11 @@ Ergänzt `apps/web/src/components/AGENTS.md` und die Marketing-Routen-Regeln.
   rechts pro Projekt eine Karte mit Collage aus den ersten drei `shots` (Übersicht vorn) und Name/Branche direkt
   darunter in derselben Karte. Die Karte ist der Sprunglink zur Referenz. Keine zweite Einleitung daneben.
 - Das Keyword „Webdesign-Referenzen“ steht in Meta-Title und Description, nicht zwingend in der H1.
+
+## Home-Referenzabschnitt
+
+- Die Home zeigt die Referenzen untereinander statt per Tab-Wechsel, die Collage abwechselnd links und rechts
+  (`home/sections/references-section/reference-teaser/`). Pro Referenz: Branche, Name, Ergebniszeile, Kernsatz und
+  Link zur Detailstelle auf der Referenzseite.
+- Inhalte kommen ausschließlich aus dem Referenz-Dictionary; `home.ts` pflegt nur Auswahl/Reihenfolge
+  (`referenceKeys`) und den Linktext. Die Collage ist geteilt unter `marketing/shared/reference-collage/`.

@@ -13,8 +13,8 @@ import type {
   QnaSecondaryContactCopy,
 } from "@/common/contracts/marketing/qna-copy";
 import type { ReferenceTestimonialKey } from "@/common/constants/marketing/reference-testimonial-authors";
-import type { ReferenceEntry } from "@/common/contracts/marketing/reference-entry";
-import type { ReferenceTestimonialContent } from "@/common/contracts/marketing/reference-testimonial";
+import type { ReferenceCaseStudyContent } from "@/common/contracts/marketing/reference-case-study";
+import type { ReferenceCaseStudyLabels } from "@/common/contracts/marketing/reference-case-study-labels";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import {
   CONTACT_PROJECT_SCOPE,
@@ -22,7 +22,7 @@ import {
 } from "@invessiv/common/constants/contact/contact-project-scopes";
 import processDe from "./home-process.de.json";
 import processEn from "./home-process.en.json";
-import { getReferenceTestimonial } from "./reference-testimonials";
+import { getReferencesPageContent } from "./references";
 import { getSiteHeaderUiContent } from "./site-header-ui";
 
 type PrimaryServiceCardKey = "landing" | "process" | "upgrade" | "web";
@@ -121,23 +121,20 @@ type ServicesSectionCopy = {
   serviceCards: ServiceCardCopy[];
 };
 
-type ReferenceShowcaseEntrySource = Omit<
-  ReferenceEntry,
-  keyof ReferenceTestimonialContent
-> & {
-  imageKey: ReferenceTestimonialKey;
-};
-
+// Project copy, shots and quotes come from the references dictionary, so the home only picks and orders them.
 type ReferencesSectionSource = {
   kicker: string;
+  linkLabel: string;
+  referenceKeys: ReferenceTestimonialKey[];
   title: string;
-  referenceEntries: ReferenceShowcaseEntrySource[];
 };
 
 type ReferencesSectionCopy = {
   kicker: string;
+  labels: ReferenceCaseStudyLabels;
+  linkLabel: string;
+  references: ReferenceCaseStudyContent[];
   title: string;
-  referenceEntries: ReferenceEntry[];
 };
 
 type ProcessSectionCopy = {
@@ -269,46 +266,14 @@ const HOME_SECTIONS = [
       de: {
         kicker: "Projekte & Kundenstimmen",
         title: "Was entsteht, wenn wir zusammenarbeiten?",
-        referenceEntries: [
-          {
-            imageKey: "allmacher",
-            imageAlt:
-              "Startseite von Allmacher Coaching mit dem Verhandlungsseminar in Chemnitz",
-            selectorLabel: "Allmacher Coaching",
-            siteLabel: "allmacher-coaching.de",
-            linkLabel: "Projekt im Detail ansehen",
-          },
-          {
-            imageKey: "kolja",
-            imageAlt:
-              "Startseite der Finanzberatung von Kolja Wienigk mit klarer Struktur",
-            selectorLabel: "Kolja Wienigk · Finanzmakler",
-            siteLabel: "kolja-wienigk.de",
-            linkLabel: "Projekt im Detail ansehen",
-          },
-        ],
+        linkLabel: "Projekt im Detail ansehen",
+        referenceKeys: ["allmacher", "kolja"],
       },
       en: {
         kicker: "Projects & client voices",
         title: "What can we create together?",
-        referenceEntries: [
-          {
-            imageKey: "allmacher",
-            imageAlt:
-              "Homepage of Allmacher Coaching with the negotiation seminar in Chemnitz",
-            selectorLabel: "Allmacher Coaching",
-            siteLabel: "allmacher-coaching.de",
-            linkLabel: "View project details",
-          },
-          {
-            imageKey: "kolja",
-            imageAlt:
-              "Homepage of Kolja Wienigk's financial advice with a clear structure",
-            selectorLabel: "Kolja Wienigk · Financial Broker",
-            siteLabel: "kolja-wienigk.de",
-            linkLabel: "View project details",
-          },
-        ],
+        linkLabel: "View project details",
+        referenceKeys: ["allmacher", "kolja"],
       },
     },
   },
@@ -776,15 +741,16 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
 
   return HOME_SECTIONS.map((section): HomeSectionContent => {
     if (section.id === "references") {
-      const copy = section.copy[locale];
+      const { referenceKeys, ...copy } = section.copy[locale];
+      const { labels, projects } = getReferencesPageContent(locale);
 
       return {
         id: section.id,
         ...copy,
-        referenceEntries: copy.referenceEntries.map((entry) => ({
-          ...entry,
-          ...getReferenceTestimonial(entry.imageKey, locale),
-        })),
+        labels,
+        references: referenceKeys.flatMap((key) =>
+          projects.filter((project) => project.imageKey === key),
+        ),
       };
     }
 

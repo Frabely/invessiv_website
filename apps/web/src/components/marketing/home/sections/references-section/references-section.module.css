@@ -28,3 +28,8 @@
   letter-spacing: -0.04em;
   text-wrap: balance;
 }
+
+.list {
+  display: grid;
+  gap: clamp(3rem, 6vw, 5.5rem);
+}

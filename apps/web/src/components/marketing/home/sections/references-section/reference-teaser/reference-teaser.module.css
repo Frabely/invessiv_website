@@ -1,0 +1,146 @@
+.teaser {
+  display: grid;
+  grid-template-areas:
+    "intro"
+    "media"
+    "details";
+  gap: 24px;
+}
+
+.intro {
+  grid-area: intro;
+}
+
+.media {
+  grid-area: media;
+  display: block;
+  width: min(100%, 560px);
+  justify-self: center;
+}
+
+.intro,
+.details {
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+  min-width: 0;
+}
+
+.details {
+  grid-area: details;
+}
+
+.header {
+  display: grid;
+  gap: 6px;
+}
+
+.industry,
+.name,
+.resultLabel,
+.resultText {
+  margin: 0;
+}
+
+.industry {
+  color: color-mix(in srgb, var(--text) 66%, var(--muted) 34%);
+  font-size: var(--font-size-body-sm);
+  font-weight: 600;
+}
+
+.name {
+  font-size: var(--font-size-section-subtitle);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.result {
+  display: grid;
+  gap: 4px;
+  max-width: 46ch;
+}
+
+.resultLabel {
+  color: var(--color-accent-orange);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.resultText {
+  color: color-mix(in srgb, var(--text) 82%, var(--muted) 18%);
+  font-size: var(--font-size-body-md);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.testimonial {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid color-mix(in srgb, var(--border) 64%, transparent);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--color-surface-1) 78%, transparent);
+}
+
+.link {
+  color: var(--color-cta);
+  font-size: var(--font-size-body-sm);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-cta) 45%, transparent);
+  text-underline-offset: 0.24em;
+  transition: text-decoration-color 180ms ease;
+}
+
+.link:hover {
+  text-decoration-color: currentColor;
+}
+
+.link:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+:global([data-theme="light"]) .name {
+  color: color-mix(in srgb, var(--text) 92%, var(--color-cta) 8%);
+}
+
+:global([data-theme="light"]) .testimonial {
+  border-color: color-mix(in srgb, var(--color-cta) 12%, var(--border) 88%);
+  background: color-mix(in srgb, #ffffff 82%, var(--color-cta) 3%);
+}
+
+@media (min-width: 900px) {
+  /* Empty first and last rows keep the text column vertically centred next to the collage. */
+  .teaser {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    grid-template-rows: 1fr auto auto 1fr;
+    grid-template-areas:
+      "media ."
+      "media intro"
+      "media details"
+      "media .";
+    column-gap: clamp(40px, 5vw, 80px);
+    row-gap: 18px;
+  }
+
+  .teaser[data-reversed="true"] {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    grid-template-areas:
+      ". media"
+      "intro media"
+      "details media"
+      ". media";
+  }
+
+  .media {
+    align-self: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: none;
+  }
+}

@@ -81,12 +81,6 @@
     ],
     "replyCtaLabel": "Klingt gut, lass uns loslegen."
   },
-  "referencesLabels": {
-    "showcaseAriaLabel": "Referenzen von Kunden mit Projektvorschau",
-    "counterTemplate": "Referenz {current} von {total}",
-    "expandQuote": "Ganzes Zitat lesen",
-    "collapseQuote": "Zitat einklappen"
-  },
   "servicesFitLabel": "Ideal für",
   "servicesMoreItemsPluralLabel": "weitere Punkte",
   "servicesMoreItemsSingularLabel": "weiterer Punkt",

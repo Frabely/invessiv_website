@@ -1,21 +1,23 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import type { ImgHTMLAttributes } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { ReferenceEntry } from "@/common/contracts/marketing/reference-entry";
+import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 import { ReferencesSection } from "./references-section";
 
 vi.mock("next/image", () => ({
   default: (
     props: ImgHTMLAttributes<HTMLImageElement> & {
       fill?: boolean;
+      placeholder?: string;
       priority?: boolean;
     },
   ) => {
-    const { fill, priority, ...imgProps } = props;
+    const { fill, placeholder, priority, ...imgProps } = props;
     void fill;
+    void placeholder;
     void priority;
 
     // eslint-disable-next-line @next/next/no-img-element
@@ -23,51 +25,28 @@ vi.mock("next/image", () => ({
   },
 }));
 
-const LABELS = {
-  collapseQuote: "Zitat einklappen",
-  counterTemplate: "Referenz {current} von {total}",
-  expandQuote: "Ganzes Zitat lesen",
-  showcaseAriaLabel: "Referenzen von Kunden mit Projektvorschau",
-};
+function renderSection() {
+  const section = getHomeSections("de").find(
+    (entry) => entry.id === "references",
+  );
 
-const ENTRIES = [
-  {
-    authorName: "Dr. Christoph Allmacher",
-    avatarAlt: "Porträt von Dr. Christoph Allmacher",
-    avatarKey: "allmacher",
-    imageAlt: "Startseite von Allmacher Coaching",
-    imageKey: "allmacher",
-    linkLabel: "Projekt im Detail ansehen",
-    quote: "Die Zusammenarbeit ist angenehm entspannt und sehr professionell.",
-    role: "Allmacher Coaching",
-    selectorLabel: "Allmacher Coaching",
-    siteLabel: "allmacher-coaching.de",
-  },
-  {
-    authorName: "Kolja Wienigk",
-    avatarAlt: "Porträt von Kolja Wienigk",
-    avatarKey: "kolja",
-    imageAlt: "Startseite der Finanzberatung von Kolja Wienigk",
-    imageKey: "kolja",
-    linkLabel: "Projekt im Detail ansehen",
-    quote: "Die Umsetzung wirkte strukturiert und schnell.",
-    role: "Finanzmakler aus Dresden",
-    selectorLabel: "Kolja Wienigk · Finanzmakler",
-    siteLabel: "kolja-wienigk.de",
-  },
-] as const;
+  if (!section) {
+    throw new Error("Expected references section to be available.");
+  }
 
-function renderSection(entries: ReferenceEntry[] = [...ENTRIES]) {
   render(
     <ReferencesSection
-      entries={entries}
       id="references"
-      kicker="Projekte & Kundenstimmen"
-      labels={LABELS}
+      kicker={section.kicker}
+      labels={section.labels}
+      linkLabel={section.linkLabel}
+      references={section.references}
       referencesHref="/de/references"
-      title="Was entsteht, wenn wir zusammenarbeiten?"
+      title={section.title}
     />,
   );
+
+  return section;
 }
 
 describe("ReferencesSection", () => {
@@ -75,102 +54,48 @@ describe("ReferencesSection", () => {
     cleanup();
   });
 
-  it("shows the first reference with its project link", () => {
-    renderSection();
+  it("shows every reference at once without a selector", () => {
+    const section = renderSection();
 
-    expect(
-      screen.getByRole("heading", { name: "Dr. Christoph Allmacher" }),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Referenz 1 von 2")).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: "Projekt im Detail ansehen" }),
-    ).toHaveAttribute("href", "/de/references#allmacher");
-    expect(
-      screen.getByRole("link", {
-        name: "Projekt im Detail ansehen: Allmacher Coaching",
-      }),
-    ).toHaveAttribute("href", "/de/references#allmacher");
-    expect(
-      screen.getByRole("img", {
-        name: "Porträt von Dr. Christoph Allmacher",
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen
-        .getByRole("button", { name: "Allmacher Coaching" })
-        .compareDocumentPosition(
-          screen.getByRole("img", {
-            name: "Startseite von Allmacher Coaching",
-          }),
-        ) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
-    expect(
-      screen.queryByRole("link", { name: "Alle Referenzen ansehen" }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        "Ausgewählte Kundenprojekte und ehrliche Stimmen aus der Zusammenarbeit.",
-      ),
-    ).not.toBeInTheDocument();
-    expect(
-      document.querySelector('img[data-avatar="allmacher"][alt=""]'),
-    ).toBeInTheDocument();
+    expect(screen.queryByRole("button", { pressed: true })).toBeNull();
+
+    const teasers = screen.getAllByRole("article");
+    expect(teasers).toHaveLength(section.references.length);
+
+    section.references.forEach((reference, index) => {
+      const teaser = teasers[index];
+
+      if (!teaser) {
+        throw new Error("Expected a teaser per reference.");
+      }
+
+      expect(
+        within(teaser).getAllByRole("heading", {
+          name: reference.clientName,
+        })[0],
+      ).toBeInTheDocument();
+      expect(within(teaser).getByText(reference.result)).toBeInTheDocument();
+      expect(
+        within(teaser).getByRole("link", { name: section.linkLabel }),
+      ).toHaveAttribute("href", `/de/references#${reference.imageKey}`);
+    });
   });
 
-  it("shows the quote of the selected reference", () => {
-    renderSection();
+  it("alternates the collage side and highlights the quote", () => {
+    const section = renderSection();
+    const teasers = screen.getAllByRole("article");
 
-    expect(
-      screen.getByText(
-        "Die Zusammenarbeit ist angenehm entspannt und sehr professionell.",
-      ),
-    ).toBeInTheDocument();
-
-    fireEvent.click(
-      screen.getByRole("button", { name: "Kolja Wienigk · Finanzmakler" }),
+    expect(teasers.map((teaser) => teaser.dataset.reversed)).toEqual(
+      section.references.map((_, index) => String(index % 2 === 0)),
     );
 
-    expect(
-      screen.getByText("Die Umsetzung wirkte strukturiert und schnell."),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        "Die Zusammenarbeit ist angenehm entspannt und sehr professionell.",
-      ),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("img", { name: "Porträt von Kolja Wienigk" }),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Finanzmakler aus Dresden")).toBeInTheDocument();
-  });
+    const [firstReference] = section.references;
+    const highlight = firstReference?.testimonial?.highlight;
 
-  it("selects references directly by the person's name", () => {
-    renderSection();
+    if (!highlight) {
+      throw new Error("Expected the first reference to have a highlight.");
+    }
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Kolja Wienigk · Finanzmakler" }),
-    );
-
-    expect(
-      screen.getByRole("heading", { name: "Kolja Wienigk" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: "Projekt im Detail ansehen" }),
-    ).toHaveAttribute("href", "/de/references#kolja");
-    expect(
-      screen.getByRole("link", {
-        name: "Projekt im Detail ansehen: Kolja Wienigk · Finanzmakler",
-      }),
-    ).toHaveAttribute("href", "/de/references#kolja");
-
-    expect(
-      document.querySelector('img[data-avatar="kolja"][alt=""]'),
-    ).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "Allmacher Coaching" }));
-
-    expect(
-      screen.getByRole("heading", { name: "Dr. Christoph Allmacher" }),
-    ).toBeInTheDocument();
+    expect(screen.getByText(highlight)).toBeInTheDocument();
   });
 });
