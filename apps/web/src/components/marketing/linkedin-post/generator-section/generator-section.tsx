@@ -58,6 +58,8 @@ export function GeneratorSection({
 }: GeneratorSectionProps) {
   const fieldIds = useGeneratorFieldIds();
   const beginRequest = useRequestGuard();
+  const beginCopyRequest = useRequestGuard();
+  const copyResetTimerRef = useRef<number | undefined>(undefined);
   const [values, setValues] = useState<LinkedInPostGeneratorFormValues>(
     () => DEFAULT_LINKEDIN_POST_GENERATOR_FORM_VALUES,
   );
@@ -70,6 +72,10 @@ export function GeneratorSection({
   );
   const formSlotRef = useRef<HTMLDivElement | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    return () => window.clearTimeout(copyResetTimerRef.current);
+  }, []);
 
   useEffect(() => {
     if (state?.kind !== GeneratorStateKind.Loading) {
@@ -141,11 +147,24 @@ export function GeneratorSection({
     if (typeof navigator === "undefined" || !navigator.clipboard) {
       return;
     }
-    navigator.clipboard.writeText(caption).then(() => {
-      setHasCopied(true);
-      emitAnalytics(AnalyticsGeneratorStep.Copy);
-      window.setTimeout(() => setHasCopied(false), 2200);
-    });
+    const isCurrentCopy = beginCopyRequest();
+    navigator.clipboard.writeText(caption).then(
+      () => {
+        if (!isCurrentCopy()) {
+          return;
+        }
+        setHasCopied(true);
+        emitAnalytics(AnalyticsGeneratorStep.Copy);
+        window.clearTimeout(copyResetTimerRef.current);
+        copyResetTimerRef.current = window.setTimeout(
+          () => setHasCopied(false),
+          2200,
+        );
+      },
+      () => {
+        // A denied clipboard permission must not report a successful copy.
+      },
+    );
   }
 
   function handleDownloadPost() {
@@ -153,6 +172,8 @@ export function GeneratorSection({
   }
 
   function handleRequestNewPost() {
+    beginCopyRequest();
+    window.clearTimeout(copyResetTimerRef.current);
     setState(null);
     setHasCopied(false);
     document.getElementById(id)?.scrollIntoView({

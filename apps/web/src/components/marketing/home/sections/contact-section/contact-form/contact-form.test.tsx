@@ -468,3 +468,45 @@ describe("ContactForm", () => {
     );
   });
 });
+it("falls back from a booking tab closed while the request was pending", async () => {
+  let finishSubmit!: (value: { ok: boolean; requestId: string }) => void;
+  submitDiscoveryCall.mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        finishSubmit = resolve;
+      }),
+  );
+  const bookingTab = {
+    closed: false,
+    close: vi.fn(),
+    location: { replace: vi.fn() },
+    opener: {},
+  };
+  const open = vi
+    .spyOn(window, "open")
+    .mockReturnValue(bookingTab as unknown as Window);
+  render(
+    <ContactForm
+      calendlyHref="https://calendly.com/invessiv/30min"
+      formCopy={copy}
+      privacyHref="/privacy"
+    />,
+  );
+  fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+    target: { value: "Example" },
+  });
+  fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+    target: { value: "example@example.com" },
+  });
+  fireEvent.click(screen.getByRole("checkbox"));
+  fireEvent.click(screen.getByRole("button", { name: copy.callSubmitLabel }));
+  await waitFor(() => expect(submitDiscoveryCall).toHaveBeenCalledTimes(1));
+  bookingTab.closed = true;
+  await act(async () => finishSubmit({ ok: true, requestId: "review" }));
+  expect(bookingTab.location.replace).not.toHaveBeenCalled();
+  expect(trackAnalyticsEvent).toHaveBeenCalledWith("calendar_opened", {
+    source: "after_submit",
+    placement: "home_contact",
+  });
+  open.mockRestore();
+});

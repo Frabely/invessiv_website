@@ -668,4 +668,61 @@ describe("GeneratorSection", () => {
       expect(navigator.clipboard.writeText).toHaveBeenCalled();
     });
   });
+
+  it("clears the copy feedback timer on unmount", async () => {
+    const { unmount } = renderSection();
+    fillValidValues();
+    clickSubmit();
+    const button = await screen.findByRole("button", {
+      name: content.preview.success.copyCaption,
+    });
+    vi.useFakeTimers();
+    try {
+      await act(async () => fireEvent.click(button));
+      expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith("generator_step", {
+        step: "copy",
+      });
+      expect(vi.getTimerCount()).toBeGreaterThan(0);
+      unmount();
+      expect(vi.getTimerCount()).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("does not report a copy when clipboard permission is denied", async () => {
+    vi.mocked(navigator.clipboard.writeText).mockRejectedValueOnce(
+      new DOMException("Permission denied", "NotAllowedError"),
+    );
+    renderSection();
+    fillValidValues();
+    clickSubmit();
+    const button = await screen.findByRole("button", {
+      name: content.preview.success.copyCaption,
+    });
+    await act(async () => fireEvent.click(button));
+    expect(mockTrackAnalyticsEvent).not.toHaveBeenCalledWith("generator_step", {
+      step: "copy",
+    });
+  });
+});
+it("ignores a pending copy result after unmount", async () => {
+  let finishCopy!: () => void;
+  vi.mocked(navigator.clipboard.writeText).mockImplementation(
+    () =>
+      new Promise<void>((resolve) => {
+        finishCopy = resolve;
+      }),
+  );
+  const { unmount } = renderSection();
+  fillValidValues();
+  clickSubmit();
+  const button = await screen.findByRole("button", {
+    name: content.preview.success.copyCaption,
+  });
+  fireEvent.click(button);
+  unmount();
+  mockTrackAnalyticsEvent.mockClear();
+  await act(async () => finishCopy());
+  expect(mockTrackAnalyticsEvent).not.toHaveBeenCalled();
 });

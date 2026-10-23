@@ -329,10 +329,9 @@ export function ContactForm({
           setPendingAction(null);
           setStatusMessage(formCopy.callSubmitSuccess);
           callAnalytics.trackCompleted();
-          callAnalytics.trackCalendarOpened();
         }
 
-        if (pendingWindow) {
+        if (pendingWindow && !pendingWindow.closed) {
           pendingWindow.opener = null;
           pendingWindow.location.replace(calendlyPrefillHref);
         } else if (isCurrent) {
@@ -342,6 +341,7 @@ export function ContactForm({
         if (!isCurrent) {
           return;
         }
+        callAnalytics.trackCalendarOpened();
         reset(DEFAULT_CONTACT_FORM_VALUES);
         resetStarted();
       },
