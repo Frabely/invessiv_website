@@ -67,14 +67,23 @@ describe("ReferencesPage", () => {
     ).toBeInTheDocument();
 
     const index = screen.getByRole("list", { name: content.hero.indexLabel });
-    const indexHrefs = within(index)
-      .getAllByRole("link")
-      .map((link) => link.getAttribute("href"));
+    const indexLinks = within(index).getAllByRole("link");
 
-    expect(indexHrefs).toEqual(
+    expect(indexLinks.map((link) => link.getAttribute("href"))).toEqual(
       content.projects.map(
         (project) => `#${REFERENCE_SECTION_IDS[project.imageKey]}`,
       ),
+    );
+    expect(
+      indexLinks.map((link) => [
+        link.getAttribute("data-analytics-event"),
+        link.getAttribute("data-analytics-payload"),
+      ]),
+    ).toEqual(
+      content.projects.map((project) => [
+        "reference_opened",
+        JSON.stringify({ project: project.imageKey, target: "references" }),
+      ]),
     );
 
     for (const project of content.projects) {

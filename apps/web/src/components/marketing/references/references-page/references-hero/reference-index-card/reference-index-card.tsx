@@ -1,3 +1,6 @@
+import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
+import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
+import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import type { ReferenceImageKey } from "@/common/constants/marketing/reference-image-key";
 import { REFERENCE_SECTION_IDS } from "@/common/constants/marketing/reference-section-ids";
 import type { ReferenceShotContent } from "@/common/contracts/marketing/reference-shot";
@@ -22,7 +25,14 @@ export function ReferenceIndexCard({
   shots,
 }: ReferenceIndexCardProps) {
   return (
-    <a className={styles.card} href={`#${REFERENCE_SECTION_IDS[imageKey]}`}>
+    <a
+      className={styles.card}
+      href={`#${REFERENCE_SECTION_IDS[imageKey]}`}
+      {...analyticsAttributes(AnalyticsEventName.ReferenceOpened, {
+        project: imageKey,
+        target: AnalyticsTarget.References,
+      })}
+    >
       <ReferenceCollage
         imageKey={imageKey}
         priority={priority}
