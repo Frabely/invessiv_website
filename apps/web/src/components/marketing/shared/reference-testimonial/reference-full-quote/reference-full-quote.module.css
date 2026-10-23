@@ -5,7 +5,7 @@
 
 .summary {
   width: fit-content;
-  color: var(--color-accent-orange);
+  color: var(--color-accent-orange-text);
   cursor: pointer;
   font-size: var(--font-size-ui-sm);
   font-weight: 700;
@@ -14,7 +14,7 @@
   text-decoration: underline;
   text-decoration-color: color-mix(
     in srgb,
-    var(--color-accent-orange) 54%,
+    var(--color-accent-orange-text) 54%,
     transparent
   );
   text-decoration-thickness: 1px;
@@ -29,7 +29,7 @@
 }
 
 .summary:hover {
-  color: color-mix(in srgb, var(--color-accent-orange) 82%, white 18%);
+  color: var(--color-accent-orange-text-hover);
   text-decoration-color: currentColor;
 }
 
