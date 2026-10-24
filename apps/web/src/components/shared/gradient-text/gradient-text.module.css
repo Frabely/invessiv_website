@@ -1,0 +1,79 @@
+.text {
+  --title-gradient-start: color-mix(
+    in srgb,
+    var(--color-highlight-base) 50%,
+    var(--color-text)
+  );
+  --title-gradient-warm: color-mix(
+    in srgb,
+    var(--color-highlight-base) 80%,
+    var(--color-text-muted)
+  );
+  --title-gradient-neutral: color-mix(
+    in srgb,
+    var(--color-text) 90%,
+    var(--color-brand-secondary)
+  );
+  --title-gradient-cool: color-mix(
+    in srgb,
+    var(--color-brand-secondary) 45%,
+    var(--color-text)
+  );
+
+  display: block;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  background-image: linear-gradient(
+    118deg,
+    var(--title-gradient-start) 0%,
+    var(--title-gradient-warm) 26%,
+    var(--title-gradient-neutral) 56%,
+    var(--title-gradient-cool) 100%
+  );
+  background-size: 180% 180%;
+  background-position: 0 45%;
+  animation: titleFlow 5s ease-in-out infinite alternate;
+}
+
+:global([data-theme="light"]) .text {
+  --title-gradient-start: color-mix(
+    in srgb,
+    var(--color-highlight-base) 65%,
+    var(--color-text-muted)
+  );
+  --title-gradient-warm: color-mix(
+    in srgb,
+    var(--color-highlight-base) 70%,
+    var(--color-text-muted)
+  );
+  --title-gradient-neutral: color-mix(
+    in srgb,
+    var(--color-brand-secondary) 40%,
+    var(--color-text-muted)
+  );
+  --title-gradient-cool: color-mix(
+    in srgb,
+    var(--title-gradient-neutral) 88%,
+    var(--color-surface-1)
+  );
+}
+
+@keyframes titleFlow {
+  from {
+    background-position: 0 45%;
+  }
+
+  to {
+    background-position: 100% 55%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text {
+    animation: none;
+    background-size: 100% 100%;
+    background-position: center;
+  }
+}

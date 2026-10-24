@@ -150,7 +150,7 @@ Die Palette verbindet matte, weitgehend neutrale Flächen mit dem Orange und Bla
 
 **The Orange Identity Rule.** Orange trägt die Markenidentität in beiden Themes. Die Hintergrundfläche bleibt ruhig; Blau kennzeichnet vor allem Handlungen. Der plastische Verlauf des Logos bleibt dem Logo vorbehalten.
 
-Die Home-Headline darf auf ausdrücklichen Markenwunsch einen sanft animierten Orange-Blau-Verlauf tragen (fünf Sekunden pro Richtung). Die Farben sind deutlich entsättigt: weiches Apricot und Graublau im dunklen Theme, kontrastangepasste gedämpfte Varianten im hellen Theme. Bei reduzierter Bewegung bleibt der vollständige Verlauf statisch. Rechte Besucher-Bubbles im Home-Chat nutzen ein gedämpftes Blaugrau zur Unterscheidung von den neutralen Antworten; Orange bleibt dort einzelnen Textbetonungen vorbehalten.
+Die Hero-Headlines auf Home, Landingpage, Generator und Referenzseite tragen denselben sanft animierten Orange-Blau-Verlauf (fünf Sekunden pro Richtung). Die gemeinsame Komponente `components/shared/gradient-text/` definiert Farben, Textmaskierung und Animation einmalig. Die Farben sind deutlich entsättigt: weiches Apricot und Graublau im dunklen Theme, kontrastangepasste gedämpfte Varianten im hellen Theme. Bei reduzierter Bewegung bleibt der vollständige Verlauf statisch. Rechte Besucher-Bubbles im Home-Chat nutzen ein gedämpftes Blaugrau zur Unterscheidung von den neutralen Antworten; Orange bleibt dort einzelnen Textbetonungen vorbehalten.
 
 ### Farbbasis und Rollen
 

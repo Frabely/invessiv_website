@@ -6,6 +6,7 @@ import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 import { TrustPoints } from "@/components/marketing/shared/trust-points/trust-points";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
+import { GradientText } from "@/components/shared/gradient-text/gradient-text";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { HERO_SECTION_ID } from "@/config/navigation/home";
 import { HeroBackground } from "./hero-background/hero-background";
@@ -77,7 +78,7 @@ export function HeroSection(props: HeroSectionProps) {
         <div className={styles.content}>
           <EyebrowPill className={styles.tag}>{heroTag}</EyebrowPill>
           <h1 className={styles.title}>
-            <span className={styles.titleText}>{title}</span>
+            <GradientText className={styles.titleText}>{title}</GradientText>
           </h1>
           <p className={styles.description}>{description}</p>
 

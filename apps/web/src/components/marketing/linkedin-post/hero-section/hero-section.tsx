@@ -7,6 +7,7 @@ import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
+import { GradientText } from "@/components/shared/gradient-text/gradient-text";
 import { TrustPoints } from "@/components/marketing/shared/trust-points/trust-points";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
@@ -43,7 +44,7 @@ export function AiWorkflowsHeroSection({
           data-reveal-item="true"
           data-visible="true"
         >
-          {title}
+          <GradientText>{title}</GradientText>
         </h1>
 
         <p

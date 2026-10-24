@@ -121,7 +121,7 @@
 }
 
 .journeyGradientEnd {
-  stop-color: var(--color-accent-warm);
+  stop-color: var(--color-brand-secondary);
 }
 
 .journeyProgress {
@@ -455,14 +455,6 @@
   border-color: var(--color-cta);
   background: var(--color-cta);
   color: var(--color-on-cta);
-}
-
-:global([data-theme="light"]) .journeyGradientStart {
-  stop-color: color-mix(in srgb, var(--color-accent-warm) 72%, #ffffff 28%);
-}
-
-:global([data-theme="light"]) .journeyGradientEnd {
-  stop-color: var(--color-accent-warm);
 }
 
 :global([data-theme="light"]) .journeyProgress {
