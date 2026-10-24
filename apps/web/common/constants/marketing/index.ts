@@ -1,5 +1,4 @@
 export * from "./contact-offer-groups";
-export * from "./hero-trust-icon-key";
 export * from "./landing-preview-anchor";
 export * from "./linkedin-post-caption-clamp";
 export * from "./linkedin-post-caption-fit";
@@ -18,3 +17,4 @@ export * from "./reference-shot-images";
 export * from "./reference-shot-key";
 export * from "./reference-testimonial-authors";
 export * from "./service-key-project-scope";
+export * from "./trust-point-icon-key";

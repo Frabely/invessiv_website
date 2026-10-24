@@ -1,5 +1,4 @@
 export * from "./hero-visual-tilt-options";
-export * from "./hero-trust-point";
 export * from "./landing-coaching-preview-content";
 export * from "./landing-problem-solution-content";
 export * from "./linkedin-post-author";
@@ -13,3 +12,4 @@ export * from "./reference-shot";
 export * from "./reference-testimonial";
 export * from "./references-hero-question";
 export * from "./service-option";
+export * from "./trust-point";

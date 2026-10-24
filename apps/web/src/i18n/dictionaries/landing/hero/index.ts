@@ -1,5 +1,5 @@
 import type {
-  HeroTrustPoint,
+  TrustPoint,
   LandingCoachingPreviewContent,
 } from "@/common/contracts/marketing";
 import type { Locale } from "@/config/i18n";
@@ -13,7 +13,7 @@ type LandingHeroContent = {
   secondaryCta: string;
   tag: string;
   title: string;
-  trustPoints: HeroTrustPoint[];
+  trustPoints: TrustPoint[];
 };
 
 const LANDING_HERO_CONTENT: Record<Locale, LandingHeroContent> = {
