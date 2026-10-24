@@ -19,7 +19,7 @@ export function EyebrowPill({
         .filter(Boolean)
         .join(" ")}
     >
-      <span aria-hidden="true" className={styles.dot} />
+      <span aria-hidden="true" className={styles.arc} />
       <span>{children}</span>
     </p>
   );

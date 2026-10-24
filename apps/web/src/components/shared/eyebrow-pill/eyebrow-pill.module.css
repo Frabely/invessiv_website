@@ -1,56 +1,35 @@
 .root {
+  --eyebrow-arc-size: 1.6em;
+  --eyebrow-arc-stroke: 1px;
+  --eyebrow-arc-color: var(--color-accent-orange);
+
   margin: 0;
   width: fit-content;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 32px;
-  padding: 0 12px;
-  border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 46%, transparent);
-  border-radius: 999px;
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--color-accent-warm) 20%, transparent),
-    color-mix(in srgb, var(--color-surface-2) 82%, transparent)
-  );
+  gap: 0.4em;
   color: color-mix(
     in srgb,
     var(--color-text) 86%,
     var(--color-accent-warm) 14%
   );
   font-size: 0.82rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.02em;
   line-height: 1;
   text-transform: uppercase;
 }
 
-.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: linear-gradient(
-    140deg,
-    color-mix(in srgb, var(--color-accent-warm) 90%, #fff 10%),
-    color-mix(in srgb, var(--color-cta) 78%, #000 22%)
-  );
-  box-shadow: 0 0 0 4px
-    color-mix(in srgb, var(--color-accent-warm) 20%, transparent);
+.arc {
   flex: 0 0 auto;
+  width: calc(var(--eyebrow-arc-size) / 2);
+  height: var(--eyebrow-arc-size);
+  border: var(--eyebrow-arc-stroke) solid var(--eyebrow-arc-color);
+  border-right: 0;
+  border-radius: var(--eyebrow-arc-size) 0 0 var(--eyebrow-arc-size);
 }
 
 :global([data-theme="light"]) .root {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 22%,
-    var(--color-border) 78%
-  );
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--color-accent-warm) 12%, #ffffff 88%),
-    color-mix(in srgb, var(--color-surface-2) 72%, var(--color-surface-1) 28%)
-  );
   color: color-mix(
     in srgb,
     var(--color-text) 84%,
@@ -58,19 +37,20 @@
   );
 }
 
-.subtle,
-:global([data-theme="light"]) .subtle {
-  min-height: 0;
-  padding: 0;
-  border: 0;
-  background: none;
+.subtle {
+  --eyebrow-arc-size: 1.45em;
+  --eyebrow-arc-color: color-mix(
+    in srgb,
+    var(--color-accent-orange) 45%,
+    transparent
+  );
+
+  gap: 0.55em;
   font-size: 0.76rem;
   letter-spacing: 0.06em;
 }
 
-.subtle .dot {
-  width: 6px;
-  height: 6px;
-  box-shadow: 0 0 0 3px
-    color-mix(in srgb, var(--color-accent-warm) 18%, transparent);
+.subtle .arc {
+  width: 0;
+  border-radius: 0;
 }
