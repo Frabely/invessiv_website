@@ -1,13 +1,21 @@
-import { Bricolage_Grotesque, Plus_Jakarta_Sans } from "next/font/google";
+import { Caveat, Figtree, Metrophobic } from "next/font/google";
 
-export const plusJakartaSans = Plus_Jakarta_Sans({
+export const figtree = Figtree({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-plus-jakarta-sans",
+  variable: "--font-figtree",
 });
 
-export const bricolageGrotesque = Bricolage_Grotesque({
+export const metrophobic = Metrophobic({
+  weight: "400",
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-bricolage-grotesque",
+  variable: "--font-metrophobic",
+});
+
+export const caveat = Caveat({
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+  variable: "--font-caveat",
 });

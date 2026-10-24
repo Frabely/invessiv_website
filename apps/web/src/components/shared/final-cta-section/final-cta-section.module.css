@@ -154,7 +154,7 @@
   min-height: 1.1rem;
   color: color-mix(in srgb, #f88f8f 84%, var(--color-text) 16%);
   font-size: var(--font-size-caption);
-  font-weight: 650;
+  font-weight: 550;
   line-height: 1.3;
 }
 

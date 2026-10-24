@@ -11,12 +11,17 @@
  * Component, section, and route-specific styles must not be added here.
  */
 
-@property --font-plus-jakarta-sans {
+@property --font-figtree {
   syntax: "*";
   inherits: true;
 }
 
-@property --font-bricolage-grotesque {
+@property --font-metrophobic {
+  syntax: "*";
+  inherits: true;
+}
+
+@property --font-caveat {
   syntax: "*";
   inherits: true;
 }
@@ -110,11 +115,9 @@
   --measure-lead: 64ch;
   --measure-compact: 58ch;
   --measure-panel: 76ch;
-  --font-family-base:
-    var(--font-plus-jakarta-sans, "Plus Jakarta Sans"), "Segoe UI", sans-serif;
+  --font-family-base: var(--font-figtree, "Figtree"), "Segoe UI", sans-serif;
   --font-family-display:
-    var(--font-bricolage-grotesque, "Bricolage Grotesque"),
-    var(--font-family-base);
+    var(--font-metrophobic, "Metrophobic"), var(--font-family-base);
   --font-size-hero-title: clamp(2.35rem, 5.4vw, 4.1rem);
   --font-size-hero-title-wide: clamp(3.5rem, 4vw, 4rem);
   --font-size-section-title: clamp(2.05rem, 3.35vw, 2.85rem);
@@ -277,6 +280,7 @@ body {
     linear-gradient(180deg, #1d1a18 0%, #211c19 46%, #171411 100%) fixed #1d1a18;
   color: var(--color-text);
   font-family: var(--font-family-base), sans-serif;
+  font-weight: 350;
 }
 
 h1,
@@ -286,6 +290,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-family-display), sans-serif;
+  font-synthesis-weight: none;
 }
 
 html {

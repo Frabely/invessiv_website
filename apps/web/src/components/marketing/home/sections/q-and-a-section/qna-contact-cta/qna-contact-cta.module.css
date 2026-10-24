@@ -15,7 +15,7 @@
 .link {
   color: color-mix(in srgb, var(--color-cta) 78%, var(--color-text) 22%);
   font-size: var(--font-size-body-md);
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.4;
   text-decoration-color: color-mix(in srgb, var(--color-cta) 44%, transparent);
   text-decoration-thickness: 0.08em;
