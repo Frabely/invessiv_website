@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1338 1341" width="1338" height="1341" role="img" aria-label="Dreidimensionales Häkchen mit Verlauf von Orange nach Blau">
+  <defs>
+    <linearGradient id="base" gradientUnits="userSpaceOnUse" x1="480" y1="1335" x2="1180" y2="60">
+      <stop offset="0%" stop-color="#f2a14a"/>
+      <stop offset="28%" stop-color="#e38a3c"/>
+      <stop offset="40%" stop-color="#c9805a"/>
+      <stop offset="50%" stop-color="#6b93cf"/>
+      <stop offset="100%" stop-color="#86ace6"/>
+    </linearGradient>
+    <linearGradient id="left" gradientUnits="userSpaceOnUse" x1="140" y1="390" x2="450" y2="910">
+      <stop offset="0%" stop-color="#f3a447"/>
+      <stop offset="35%" stop-color="#e38a3c"/>
+      <stop offset="70%" stop-color="#cc6f2a"/>
+      <stop offset="100%" stop-color="#b25a1f"/>
+    </linearGradient>
+    <linearGradient id="right" gradientUnits="userSpaceOnUse" x1="480" y1="1335" x2="1180" y2="60">
+      <stop offset="0%" stop-color="#d8762c"/>
+      <stop offset="28%" stop-color="#cf6f2a"/>
+      <stop offset="40%" stop-color="#8a6a7a"/>
+      <stop offset="50%" stop-color="#3f70b2"/>
+      <stop offset="100%" stop-color="#4c7dc2"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="5%" y1="25%" x2="83%" y2="90%">
+      <stop offset="0%" stop-color="#ffc378" stop-opacity="0.64"/>
+      <stop offset="35%" stop-color="#ffb062" stop-opacity="0.66"/>
+      <stop offset="73%" stop-color="#a9c8f2" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#a9c8f2" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="facetOpacity" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="white"/>
+      <stop offset="65%" stop-color="white"/>
+      <stop offset="96%" stop-color="black"/>
+      <stop offset="100%" stop-color="black"/>
+    </linearGradient>
+    <mask id="fadeFacet" maskUnits="userSpaceOnUse" x="0" y="0" width="1338" height="1341">
+      <rect x="0" y="0" width="1338" height="1341" fill="url(#facetOpacity)"/>
+    </mask>
+    <clipPath id="outerClip">
+      <path d="M 1247,30 C 1177,-6 1092,2 1036,63 C 1024,76 1015,90 1005,107 L 567,799 L 347,435 C 317,386 276,374 212,393 L 55,463 C 7,484 -8,539 17,601 L 404,1248 C 442,1311 488,1335 552,1335 C 615,1335 660,1306 683,1273 L 1287,298 C 1318,248 1332,220 1331,175 C 1330,108 1302,58 1247,30 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Glatte, skalierbare Silhouette -->
+  <path d="M 1247,30 C 1177,-6 1092,2 1036,63 C 1024,76 1015,90 1005,107 L 567,799 L 347,435 C 317,386 276,374 212,393 L 55,463 C 7,484 -8,539 17,601 L 404,1248 C 442,1311 488,1335 552,1335 C 615,1335 660,1306 683,1273 L 1287,298 C 1318,248 1332,220 1331,175 C 1330,108 1302,58 1247,30 Z"
+        fill="url(#base)"/>
+
+  <g clip-path="url(#outerClip)">
+    <!-- Linker Schenkel: weicher Licht-Schatten-Verlauf -->
+    <path d="M -18,506 L 212,389 C 277,366 321,389 348,435 L 567,799 C 513,883 446,921 361,902 C 236,884 105,743 31,624 C 4,590 -8,549 -18,506 Z" fill="url(#left)"/>
+
+    <!-- Die helle, geschwungene Kante im Knick -->
+    <path d="M -3,568 C 86,747 201,857 322,892 C 426,927 499,877 552,797 L 1005,107 L 1033,67 L 570,815 C 516,904 434,931 336,905 C 209,874 95,754 -3,568 Z"
+          fill="url(#rim)"/>
+
+    <!-- Dreidimensionale, dunklere rechte Facette -->
+    <path d="M 1321,79 C 1219,115 1157,155 1096,242 C 1030,333 996,416 913,541 C 785,736 620,991 425,1289 L 430,1440 L 1450,362 L 1362,107 Z" fill="url(#right)" opacity="0.94" mask="url(#fadeFacet)"/>
+  </g>
+</svg>
