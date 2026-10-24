@@ -1,5 +1,6 @@
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { MouseEvent } from "react";
 
 import { AnalyticsArea } from "@/common/constants/analytics/analytics-area";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
@@ -24,6 +25,17 @@ export function QnaQuestionBubble({
   onToggle,
   questionId,
 }: QnaQuestionBubbleProps) {
+  // Mouse shortcut only; the disclosure button stays the accessible control.
+  const closeFromAnswer = (event: MouseEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement;
+
+    if (!isOpen || target.closest("a") || window.getSelection()?.toString()) {
+      return;
+    }
+
+    onToggle();
+  };
+
   return (
     <div className={styles.bubble} data-open={isOpen ? "true" : "false"}>
       <button
@@ -53,6 +65,7 @@ export function QnaQuestionBubble({
         aria-labelledby={questionId}
         className={styles.answerWrap}
         id={answerId}
+        onClick={closeFromAnswer}
       >
         <div className={styles.answerContent}>
           <p className={styles.answer}>{item.answer}</p>

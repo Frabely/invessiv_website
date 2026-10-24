@@ -125,6 +125,25 @@ describe("QAndASection", () => {
     expect(lastQuestion.getAttribute("aria-expanded")).toBe("false");
   });
 
+  it("closes an open answer when its text is clicked but not via its link", () => {
+    renderSection();
+
+    const question = screen.getByRole("button", {
+      name: "Wie läuft der Projektstart ab?",
+    });
+    fireEvent.click(question);
+
+    fireEvent.click(screen.getByRole("link", { name: "Mehr zu Landingpages" }));
+    expect(question.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.click(
+      screen.getByText(
+        "Kickoff erfolgt nach der Rahmen-Abstimmung mit klarem Zeitplan.",
+      ),
+    );
+    expect(question.getAttribute("aria-expanded")).toBe("false");
+  });
+
   it("keeps every question in place while the set stays short", () => {
     renderSection();
 

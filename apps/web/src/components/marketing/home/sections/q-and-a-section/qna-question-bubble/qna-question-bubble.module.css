@@ -137,6 +137,7 @@
 }
 
 .bubble[data-open="true"] .answerWrap {
+  cursor: pointer;
   grid-template-rows: 1fr;
   padding-bottom: clamp(1.1rem, 1.8vw, 1.45rem);
   opacity: 1;
