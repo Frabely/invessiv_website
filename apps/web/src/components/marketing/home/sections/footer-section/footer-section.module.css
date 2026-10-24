@@ -34,12 +34,6 @@
 }
 
 .brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.brand strong {
   color: var(--color-text);
   font-size: var(--font-size-heading-lg);
   letter-spacing: -0.03em;
@@ -137,7 +131,7 @@
     gap: clamp(36px, 4.2vw, 64px);
   }
 
-  .brand strong {
+  .brand {
     font-size: clamp(1.72rem, 1.9vw, 1.95rem);
   }
 }
@@ -161,10 +155,6 @@
 
   .description {
     max-width: 40ch;
-  }
-
-  .brand {
-    justify-content: center;
   }
 
   .grid {
@@ -199,7 +189,7 @@
     padding-top: 14px;
   }
 
-  .brand strong {
+  .brand {
     font-size: var(--font-size-heading-lg);
   }
 

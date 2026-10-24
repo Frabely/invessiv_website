@@ -4,6 +4,7 @@ import en from "./en.json";
 
 export type FooterStaticContent = {
   brand: string;
+  brandLogoAlt: string;
   copyright: string;
   legalTitle: string;
   legalLinks: Array<{ label: string; href: string }>;

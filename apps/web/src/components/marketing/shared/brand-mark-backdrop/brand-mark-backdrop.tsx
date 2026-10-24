@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import styles from "./brand-mark-backdrop.module.css";
 
-const BRAND_MARK_SRC = "/brand/icon_noText.png";
+const BRAND_MARK_SRC = "/brand/invessiv-logo.svg";
 
 type BrandMarkBackdropProps = {
   sizes: string;

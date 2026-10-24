@@ -94,7 +94,7 @@ export function PortalShell({
               alt=""
               height={28}
               priority
-              src="/brand/icon.png"
+              src="/brand/invessiv-logo.svg"
               width={28}
             />
           </a>

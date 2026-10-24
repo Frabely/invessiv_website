@@ -103,7 +103,7 @@ export function WorkspaceHeader({
                 alt={headerContent.brandLogoAlt}
                 height={26}
                 priority
-                src="/brand/icon.png"
+                src="/brand/invessiv-logo.svg"
                 width={26}
               />
             </span>

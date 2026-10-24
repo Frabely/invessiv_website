@@ -84,7 +84,7 @@ export function AuthFrame({ children, content, locale }: AuthFrameProps) {
             alt={content.brandLogoAlt}
             height={26}
             priority
-            src="/brand/icon.png"
+            src="/brand/invessiv-logo.svg"
             width={26}
           />
           <span>{content.brandLabel}</span>

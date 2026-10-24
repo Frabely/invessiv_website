@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { FOOTER_SECTION_ID, SECTION_HREFS } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
@@ -14,6 +13,7 @@ import type { FooterColumnCopy } from "@/i18n/dictionaries/marketing/home";
 import { getFooterStaticContent } from "@/i18n/dictionaries/shared/footer";
 import { CONTACT_CHANNEL_KEYS } from "@/common/constants/contact/contact-channel-keys";
 import { ContactIdentity } from "@/components/shared/contact-identity/contact-identity";
+import { BrandLockup } from "@/components/marketing/shared/brand-lockup/brand-lockup";
 import styles from "./footer-section.module.css";
 
 export type FooterSectionProps = {
@@ -76,15 +76,9 @@ export function FooterSection({
         <div className={styles.shell}>
           <div className={styles.layout}>
             <section className={styles.identity}>
-              <span className={styles.brand}>
-                <Image
-                  src="/brand/icon.png"
-                  alt="Invessiv Logo"
-                  width={24}
-                  height={24}
-                />
-                <strong>{copy.brand}</strong>
-              </span>
+              <strong className={styles.brand}>
+                <BrandLockup label={copy.brand} logoAlt={copy.brandLogoAlt} />
+              </strong>
 
               <p className={styles.description}>{description}</p>
             </section>

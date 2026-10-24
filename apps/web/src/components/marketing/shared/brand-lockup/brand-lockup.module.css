@@ -1,0 +1,36 @@
+.lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  --brand-label-gradient: linear-gradient(
+    90deg,
+    #f6b866 0%,
+    #f0aa53 30%,
+    #8fb2ee 68%,
+    #7fa8ea 100%
+  );
+}
+
+.logo {
+  flex: none;
+  width: auto;
+  height: 1.38em;
+}
+
+:global([data-theme="light"]) .lockup {
+  --brand-label-gradient: linear-gradient(
+    90deg,
+    #a95b1f 0%,
+    #b9641f 30%,
+    #2a55a8 68%,
+    #1d4897 100%
+  );
+}
+
+.label {
+  background: var(--brand-label-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}

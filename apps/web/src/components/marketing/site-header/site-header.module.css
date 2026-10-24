@@ -49,7 +49,6 @@
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   justify-self: start;
   color: var(--color-text);
   font-size: var(--font-size-brand);
