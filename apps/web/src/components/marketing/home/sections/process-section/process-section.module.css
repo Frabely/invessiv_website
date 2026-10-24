@@ -277,6 +277,7 @@
       )
       padding-box,
     var(--action-gradient) border-box;
+  background-color: var(--process-active-surface);
   box-shadow: none;
 }
 
@@ -298,15 +299,15 @@
   opacity: 1;
 }
 
-.step[data-journey-state]:not([data-journey-state="active"])
-  :is(
-    .stepTitle,
-    .stepNumber,
-    .stepEffortLabel,
-    .stepEffortValue,
-    .stepResultLabel,
-    .stepResultValue
-  ) {
+.step[data-journey-state]:not([data-journey-state="active"]),
+:is(
+  .stepTitle,
+  .stepNumber,
+  .stepEffortLabel,
+  .stepEffortValue,
+  .stepResultLabel,
+  .stepResultValue
+) {
   color: color-mix(in srgb, var(--color-text-muted) 90%, var(--color-bg));
 }
 

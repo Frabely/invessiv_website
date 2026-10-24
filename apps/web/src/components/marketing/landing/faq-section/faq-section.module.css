@@ -2,7 +2,7 @@
   --reveal-delay: 0ms;
   --faq-border-color: color-mix(
     in srgb,
-    var(--color-accent-warm) 38%,
+    var(--color-highlight) 38%,
     transparent
   );
   --faq-border-color-end: color-mix(in srgb, var(--color-cta) 38%, transparent);
@@ -114,42 +114,6 @@
   margin-top: clamp(1.25rem, 1vw, 1.75rem);
 }
 
-.showMore {
-  display: inline-flex;
-  align-items: center;
-  min-height: 2.75rem;
-  padding: 0.6rem 1.5rem;
-  border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 32%, var(--color-border) 68%);
-  border-radius: 999px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-accent-warm) 10%, transparent),
-    color-mix(in srgb, var(--color-cta) 8%, transparent)
-  );
-  color: var(--color-text);
-  font: inherit;
-  font-size: clamp(0.98rem, 0.94rem + 0.18vw, 1.04rem);
-  font-weight: 600;
-  line-height: 1.2;
-  cursor: pointer;
-  transition:
-    color 200ms ease,
-    border-color 200ms ease,
-    transform 180ms ease;
-}
-
-.showMore:hover {
-  color: var(--color-accent-warm);
-  border-color: color-mix(in srgb, var(--color-accent-warm) 60%, transparent);
-  transform: translateY(-1px);
-}
-
-.showMore:focus-visible {
-  outline: 2px solid var(--color-accent-warm);
-  outline-offset: 4px;
-}
-
 .item::after {
   content: "";
   position: absolute;
@@ -171,6 +135,8 @@
 }
 
 .summary {
+  composes: palette from "../../../shared/action-color/action-color.module.css";
+  --action-icon-gradient-opacity: 1;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
@@ -190,17 +156,14 @@
   content: "";
 }
 
-.summary:hover .question {
-  color: var(--color-accent-warm);
-}
-
 .summary:focus-visible {
-  outline: 2px solid var(--color-accent-warm);
+  outline: 2px solid var(--color-highlight);
   outline-offset: 6px;
   border-radius: 4px;
 }
 
 .question {
+  composes: hoverText from "../../../shared/action-color/action-color.module.css";
   margin: 0;
   color: var(--color-text);
   font-size: clamp(1.12rem, 1.4vw, 1.34rem);
@@ -219,37 +182,27 @@
   height: 2.1rem;
   border-radius: 999px;
   border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 32%, var(--color-border) 68%);
+    color-mix(in srgb, var(--color-highlight) 32%, var(--color-border) 68%);
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--color-accent-warm) 14%, transparent),
+    color-mix(in srgb, var(--color-highlight) 14%, transparent),
     color-mix(in srgb, var(--color-cta) 12%, transparent)
   );
-  color: var(--color-accent-warm);
+  color: var(--color-highlight);
   flex-shrink: 0;
   transition:
     transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
     border-color 220ms ease;
 }
 
-.plusBar {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+.plus svg {
   width: 0.85rem;
-  height: 1.5px;
-  background: currentColor;
-  border-radius: 2px;
-  transform: translate(-50%, -50%);
-}
-
-.plusBar:last-child {
-  transform: translate(-50%, -50%) rotate(90deg);
+  height: 0.85rem;
 }
 
 .details[open] .plus {
   transform: rotate(45deg);
-  border-color: color-mix(in srgb, var(--color-accent-warm) 60%, transparent);
+  border-color: color-mix(in srgb, var(--color-highlight) 60%, transparent);
 }
 
 .answerWrapper {
@@ -298,7 +251,7 @@
 }
 
 .answerLink:focus-visible {
-  outline: 2px solid var(--color-accent-warm);
+  outline: 2px solid var(--color-highlight);
   outline-offset: 4px;
   border-radius: 2px;
 }
@@ -317,7 +270,7 @@
   text-decoration: underline;
   text-decoration-color: color-mix(
     in srgb,
-    var(--color-accent-warm) 44%,
+    var(--color-highlight) 44%,
     transparent
   );
   text-decoration-thickness: 1px;
@@ -330,13 +283,13 @@
 
 .ctaLink:hover,
 .ctaLink:focus-visible {
-  color: var(--color-accent-warm);
+  color: var(--color-highlight);
   text-decoration-color: currentColor;
   text-decoration-thickness: 2px;
 }
 
 .ctaLink:focus-visible {
-  outline: 2px solid var(--color-accent-warm);
+  outline: 2px solid var(--color-highlight);
   outline-offset: 5px;
   border-radius: 2px;
 }
@@ -393,10 +346,6 @@
   .plus {
     width: 1.85rem;
     height: 1.85rem;
-  }
-
-  .plusBar {
-    width: 0.75rem;
   }
 }
 

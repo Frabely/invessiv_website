@@ -192,7 +192,12 @@
 }
 
 .reply {
-  composes: palette from "../../../../shared/action-color/action-color.module.css";
+  composes: palette outlineOnHover from "../../../../shared/action-color/action-color.module.css";
+  --action-surface: color-mix(
+    in srgb,
+    var(--color-bg) 82%,
+    var(--color-surface-2)
+  );
   display: flex;
   gap: 1rem;
   align-items: center;

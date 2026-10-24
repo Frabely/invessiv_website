@@ -146,7 +146,7 @@
   border-radius: inherit;
   background: linear-gradient(
     90deg,
-    color-mix(in srgb, var(--color-accent-warm) 11%, transparent),
+    color-mix(in srgb, var(--color-highlight) 11%, transparent),
     transparent 54%,
     color-mix(in srgb, var(--color-cta) 10%, transparent)
   );
@@ -182,7 +182,7 @@
   color: var(--color-text-struck);
   text-decoration-color: color-mix(
     in srgb,
-    var(--color-accent-warm) 85%,
+    var(--color-highlight) 85%,
     transparent
   );
 }
@@ -227,11 +227,11 @@
 .pairButton[data-active="true"] .node {
   background: linear-gradient(
     140deg,
-    color-mix(in srgb, var(--color-accent-warm) 90%, #fff 10%),
+    color-mix(in srgb, var(--color-highlight) 90%, #fff 10%),
     color-mix(in srgb, var(--color-cta) 78%, #000 22%)
   );
   box-shadow: 0 0 0 5px
-    color-mix(in srgb, var(--color-accent-warm) 17%, transparent);
+    color-mix(in srgb, var(--color-highlight) 17%, transparent);
   transform: scale(1.18);
 }
 
@@ -323,11 +323,11 @@
   }
 
   .pairButton[data-active="true"] .actionCue {
-    border-color: color-mix(in srgb, var(--color-accent-warm) 68%, transparent);
-    color: var(--color-accent-warm);
+    border-color: color-mix(in srgb, var(--color-highlight) 68%, transparent);
+    color: var(--color-highlight);
     background: color-mix(
       in srgb,
-      var(--color-accent-warm) 12%,
+      var(--color-highlight) 12%,
       var(--color-surface-1)
     );
   }

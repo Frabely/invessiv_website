@@ -16,6 +16,9 @@ import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-secti
 import type { LandingFaqContent } from "@/i18n/dictionaries/landing/faq";
 import styles from "./faq-section.module.css";
 import { TextCta } from "@/components/shared/text-cta/text-cta";
+import { DisclosureButton } from "@/components/shared/disclosure-button/disclosure-button";
+import { ActionIcon } from "@/components/shared/action-icon/action-icon";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const INITIAL_VISIBLE_ITEMS = 5;
 
@@ -93,8 +96,7 @@ export function FaqSection({
               >
                 <span className={styles.question}>{item.question}</span>
                 <span aria-hidden="true" className={styles.plus}>
-                  <span className={styles.plusBar} />
-                  <span className={styles.plusBar} />
+                  <ActionIcon icon={faPlus} />
                 </span>
               </summary>
               <div className={styles.answerWrapper}>
@@ -126,7 +128,8 @@ export function FaqSection({
           data-reveal-item="true"
           data-visible="true"
         >
-          <a
+          <TextCta
+            variant="quaternary"
             className={styles.ctaLink}
             {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
               cta: AnalyticsCtaId.LandingFaqContact,
@@ -135,21 +138,20 @@ export function FaqSection({
             href={cta.href}
           >
             {cta.label}
-          </a>
+          </TextCta>
         </p>
       ) : null}
 
       {hasExpandableItems ? (
         <div className={styles.showMoreWrap} data-reveal-item="true">
-          <button
+          <DisclosureButton
             aria-controls={`${id}-list`}
-            aria-expanded={showAllItems}
-            className={styles.showMore}
+            expanded={showAllItems}
             onClick={() => setShowAllItems((currentValue) => !currentValue)}
             type="button"
           >
             {showAllItems ? showLessLabel : showMoreLabel}
-          </button>
+          </DisclosureButton>
         </div>
       ) : null}
     </section>

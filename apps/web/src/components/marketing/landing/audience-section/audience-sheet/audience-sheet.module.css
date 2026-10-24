@@ -76,12 +76,12 @@
 }
 
 .close:hover {
-  border-color: color-mix(in srgb, var(--color-accent-warm) 46%, transparent);
+  border-color: color-mix(in srgb, var(--color-highlight) 46%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 88%, transparent);
 }
 
 .close:focus-visible {
-  outline: 2px solid var(--color-accent-warm);
+  outline: 2px solid var(--color-highlight);
   outline-offset: 2px;
 }
 

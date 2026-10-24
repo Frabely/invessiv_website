@@ -12,6 +12,50 @@ const GRADIENT_PAGES = [
 ];
 
 for (const theme of THEMES) {
+  test(`keeps process cards opaque while leaving the active state in ${theme.name}`, async ({
+    page,
+  }) => {
+    await page.addInitScript(
+      (name) => localStorage.setItem("invessiv-theme", name),
+      theme.name,
+    );
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.goto("/de");
+      const card = page.locator('[data-process-step="true"]').first();
+      await card.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(350);
+
+      for (const state of ["passed", "upcoming"]) {
+        await card.evaluate((element) =>
+          element.setAttribute("data-journey-state", "active"),
+        );
+        await expect(card).toHaveCSS("background-image", /linear-gradient/);
+        await page.waitForTimeout(350);
+        const alphas = await card.evaluate(async (element, nextState) => {
+          const canvas = document.createElement("canvas");
+          canvas.width = canvas.height = 1;
+          const context = canvas.getContext("2d");
+          if (!context) throw new Error("Canvas context unavailable");
+          element.setAttribute("data-journey-state", nextState);
+          const samples: number[] = [];
+          for (let frame = 0; frame < 24; frame += 1) {
+            await new Promise<void>((resolve) =>
+              requestAnimationFrame(() => resolve()),
+            );
+            context.clearRect(0, 0, 1, 1);
+            context.fillStyle = getComputedStyle(element).backgroundColor;
+            context.fillRect(0, 0, 1, 1);
+            samples.push(context.getImageData(0, 0, 1, 1).data[3]);
+          }
+          return samples;
+        }, state);
+        expect(alphas).toEqual(Array(alphas.length).fill(255));
+      }
+    }
+  });
+
   test(`uses the shared CTA gradient for action links in ${theme.name}`, async ({
     page,
   }) => {

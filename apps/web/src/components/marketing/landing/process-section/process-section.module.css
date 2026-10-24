@@ -4,7 +4,7 @@
   --rail-thickness: 1px;
   --rail-color-from: color-mix(
     in srgb,
-    var(--color-accent-warm) 70%,
+    var(--color-highlight) 70%,
     transparent
   );
   --rail-color-to: color-mix(in srgb, var(--color-cta) 70%, transparent);
@@ -120,12 +120,12 @@
   border-radius: 999px;
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--color-accent-warm) 95%, transparent) 0%,
+    color-mix(in srgb, var(--color-highlight) 95%, transparent) 0%,
     color-mix(in srgb, var(--color-cta) 80%, transparent) 55%,
     transparent 75%
   );
   box-shadow: 0 0 14px
-    color-mix(in srgb, var(--color-accent-warm) 55%, transparent);
+    color-mix(in srgb, var(--color-highlight) 55%, transparent);
 }
 
 .icon {
@@ -135,13 +135,13 @@
   height: 2.15rem;
   border-radius: 12px;
   border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 28%, var(--color-border) 72%);
+    color-mix(in srgb, var(--color-highlight) 28%, var(--color-border) 72%);
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--color-accent-warm) 18%, transparent),
+    color-mix(in srgb, var(--color-highlight) 18%, transparent),
     color-mix(in srgb, var(--color-cta) 14%, transparent)
   );
-  color: var(--color-accent-warm);
+  color: var(--color-highlight);
 }
 
 .numeral {
@@ -152,14 +152,7 @@
   letter-spacing: -0.04em;
   line-height: 0.9;
   font-feature-settings: "tnum" 1;
-  background: linear-gradient(
-    135deg,
-    var(--color-accent-warm),
-    var(--color-cta)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--color-highlight);
 }
 
 .stepTitle {
