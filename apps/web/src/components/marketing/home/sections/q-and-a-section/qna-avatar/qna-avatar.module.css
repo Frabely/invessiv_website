@@ -31,9 +31,9 @@
 }
 
 .owner {
-  --qna-avatar-width: 125%;
-  --qna-avatar-left: -24.1%;
-  --qna-avatar-top: -30%;
+  --qna-avatar-width: 100%;
+  --qna-avatar-left: 0%;
+  --qna-avatar-top: 0%;
 }
 
 .asking {

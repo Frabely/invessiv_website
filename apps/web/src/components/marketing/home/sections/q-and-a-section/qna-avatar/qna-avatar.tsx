@@ -26,10 +26,10 @@ export function QnaAvatar({ alt }: QnaAvatarProps) {
       <Image
         alt={alt}
         className={`${styles.image} ${styles.owner}`}
-        height={693}
+        height={1000}
         sizes="(max-width: 959px) 11rem, 18rem"
         src={profilePhoto}
-        width={520}
+        width={1000}
       />
     </div>
   );

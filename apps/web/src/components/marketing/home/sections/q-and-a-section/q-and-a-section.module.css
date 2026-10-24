@@ -1,6 +1,6 @@
 .section {
   /* 100svh of this is the sticky stage; the rest is the scroll travel. */
-  --qna-section-height: 190svh;
+  --qna-section-height: 220svh;
 
   margin-top: 0;
 }
