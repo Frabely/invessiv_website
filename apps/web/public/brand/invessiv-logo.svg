@@ -19,12 +19,6 @@
       <stop offset="79%" stop-color="#e75a00"/>
       <stop offset="100%" stop-color="#df3900"/>
     </linearGradient>
-    <linearGradient id="rim" x1="5%" y1="25%" x2="83%" y2="90%">
-      <stop offset="0%" stop-color="#ffc345" stop-opacity="0.64"/>
-      <stop offset="35%" stop-color="#ffac28" stop-opacity="0.66"/>
-      <stop offset="73%" stop-color="#ff9a21" stop-opacity="0.66"/>
-      <stop offset="100%" stop-color="#ffaf38" stop-opacity="0"/>
-    </linearGradient>
     <linearGradient id="facetOpacity" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="white"/>
       <stop offset="65%" stop-color="white"/>
@@ -46,10 +40,6 @@
   <g clip-path="url(#outerClip)">
     <!-- Linker Schenkel: weicher Licht-Schatten-Verlauf -->
     <path d="M -18,506 L 212,389 C 277,366 321,389 348,435 L 567,799 C 513,883 446,921 361,902 C 236,884 105,743 31,624 C 4,590 -8,549 -18,506 Z" fill="url(#left)"/>
-
-    <!-- Die helle, geschwungene Kante im Knick -->
-    <path d="M -3,568 C 86,747 201,857 322,892 C 426,927 499,877 552,797 L 1005,107 L 1033,67 L 570,815 C 516,904 434,931 336,905 C 209,874 95,754 -3,568 Z"
-          fill="url(#rim)"/>
 
     <!-- Dreidimensionale, dunklere rechte Facette -->
     <path d="M 1321,79 C 1219,115 1157,155 1096,242 C 1030,333 996,416 913,541 C 785,736 620,991 425,1289 L 430,1440 L 1450,362 L 1362,107 Z" fill="url(#right)" opacity="0.94" mask="url(#fadeFacet)"/>
