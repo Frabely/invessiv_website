@@ -1,7 +1,7 @@
 import Link from "next/link";
 import styles from "./breadcrumbs.module.css";
 
-export type BreadcrumbsItem = {
+type BreadcrumbsItem = {
   href?: string;
   isLink: boolean;
   label: string;
