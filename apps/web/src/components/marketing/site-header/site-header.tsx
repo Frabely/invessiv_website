@@ -13,6 +13,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
 import { BrandLockup } from "@invessiv/ui";
+import { BRAND_ASSETS } from "@/common/constants/brand/brand-assets";
 import { ReadingProgress } from "@/components/marketing/shared/reading-progress/reading-progress";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
@@ -147,6 +148,9 @@ export function SiteHeader({
           <BrandLockup
             label={ui.brandLabel}
             logoAlt={ui.brandLogoAlt}
+            logoSrc={BRAND_ASSETS.logo.src}
+            logoWidth={BRAND_ASSETS.logo.width}
+            logoHeight={BRAND_ASSETS.logo.height}
             priority
           />
         </a>

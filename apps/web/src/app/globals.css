@@ -32,8 +32,24 @@
      independently of the brand, chat surfaces, and display typography. */
   --color-brand-primary: #e38a3c;
   --color-brand-secondary: #86ace6;
-  --color-highlight-base: #d9b08c;
+  --color-brand-primary-muted: #d9b08c;
+  --color-highlight-base: color-mix(
+    in srgb,
+    var(--color-brand-secondary) 55%,
+    var(--color-text-muted)
+  );
   --color-action-base: var(--color-brand-secondary);
+  --color-action-accent: var(--color-brand-primary);
+  --color-action-accent-hover: color-mix(
+    in srgb,
+    var(--color-action-accent) 82%,
+    #ffffff
+  );
+  --color-action-accent-active: color-mix(
+    in srgb,
+    var(--color-action-accent) 88%,
+    #000000
+  );
   --color-bg: #191a1c;
   --color-surface-1: #222426;
   --color-surface-2: #2c2e31;
@@ -171,7 +187,12 @@
 [data-theme="light"] {
   --color-brand-primary: #af581f;
   --color-brand-secondary: #3568ad;
-  --color-highlight-base: #925d3e;
+  --color-brand-primary-muted: #925d3e;
+  --color-highlight-base: color-mix(
+    in srgb,
+    var(--color-brand-secondary) 40%,
+    var(--color-text-muted)
+  );
   --color-bg: #f6f5f2;
   --color-surface-1: #ffffff;
   --color-surface-2: #eeede9;
@@ -197,6 +218,16 @@
   );
   --color-cta-hover: color-mix(in srgb, var(--color-action-base) 85%, #000000);
   --color-cta-active: color-mix(in srgb, var(--color-action-base) 70%, #000000);
+  --color-action-accent-hover: color-mix(
+    in srgb,
+    var(--color-action-accent) 85%,
+    #000000
+  );
+  --color-action-accent-active: color-mix(
+    in srgb,
+    var(--color-action-accent) 70%,
+    #000000
+  );
   --color-danger: #b91c1c;
   --color-on-cta: #ffffff;
   --color-faq-open-surface: color-mix(

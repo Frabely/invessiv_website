@@ -189,10 +189,7 @@
   z-index: 4;
   min-height: 42px;
   padding-inline: 16px;
-  border: 1px solid var(--color-cta);
   border-radius: 12px;
-  background: var(--color-cta);
-  color: var(--color-on-cta);
   white-space: nowrap;
   opacity: 1;
   transform: translate(-50%, -50%);
@@ -202,14 +199,6 @@
     transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 220ms ease;
   will-change: transform, opacity;
-}
-
-.endCta:hover {
-  background: var(--color-cta-hover);
-}
-
-.endCta:active {
-  background: var(--color-cta-active);
 }
 
 .endCta:focus-visible {

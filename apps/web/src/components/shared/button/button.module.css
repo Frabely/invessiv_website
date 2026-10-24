@@ -33,22 +33,39 @@
 }
 
 .primary {
+  --button-gradient-start: var(--color-action-accent);
+  --button-gradient-end: var(--color-cta);
   border-color: var(--color-cta);
-  background: var(--color-cta);
+  background-color: var(--color-cta);
+  background-image: linear-gradient(
+    118deg,
+    var(--button-gradient-start) 0%,
+    color-mix(
+        in srgb,
+        var(--button-gradient-start) 70%,
+        var(--button-gradient-end)
+      )
+      28%,
+    var(--button-gradient-end) 100%
+  );
   color: var(--color-on-cta);
   box-shadow: var(--shadow-action);
 }
 
 .primary:hover,
 .primary:focus-visible {
-  background: var(--color-cta-hover);
+  --button-gradient-start: var(--color-action-accent-hover);
+  --button-gradient-end: var(--color-cta-hover);
+  background-color: var(--color-cta-hover);
   box-shadow: var(--shadow-action);
   filter: none;
   border-color: var(--color-cta-hover);
 }
 
 .primary:active {
-  background: var(--color-cta-active);
+  --button-gradient-start: var(--color-action-accent-active);
+  --button-gradient-end: var(--color-cta-active);
+  background-color: var(--color-cta-active);
   border-color: var(--color-cta-active);
 }
 

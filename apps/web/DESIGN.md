@@ -11,7 +11,7 @@ colors:
   trust-blue-hover: "#9cbbeb"
   trust-blue-active: "#729bd7"
   brand-orange: "#e38a3c"
-  orange-text: "#d9b08c"
+  brand-orange-muted: "#d9b08c"
   light-canvas: "#f6f5f2"
   light-surface: "#ffffff"
   light-surface-soft: "#eeede9"
@@ -19,7 +19,7 @@ colors:
   light-text-muted: "#5a5d62"
   light-trust-blue: "#3568ad"
   light-brand-orange: "#af581f"
-  light-orange-text: "#925d3e"
+  light-brand-orange-muted: "#925d3e"
   danger: "#d92d20"
 typography:
   display:
@@ -130,7 +130,7 @@ Die Palette verbindet matte, weitgehend neutrale Flächen mit dem Orange und Bla
 
 - **Markenorange:** Wiederkehrende Abschnittsmarkierungen, Prozessführung, feine Trennlinien und ausgewählte inhaltliche Details.
 - **Orange im hellen Theme:** Für die Lesbarkeit abgedunkelte Variante derselben Farbfamilie; kleine Texte nutzen einen zusätzlichen kontraststarken Orangeton.
-- **Orangefarbene Textbetonungen:** Weiches Apricot im dunklen Theme; im hellen Theme eine entsättigte, kontrastangepasste Variante. Abschnittsmarkierungen bleiben dadurch zurückhaltender als die primären Aktionen.
+- **Textbetonungen:** Gedämpftes Blau aus der zweiten Markenfarbe, im hellen Theme kontrastangepasst. Abschnittsmarkierungen bleiben dadurch zurückhaltender als die primären Aktionen. Kleine Markenmarker und dekorative Details dürfen weiterhin Orange tragen.
 
 ### Secondary
 
@@ -152,17 +152,21 @@ Die Palette verbindet matte, weitgehend neutrale Flächen mit dem Orange und Bla
 
 Die Hero-Headlines auf Home, Landingpage, Generator und Referenzseite tragen denselben sanft animierten Orange-Blau-Verlauf (fünf Sekunden pro Richtung). Die gemeinsame Komponente `components/shared/gradient-text/` definiert Farben, Textmaskierung und Animation einmalig. Die Farben sind deutlich entsättigt: weiches Apricot und Graublau im dunklen Theme, kontrastangepasste gedämpfte Varianten im hellen Theme. Bei reduzierter Bewegung bleibt der vollständige Verlauf statisch. Rechte Besucher-Bubbles im Home-Chat nutzen ein gedämpftes Blaugrau zur Unterscheidung von den neutralen Antworten; Orange bleibt dort einzelnen Textbetonungen vorbehalten.
 
+Die Verlaufs-Komponente besitzt eine sichtbare Textfarbe als Grundzustand. Transparente Textfüllung wird nur bei unterstützter Textmaskierung und Farbmischung aktiviert. Fehlende neuere Palette-Variablen fallen auf bestehende Rollen beziehungsweise die Textfarbe zurück, damit ein gemischter CSS-Stand beim lokalen Neuladen die Headline nicht unsichtbar macht.
+
 ### Farbbasis und Rollen
 
 Die verbindlichen Laufzeitwerte stehen in `src/app/globals.css`. `DESIGN.md` beschreibt die Gestaltung; die Palette wird nicht aus diesem Dokument geladen.
 
 - `--color-brand-primary` trägt die primäre Markenfarbe, `--color-brand-secondary` die zweite Markenfarbe. Beide besitzen je einen kontrastangepassten Wert pro Theme.
-- `--color-highlight-base` ist die bewusst weichere Variante für Textbetonungen. Abschnittsmarkierungen, Chat-Betonungen und Empfehlungslabels verwenden dieselbe Textrolle `--color-accent-orange-text`. Der separate Basiswert erlaubt, die Intensität dieser Texte unabhängig von Markierungen und Illustrationen zu steuern.
-- `--color-action-base` verweist standardmäßig auf die zweite Markenfarbe. CTA, Hover, Active, Fokus, aktive Auswahlen und weitere Aktionszustände werden davon abgeleitet. Ein späteres grünes Aktionsschema benötigt nur einen passenden Basiswert je Theme; keine Änderungen in den Komponenten.
+- `--color-highlight-base` mischt die zweite Markenfarbe mit gedämpftem Text zu einem zurückhaltenden Blau. Abschnittsmarkierungen, Chat-Betonungen und Empfehlungslabels verwenden dieselbe Textrolle. Deren bestehende Aliasnamen `--color-accent-orange-text` und `--color-accent-orange-text-hover` bleiben kompatibel; ihre Werte sind jetzt blau. `--color-brand-primary-muted` trägt separat das weiche Orange der Headline, damit Textbetonungen und Headline-Wärme unabhängig bleiben.
+- `--color-action-base` verweist standardmäßig auf die zweite Markenfarbe. CTA, Hover, Active, Fokus, aktive Auswahlen und weitere Aktionszustände werden davon abgeleitet. `--color-action-accent` bildet das orangefarbene Ende des CTA-Verlaufs und verweist standardmäßig auf die primäre Markenfarbe. Ein späteres grünes Aktionsschema benötigt nur einen passenden Basiswert je Theme; das orangefarbene Verlaufsende bleibt unabhängig steuerbar.
 - Chatflächen folgen der zweiten Markenfarbe über eine lokale `--bubble-accent`-Rolle. Die vier Headline-Verlaufsfarben werden lokal aus Marken-, Hervorhebungs- und Textfarben gemischt. Beide bleiben bei einer isolierten Änderung der Aktionsfarbe erhalten.
 - Komponenten dürfen Mischverhältnisse, Transparenz und lokale Rollen festlegen. Eigene feste Orange- oder Blautöne für diese Rollen werden nicht hinterlegt. Neutrale Masken- und Schattenwerte sowie eigenständige Referenzdesigns gehören nicht zur Aktionspalette.
 
 Bei einer Änderung von Blau zu Grün wird `--color-action-base` in `:root` und `[data-theme="light"]` überschrieben. Soll die gesamte zweite Markenfarbe wechseln, wird stattdessen `--color-brand-secondary` angepasst; dann folgen standardmäßig auch Aktionen, Chatflächen und Headline. Der E2E-Test `e2e/theme-colors.e2e.ts` prüft die getrennte Aktionsänderung in beiden Themes. Neue Basisfarben müssen weiterhin auf ausreichenden Kontrast geprüft werden; eine beliebige helle oder dunkle Farbe garantiert keinen lesbaren Buttontext.
+
+Die Website verwendet `public/brand/invessiv-logo-mehr-abstand.svg` für Logo und dekoratives Markenmotiv. Der gemeinsame Pfad und die Abmessungen liegen in `common/constants/brand/brand-assets.ts`; die app-neutrale `BrandLockup`-Komponente nimmt sie über `logoSrc`, `logoWidth` und `logoHeight` entgegen. Das Logo besitzt ein breiteres Seitenverhältnis als das bisherige Icon. Ersetzte Varianten werden entfernt; das Standardlogo bleibt für den gemeinsamen Komponenten-Fallback bestehen.
 
 ## Typography
 
@@ -216,7 +220,7 @@ Komponenten wirken präzise und souverän: klare Zustände, leicht taktiles Feed
 ### Buttons
 
 - **Shape:** Kompakt weich gerundet mit mindestens 44px großer Interaktionsfläche.
-- **Primary:** Einfarbiges Vertrauensblau, kräftige Labeltypografie und kleiner neutraler Action-Lift; Hover und Active über abgestufte Blautöne.
+- **Primary:** Schräger Orange-Blau-Verlauf nach dem farbigen Logo, kräftige Labeltypografie und kleiner neutraler Action-Lift. Die gemeinsame Button-Komponente definiert den Verlauf einmalig; Hover und Active leiten beide Verlaufsenden aus ihren Basisfarben ab.
 - **Hover / Focus:** Höchstens ein Pixel Anhebung; sichtbarer Zwei-Pixel-Fokusring mit Abstand.
 - **Ghost:** Tonale Oberfläche und feine Kontur; der Hover erhält nur einen leichten Blauanteil.
 

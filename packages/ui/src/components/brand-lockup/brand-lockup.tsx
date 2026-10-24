@@ -6,18 +6,24 @@ export type BrandLockupProps = {
   collapseLabelOnMobile?: boolean;
   label: string;
   logoAlt: string;
+  logoSrc?: string;
+  logoWidth?: number;
+  logoHeight?: number;
   priority?: boolean;
 };
 
 /**
  * Invessiv logo plus wordmark. The logo scales with the inherited font size,
- * so the parent only sets typography. Every app serves the logo under the
- * same public path.
+ * so the parent only sets typography. Applications can provide their own asset
+ * while retaining the shared default path.
  */
 export function BrandLockup({
   collapseLabelOnMobile,
   label,
   logoAlt,
+  logoSrc = BRAND_LOGO_SRC,
+  logoWidth = 1338,
+  logoHeight = 1341,
   priority,
 }: BrandLockupProps) {
   return (
@@ -31,9 +37,9 @@ export function BrandLockup({
         alt={logoAlt}
         className={styles.logo}
         fetchPriority={priority ? "high" : undefined}
-        height={1341}
-        src={BRAND_LOGO_SRC}
-        width={1338}
+        height={logoHeight}
+        src={logoSrc}
+        width={logoWidth}
       />
       <span className={styles.label}>{label}</span>
     </span>

@@ -1,8 +1,7 @@
 import Image from "next/image";
+import { BRAND_ASSETS } from "@/common/constants/brand/brand-assets";
 
 import styles from "./brand-mark-backdrop.module.css";
-
-const BRAND_MARK_SRC = "/brand/invessiv-logo.svg";
 
 type BrandMarkBackdropProps = {
   sizes: string;
@@ -20,7 +19,7 @@ export function BrandMarkBackdrop({ sizes }: BrandMarkBackdropProps) {
         className={styles.image}
         fill
         sizes={sizes}
-        src={BRAND_MARK_SRC}
+        src={BRAND_ASSETS.logo.src}
       />
     </span>
   );

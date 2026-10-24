@@ -34,4 +34,41 @@ describe("BrandLockup", () => {
       "true",
     );
   });
+
+  it("accepts an application-specific logo without changing the shared default", () => {
+    const { rerender } = render(
+      <BrandLockup
+        label="Invessiv"
+        logoAlt="Brand"
+        logoSrc="/custom-brand.svg"
+        logoWidth={160}
+        logoHeight={100}
+      />,
+    );
+    expect(screen.getByRole("img", { name: "Brand" })).toHaveAttribute(
+      "src",
+      "/custom-brand.svg",
+    );
+    expect(screen.getByRole("img", { name: "Brand" })).toHaveAttribute(
+      "width",
+      "160",
+    );
+    expect(screen.getByRole("img", { name: "Brand" })).toHaveAttribute(
+      "height",
+      "100",
+    );
+    rerender(<BrandLockup label="Invessiv" logoAlt="Brand" />);
+    expect(screen.getByRole("img", { name: "Brand" })).toHaveAttribute(
+      "src",
+      "/brand/invessiv-logo.svg",
+    );
+    expect(screen.getByRole("img", { name: "Brand" })).toHaveAttribute(
+      "width",
+      "1338",
+    );
+    expect(screen.getByRole("img", { name: "Brand" })).toHaveAttribute(
+      "height",
+      "1341",
+    );
+  });
 });

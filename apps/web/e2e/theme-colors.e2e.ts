@@ -29,6 +29,7 @@ for (const theme of THEMES) {
         );
         await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
         const headline = page.locator("h1 span");
+        await expect(headline).not.toHaveCSS("background-image", "none");
         await expect(headline).toHaveCSS("background-clip", "text");
         await expect(headline).toHaveCSS("background-size", "180% 180%");
         await expect(headline).toHaveCSS("animation-duration", "5s");
@@ -63,6 +64,7 @@ for (const theme of THEMES) {
     );
 
     const headline = page.locator("h1 span");
+    await expect(headline).not.toHaveCSS("background-image", "none");
     await expect(headline).toHaveCSS("background-clip", "text");
     await expect(headline).toHaveCSS("background-size", "180% 180%");
     await expect(headline).toHaveCSS(
@@ -95,6 +97,34 @@ for (const theme of THEMES) {
     await expect(headline).toHaveCSS("background-clip", "text");
   });
 
+  test(`keeps the headline painted when newer palette variables are unavailable in ${theme.name}`, async ({
+    page,
+  }) => {
+    await page.addInitScript((name) => {
+      localStorage.setItem("invessiv-theme", name);
+    }, theme.name);
+    await page.goto("/de");
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-theme",
+      theme.name,
+    );
+    await page.evaluate(() => {
+      document.documentElement.style.setProperty(
+        "--color-brand-primary-muted",
+        "initial",
+      );
+      document.documentElement.style.setProperty(
+        "--color-brand-secondary",
+        "initial",
+      );
+    });
+    const headline = page.locator("h1 span");
+    await expect(headline).not.toHaveCSS("background-image", "none");
+    await expect(headline).toHaveCSS("background-clip", "text");
+    await expect(headline).not.toHaveCSS("color", "rgba(0, 0, 0, 0)");
+    await expect(headline).toBeVisible();
+  });
+
   test(`propagates an action color change without recoloring the brand in ${theme.name}`, async ({
     page,
   }) => {
@@ -116,6 +146,14 @@ for (const theme of THEMES) {
       .first()
       .getByRole("link")
       .first();
+    await expect(page.locator("header img").first()).toHaveAttribute(
+      "src",
+      "/brand/invessiv-logo-mehr-abstand.svg",
+    );
+    await expect(page.locator("footer img").first()).toHaveAttribute(
+      "src",
+      "/brand/invessiv-logo-mehr-abstand.svg",
+    );
     const readContentColors = () =>
       page.evaluate(() => {
         const css = (selector: string) => {
@@ -123,29 +161,36 @@ for (const theme of THEMES) {
           if (!element) throw new Error(`Missing element: ${selector}`);
           return getComputedStyle(element);
         };
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = 1;
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("Canvas context unavailable");
+        context.fillStyle = css('[data-emphasis="usp"]').color;
+        context.fillRect(0, 0, 1, 1);
+        const highlightRgb = Array.from(context.getImageData(0, 0, 1, 1).data);
         return {
           headline: css("h1 span").backgroundImage,
           visitor: css('[data-author="visitor"] [class*="bubble"]')
             .backgroundColor,
           highlight: css('[data-emphasis="usp"]').color,
+          highlightRgb,
           selected: css('#services button[aria-pressed="true"]')
             .backgroundColor,
         };
       });
     const readActionColors = async () => {
+      const readBackground = () =>
+        primary.evaluate((element) => {
+          const css = getComputedStyle(element);
+          return { color: css.backgroundColor, image: css.backgroundImage };
+        });
       await page.mouse.move(0, 0);
       await primary.evaluate((element) => element.blur());
-      const normal = await primary.evaluate(
-        (element) => getComputedStyle(element).backgroundColor,
-      );
+      const normal = await readBackground();
       await primary.hover();
-      const hover = await primary.evaluate(
-        (element) => getComputedStyle(element).backgroundColor,
-      );
+      const hover = await readBackground();
       await page.mouse.down();
-      const active = await primary.evaluate(
-        (element) => getComputedStyle(element).backgroundColor,
-      );
+      const active = await readBackground();
       // Release outside the link so the color check never follows its CTA.
       await page.mouse.move(0, 0);
       await page.mouse.up();
@@ -160,6 +205,9 @@ for (const theme of THEMES) {
     };
 
     const beforeContent = await readContentColors();
+    expect(beforeContent.highlightRgb[2]).toBeGreaterThan(
+      beforeContent.highlightRgb[0],
+    );
     const beforeAction = await readActionColors();
     await page.evaluate((green) => {
       document.documentElement.style.setProperty("--color-action-base", green);
@@ -167,11 +215,13 @@ for (const theme of THEMES) {
     const afterAction = await readActionColors();
     const afterContent = await readContentColors();
 
-    expect(afterAction.normal).not.toBe(beforeAction.normal);
-    expect(afterAction.hover).not.toBe(beforeAction.hover);
-    expect(afterAction.active).not.toBe(beforeAction.active);
+    for (const state of ["normal", "hover", "active"] as const) {
+      expect(beforeAction[state].image).toContain("linear-gradient");
+      expect(afterAction[state].color).not.toBe(beforeAction[state].color);
+      expect(afterAction[state].image).not.toBe(beforeAction[state].image);
+    }
     expect(afterAction.focus).not.toBe(beforeAction.focus);
-    expect(afterAction.focus).toBe(afterAction.normal);
+    expect(afterAction.focus).toBe(afterAction.normal.color);
     expect(afterContent.selected).not.toBe(beforeContent.selected);
     expect(afterContent.headline).toBe(beforeContent.headline);
     expect(afterContent.visitor).toBe(beforeContent.visitor);
