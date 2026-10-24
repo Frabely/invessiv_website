@@ -17,15 +17,16 @@
 }
 
 .message[data-author="visitor"] {
+  --bubble-accent: var(--color-brand-secondary);
   --bubble-bg: color-mix(
     in srgb,
-    var(--color-accent-warm) 16%,
-    var(--color-bg) 84%
+    var(--bubble-accent) 18%,
+    var(--color-surface-1) 82%
   );
   --bubble-border: color-mix(
     in srgb,
-    var(--color-accent-warm) 42%,
-    var(--color-border) 58%
+    var(--bubble-accent) 28%,
+    var(--color-border) 72%
   );
 
   flex-direction: row-reverse;
@@ -82,11 +83,7 @@
 }
 
 .highlight {
-  color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 70%,
-    var(--color-text) 30%
-  );
+  color: var(--color-accent-orange-text);
   font-weight: 700;
 }
 

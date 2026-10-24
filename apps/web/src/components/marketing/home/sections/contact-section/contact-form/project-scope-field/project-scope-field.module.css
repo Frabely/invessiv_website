@@ -44,17 +44,9 @@
 }
 
 :global([data-theme="light"]) .chip {
-  background: color-mix(
-    in srgb,
-    var(--color-surface-1) 92%,
-    var(--color-cta) 8%
-  );
-  border-color: color-mix(
-    in srgb,
-    var(--color-border) 80%,
-    var(--color-cta) 20%
-  );
-  color: color-mix(in srgb, var(--color-text) 82%, var(--color-cta) 18%);
+  background: var(--color-surface-1);
+  border-color: var(--color-border);
+  color: var(--color-text);
 }
 
 /* Pointer devices only: on touch :hover sticks after a tap. The hover state is
@@ -75,9 +67,7 @@
   }
 
   .chip[data-selected="true"]:hover {
-    box-shadow:
-      0 10px 24px color-mix(in srgb, var(--color-cta) 26%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    box-shadow: none;
   }
 }
 
@@ -114,15 +104,9 @@
     var(--color-cta) 58%,
     var(--color-border) 42%
   );
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--color-cta) 26%, var(--color-surface-2) 74%),
-    color-mix(in srgb, var(--color-cta) 18%, var(--color-surface-1) 82%)
-  );
+  background: color-mix(in srgb, var(--color-cta) 12%, var(--color-surface-1));
   color: color-mix(in srgb, var(--color-text) 94%, var(--color-text-muted) 6%);
-  box-shadow:
-    0 8px 20px color-mix(in srgb, var(--color-cta) 18%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: none;
 }
 
 :global([data-theme="light"]) .chip[data-selected="true"] {

@@ -25,6 +25,52 @@
   grid-template-columns: minmax(0, 760px) 1fr;
 }
 
+.fullscreenVisualRoot {
+  --title-gradient-start: color-mix(
+    in srgb,
+    var(--color-highlight-base) 50%,
+    var(--color-text)
+  );
+  --title-gradient-warm: color-mix(
+    in srgb,
+    var(--color-highlight-base) 80%,
+    var(--color-text-muted)
+  );
+  --title-gradient-neutral: color-mix(
+    in srgb,
+    var(--color-text) 90%,
+    var(--color-brand-secondary)
+  );
+  --title-gradient-cool: color-mix(
+    in srgb,
+    var(--color-brand-secondary) 45%,
+    var(--color-text)
+  );
+}
+
+:global([data-theme="light"]) .fullscreenVisualRoot {
+  --title-gradient-start: color-mix(
+    in srgb,
+    var(--color-highlight-base) 65%,
+    var(--color-text-muted)
+  );
+  --title-gradient-warm: color-mix(
+    in srgb,
+    var(--color-highlight-base) 70%,
+    var(--color-text-muted)
+  );
+  --title-gradient-neutral: color-mix(
+    in srgb,
+    var(--color-brand-secondary) 40%,
+    var(--color-text-muted)
+  );
+  --title-gradient-cool: color-mix(
+    in srgb,
+    var(--title-gradient-neutral) 88%,
+    var(--color-surface-1)
+  );
+}
+
 .fullscreenVisual {
   position: absolute;
   inset: 0;
@@ -75,27 +121,40 @@
   letter-spacing: -0.01em;
   text-wrap: balance;
   position: relative;
-  text-shadow: 0 8px 26px rgba(8, 12, 24, 0.36);
 }
 
-.titleGradient {
+.titleText {
   display: block;
   padding-bottom: 0.22em;
-  background: linear-gradient(
-      118deg,
-      #ffd8ab 0%,
-      #f0aa53 26%,
-      #d6e4ff 56%,
-      #7fa8ea 100%
-    )
-    0 45% / 180% 180%;
+  color: var(--color-text);
+  white-space: pre-line;
+}
+
+.fullscreenVisualRoot .titleText {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  white-space: pre-line;
-  filter: drop-shadow(0 5px 16px rgba(8, 12, 24, 0.22));
+  background-size: 180% 180%;
+  background: linear-gradient(
+      118deg,
+      var(--title-gradient-start) 0%,
+      var(--title-gradient-warm) 26%,
+      var(--title-gradient-neutral) 56%,
+      var(--title-gradient-cool) 100%
+    )
+    0 45%;
   animation: titleFlow 5s ease-in-out infinite alternate;
+}
+
+@keyframes titleFlow {
+  from {
+    background-position: 0 45%;
+  }
+
+  to {
+    background-position: 100% 55%;
+  }
 }
 
 .description {
@@ -128,17 +187,13 @@
 }
 
 .primaryCta {
-  box-shadow:
-    0 14px 32px rgba(31, 70, 137, 0.34),
-    0 0 0 1px color-mix(in srgb, var(--color-cta) 42%, transparent);
+  box-shadow: var(--shadow-action);
 }
 
 .primaryCta:hover,
 .primaryCta:focus-visible {
   transform: translateY(-1px);
-  box-shadow:
-    0 16px 34px rgba(31, 70, 137, 0.4),
-    0 0 0 1px color-mix(in srgb, var(--color-cta) 48%, transparent);
+  box-shadow: var(--shadow-action);
 }
 
 .secondaryCta {
@@ -153,23 +208,6 @@
 
 .visualBleed .grid {
   align-items: stretch;
-}
-
-[data-theme="light"] .title {
-  text-shadow: none;
-}
-
-[data-theme="light"] .titleGradient {
-  display: inline-block;
-  background: no-repeat
-    linear-gradient(118deg, #8b4b17 0%, #a95b1f 24%, #1d4897 58%, #3464bb 100%)
-    0 45% / 180% 180%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  filter: none;
-  animation: titleFlow 5s ease-in-out infinite alternate;
 }
 
 [data-theme="light"] .fullscreenVisual::after {
@@ -187,15 +225,6 @@
       color-mix(in srgb, var(--color-bg) 10%, transparent) 48%,
       color-mix(in srgb, var(--color-bg) 48%, transparent) 100%
     );
-}
-
-@keyframes titleFlow {
-  0% {
-    background-position: 0 45%;
-  }
-  100% {
-    background-position: 100% 55%;
-  }
 }
 
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
@@ -321,7 +350,7 @@
     line-height: 1.01;
   }
 
-  .compactMobile .titleGradient {
+  .compactMobile .titleText {
     white-space: normal;
   }
 
@@ -400,8 +429,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .titleGradient {
+  .fullscreenVisualRoot .titleText {
     animation: none;
+    background-size: 100% 100%;
+    background-position: center;
   }
 
   .primaryCta,

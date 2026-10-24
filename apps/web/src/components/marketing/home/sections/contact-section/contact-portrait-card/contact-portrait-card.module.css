@@ -11,17 +11,13 @@
   overflow: hidden;
   padding: 0;
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  border-radius: 24px;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-surface-1) 94%, transparent),
-    color-mix(in srgb, var(--color-surface-1) 98%, transparent)
-  );
-  box-shadow: 0 10px 24px rgba(8, 10, 15, 0.2);
+  border-radius: 16px;
+  background: var(--color-surface-1);
+  box-shadow: none;
 }
 
 :global([data-theme="light"]) .card {
-  box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
+  box-shadow: none;
 }
 
 .frame {

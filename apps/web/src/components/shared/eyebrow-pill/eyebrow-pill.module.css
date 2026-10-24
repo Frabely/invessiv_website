@@ -8,11 +8,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4em;
-  color: color-mix(
-    in srgb,
-    var(--color-text) 86%,
-    var(--color-accent-warm) 14%
-  );
+  color: var(--color-accent-orange-text);
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -27,14 +23,6 @@
   border: var(--eyebrow-arc-stroke) solid var(--eyebrow-arc-color);
   border-right: 0;
   border-radius: var(--eyebrow-arc-size) 0 0 var(--eyebrow-arc-size);
-}
-
-:global([data-theme="light"]) .root {
-  color: color-mix(
-    in srgb,
-    var(--color-text) 84%,
-    var(--color-accent-warm) 16%
-  );
 }
 
 .subtle {

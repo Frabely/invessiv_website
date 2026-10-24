@@ -77,7 +77,7 @@ export function HeroSection(props: HeroSectionProps) {
         <div className={styles.content}>
           <EyebrowPill className={styles.tag}>{heroTag}</EyebrowPill>
           <h1 className={styles.title}>
-            <span className={styles.titleGradient}>{title}</span>
+            <span className={styles.titleText}>{title}</span>
           </h1>
           <p className={styles.description}>{description}</p>
 

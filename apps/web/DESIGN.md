@@ -2,22 +2,24 @@
 name: Invessiv
 description: "Ein ruhiges, hochwertiges und conversion-orientiertes Designsystem für klare digitale Angebote."
 colors:
-  graphite-brown: "#1d1a18"
-  dark-surface: "#282320"
-  dark-surface-raised: "#312b27"
-  dark-text: "#f4f7fd"
-  dark-text-muted: "#d2dae8"
-  trust-blue: "#4e83e6"
-  trust-blue-hover: "#6899f0"
-  trust-blue-active: "#3d6fcb"
-  copper-glow: "#e79a49"
-  light-canvas: "#eef4fb"
+  graphite: "#191a1c"
+  dark-surface: "#222426"
+  dark-surface-raised: "#2c2e31"
+  dark-text: "#f4f3ef"
+  dark-text-muted: "#b9bcc2"
+  trust-blue: "#86ace6"
+  trust-blue-hover: "#9cbbeb"
+  trust-blue-active: "#729bd7"
+  brand-orange: "#e38a3c"
+  orange-text: "#d9b08c"
+  light-canvas: "#f6f5f2"
   light-surface: "#ffffff"
-  light-surface-soft: "#e2ebf6"
-  light-text: "#162033"
-  light-text-muted: "#445775"
-  light-trust-blue: "#285fc1"
-  light-copper: "#cb7728"
+  light-surface-soft: "#eeede9"
+  light-text: "#232526"
+  light-text-muted: "#5a5d62"
+  light-trust-blue: "#3568ad"
+  light-brand-orange: "#af581f"
+  light-orange-text: "#925d3e"
   danger: "#d92d20"
 typography:
   display:
@@ -53,7 +55,8 @@ typography:
 rounded:
   control: "12px"
   field: "15px"
-  card: "24px"
+  card: "16px"
+  card-comfort: "24px"
   card-large: "28px"
   pill: "999px"
 spacing:
@@ -66,7 +69,7 @@ spacing:
 components:
   button-primary:
     backgroundColor: "{colors.trust-blue}"
-    textColor: "{colors.graphite-brown}"
+    textColor: "#18212f"
     typography: "{typography.label}"
     rounded: "{rounded.control}"
     padding: "0 18px"
@@ -105,7 +108,7 @@ components:
 
 **Creative North Star: "Klarer Signalweg"**
 
-Invessiv führt Besucher ruhig und ohne Umwege vom ersten Eindruck zur nächsten sinnvollen Entscheidung. Die Gestaltung wirkt hochwertig und technisch kompetent, ohne sich wie eine austauschbare SaaS-Oberfläche anzufühlen. Klare Leserichtung, großzügige Abstände und präzise Zustände geben komplexeren Angeboten Ruhe; Vertrauensblau markiert die Handlung, Kupferglut bringt Persönlichkeit und Wärme.
+Invessiv führt Besucher ruhig und ohne Umwege vom ersten Eindruck zur nächsten sinnvollen Entscheidung. Die Gestaltung wirkt hochwertig und technisch kompetent, ohne sich wie eine austauschbare SaaS-Oberfläche anzufühlen. Orange ist die primäre Markenfarbe und prägt Abschnittsmarkierungen, feine Linien und inhaltliche Details in beiden Themes. Blau ist die zweite Akzentfarbe für CTAs, Aktionen, aktive Zustände und einzelne Hervorhebungen.
 
 Das System ist standardmäßig dunkel, besitzt aber ein gleichwertiges helles Theme. Komponenten wirken sanft geschichtet und leicht taktil: Konturen, Tonwerte und zurückhaltende Schatten trennen Ebenen, während Bewegung ausschließlich Orientierung oder Interaktionsfeedback unterstützt.
 
@@ -114,37 +117,52 @@ Diese Designautorität gilt für die Invessiv-Oberflächen in `apps/web`. Der vo
 **Key Characteristics:**
 
 - Ruhige, conversion-orientierte Führung statt aggressiver Sales-Inszenierung
-- Warmer Graphitgrund mit seltenen Kupferakzenten und eindeutigem Vertrauensblau
+- Neutraler Anthrazitgrund beziehungsweise warmes Offwhite mit wiederkehrenden orangefarbenen Markendetails und eindeutig blauen Aktionen
 - Markante Display-Typografie, kombiniert mit sehr lesbarer UI- und Fließtexttypografie
 - Großzügige Layoutschienen, fokussierte Textmaße und mobile Vollbreiten-CTAs
 - Sanft geschichtete Oberflächen mit klaren Fokus- und Zustandswechseln
 
 ## Colors
 
-Die Palette verbindet warme, fast materielle Neutraltöne mit einem seriösen Blau für Handlungen und einer bewusst sparsamen Kupferwärme für Orientierung und Persönlichkeit.
+Die Palette verbindet matte, weitgehend neutrale Flächen mit dem Orange und Blau des farbigen Logos. Beide Themes verzichten auf großflächige Farbwolken. Markenfarbe entsteht durch erkennbare Details statt durch permanente Hintergrundbeleuchtung.
 
 ### Primary
 
-- **Vertrauensblau:** Primäre CTAs, aktive Zustände, Fokusführung und klar bestätigte Interaktionen.
-- **Helles Vertrauensblau:** Kontrastangepasste CTA- und Interaktionsfarbe im hellen Theme.
+- **Markenorange:** Wiederkehrende Abschnittsmarkierungen, Prozessführung, feine Trennlinien und ausgewählte inhaltliche Details.
+- **Orange im hellen Theme:** Für die Lesbarkeit abgedunkelte Variante derselben Farbfamilie; kleine Texte nutzen einen zusätzlichen kontraststarken Orangeton.
+- **Orangefarbene Textbetonungen:** Weiches Apricot im dunklen Theme; im hellen Theme eine entsättigte, kontrastangepasste Variante. Abschnittsmarkierungen bleiben dadurch zurückhaltender als die primären Aktionen.
 
 ### Secondary
 
-- **Kupferglut:** Eyebrows, kleine Marker, ausgewählte Hervorhebungen und warme atmosphärische Akzente.
-- **Helles Kupfer:** Kontrastangepasste warme Akzentfarbe im hellen Theme.
+- **Vertrauensblau:** Primäre CTAs, Aktionen, aktive Zustände und einzelne Hervorhebungen. Die Farbfamilie stammt aus dem farbigen Logo.
+- **Blau im hellen Theme:** Dunklere, kontrastangepasste CTA- und Interaktionsfarbe.
 
 ### Neutral
 
-- **Graphitbraun:** Standardhintergrund des dunklen Themes und visuelle Basis der Marke.
+- **Anthrazit:** Neutraler Standardhintergrund des dunklen Themes ohne braunen Farbstich.
 - **Dunkle Oberflächen:** Karten, Formulare, Navigation und gestaffelte Container im dunklen Theme.
-- **Helle Leinwand:** Kühler, ruhiger Grund des hellen Themes.
-- **Helle Oberflächen:** Weiße und weich blaugraue Ebenen für Karten und Eingaben.
+- **Helle Leinwand:** Leicht warmes Offwhite ohne blauen oder orangefarbenen Verlauf.
+- **Helle Oberflächen:** Weiße und neutral abgetönte Ebenen für Karten und Eingaben.
 - **Text und gedämpfter Text:** Hoher Kontrast für Aussagen, kontrolliert reduzierte Kontraste für Erklärungen und Metadaten.
 - **Gefahr:** Ausschließlich für Fehler- und destruktive Zustände.
 
 **The Signal Rule.** Vertrauensblau gehört an Entscheidungen und Zustände. Es darf nicht zur großflächigen Dekoration werden.
 
-**The Copper Restraint Rule.** Kupferglut markiert Persönlichkeit und Orientierung, konkurriert aber nie mit dem primären CTA.
+**The Orange Identity Rule.** Orange trägt die Markenidentität in beiden Themes. Die Hintergrundfläche bleibt ruhig; Blau kennzeichnet vor allem Handlungen. Der plastische Verlauf des Logos bleibt dem Logo vorbehalten.
+
+Die Home-Headline darf auf ausdrücklichen Markenwunsch einen sanft animierten Orange-Blau-Verlauf tragen (fünf Sekunden pro Richtung). Die Farben sind deutlich entsättigt: weiches Apricot und Graublau im dunklen Theme, kontrastangepasste gedämpfte Varianten im hellen Theme. Bei reduzierter Bewegung bleibt der vollständige Verlauf statisch. Rechte Besucher-Bubbles im Home-Chat nutzen ein gedämpftes Blaugrau zur Unterscheidung von den neutralen Antworten; Orange bleibt dort einzelnen Textbetonungen vorbehalten.
+
+### Farbbasis und Rollen
+
+Die verbindlichen Laufzeitwerte stehen in `src/app/globals.css`. `DESIGN.md` beschreibt die Gestaltung; die Palette wird nicht aus diesem Dokument geladen.
+
+- `--color-brand-primary` trägt die primäre Markenfarbe, `--color-brand-secondary` die zweite Markenfarbe. Beide besitzen je einen kontrastangepassten Wert pro Theme.
+- `--color-highlight-base` ist die bewusst weichere Variante für Textbetonungen. Abschnittsmarkierungen, Chat-Betonungen und Empfehlungslabels verwenden dieselbe Textrolle `--color-accent-orange-text`. Der separate Basiswert erlaubt, die Intensität dieser Texte unabhängig von Markierungen und Illustrationen zu steuern.
+- `--color-action-base` verweist standardmäßig auf die zweite Markenfarbe. CTA, Hover, Active, Fokus, aktive Auswahlen und weitere Aktionszustände werden davon abgeleitet. Ein späteres grünes Aktionsschema benötigt nur einen passenden Basiswert je Theme; keine Änderungen in den Komponenten.
+- Chatflächen folgen der zweiten Markenfarbe über eine lokale `--bubble-accent`-Rolle. Die vier Headline-Verlaufsfarben werden lokal aus Marken-, Hervorhebungs- und Textfarben gemischt. Beide bleiben bei einer isolierten Änderung der Aktionsfarbe erhalten.
+- Komponenten dürfen Mischverhältnisse, Transparenz und lokale Rollen festlegen. Eigene feste Orange- oder Blautöne für diese Rollen werden nicht hinterlegt. Neutrale Masken- und Schattenwerte sowie eigenständige Referenzdesigns gehören nicht zur Aktionspalette.
+
+Bei einer Änderung von Blau zu Grün wird `--color-action-base` in `:root` und `[data-theme="light"]` überschrieben. Soll die gesamte zweite Markenfarbe wechseln, wird stattdessen `--color-brand-secondary` angepasst; dann folgen standardmäßig auch Aktionen, Chatflächen und Headline. Der E2E-Test `e2e/theme-colors.e2e.ts` prüft die getrennte Aktionsänderung in beiden Themes. Neue Basisfarben müssen weiterhin auf ausreichenden Kontrast geprüft werden; eine beliebige helle oder dunkle Farbe garantiert keinen lesbaren Buttontext.
 
 ## Typography
 
@@ -178,7 +196,7 @@ Das System ist sanft geschichtet. Tonale Oberflächen und feine Konturen leisten
 ### Shadow Vocabulary
 
 - **Ambient Card:** `0 10px 24px rgba(8, 10, 15, 0.2)` – ruhige Trennung wichtiger Karten vom Hintergrund.
-- **Action Lift:** `0 10px 24px rgba(31, 70, 137, 0.3)` – primäre Handlung im Ruhezustand; beim Hover leicht verstärkt.
+- **Action Lift:** `var(--shadow-action)` – kleiner neutraler Schlagschatten an primären Aktionen, ohne farbigen Glow.
 - **Header Float:** `0 10px 24px rgba(6, 8, 12, 0.24)` – ausschließlich für den gescrollten Header im dunklen Theme.
 - **Ambient Card (Light):** `0 8px 18px rgba(36, 55, 90, 0.08)` – Pendant zu _Ambient Card_ im hellen Theme; kühler und
   deutlich zurückhaltender, damit Karten auf hellem Grund nicht schweben.
@@ -189,7 +207,7 @@ Das System ist sanft geschichtet. Tonale Oberflächen und feine Konturen leisten
 
 Die Formensprache ist freundlich-präzise: Bedienelemente besitzen kompakte, weich gerundete Ecken; Eingabefelder sind etwas großzügiger; Inhaltskarten verwenden deutlichere Radien. Vollständig runde Pillen bleiben kurzen Status-, Zeit- und Kategorieangaben vorbehalten.
 
-Konturen sind fein und kontrastarm. Stärkere farbige Begrenzungen erscheinen nur bei Auswahl, Fokus oder einer klar empfohlenen Option. Organische Radialverläufe dürfen Atmosphäre schaffen, geometrische Raster oder dekorative Linienfelder sind kein Standardmotiv.
+Konturen sind fein und kontrastarm. Stärkere farbige Begrenzungen erscheinen nur bei Auswahl, Fokus oder einer klar empfohlenen Option. Seitenhintergründe sind einfarbig; großflächige Radialverläufe, farbige Halos und dekorative Linienfelder sind kein Standardmotiv. Neutrale Bildüberlagerungen dürfen die Lesbarkeit sichern.
 
 ## Components
 
@@ -198,7 +216,7 @@ Komponenten wirken präzise und souverän: klare Zustände, leicht taktiles Feed
 ### Buttons
 
 - **Shape:** Kompakt weich gerundet mit mindestens 44px großer Interaktionsfläche.
-- **Primary:** Vertrauensblauer Verlauf, kräftige Labeltypografie und kontrollierter Action-Lift.
+- **Primary:** Einfarbiges Vertrauensblau, kräftige Labeltypografie und kleiner neutraler Action-Lift; Hover und Active über abgestufte Blautöne.
 - **Hover / Focus:** Höchstens ein Pixel Anhebung; sichtbarer Zwei-Pixel-Fokusring mit Abstand.
 - **Ghost:** Tonale Oberfläche und feine Kontur; der Hover erhält nur einen leichten Blauanteil.
 
@@ -210,7 +228,7 @@ Komponenten wirken präzise und souverän: klare Zustände, leicht taktiles Feed
 ### Cards / Containers
 
 - **Corner Style:** Großzügig gerundet, mit stärkerem Radius als Bedienelemente.
-- **Background:** Tonale Theme-Oberflächen, bei Bedarf mit einem sehr zurückhaltenden Spotlight.
+- **Background:** Matte, tonale Theme-Oberflächen; Prozess- und Kontaktkarten sind deckend und ohne Spotlight oder Glasunschärfe.
 - **Shadow Strategy:** Sanft geschichtet; stärkere Schatten nur für Hover oder klare Priorität.
 - **Border:** Feine Standardkontur, Akzentkontur nur für empfohlenen oder aktiven Zustand.
 - **Internal Padding:** Typischerweise großzügig und auf Desktop leicht erweitert.
@@ -227,7 +245,7 @@ Die Desktopnavigation sitzt mittig zwischen Marke und Aktionen. Im Ausgangszusta
 
 ### Eyebrow Pill
 
-Kurzer, warmer Orientierungspunkt vor wichtigen Überschriften. Die Pill kombiniert Kupferglut, eine kleine Statusmarke und kompakte Großbuchstaben, bleibt aber visuell deutlich unterhalb des CTA.
+Kurzer orangefarbener Orientierungspunkt vor wichtigen Überschriften. Die bestehende Abschnittsmarkierung greift die primäre Markenfarbe auf und bleibt visuell unterhalb des CTA.
 
 ## Do's and Don'ts
 
@@ -244,5 +262,5 @@ Kurzer, warmer Orientierungspunkt vor wichtigen Überschriften. Die Pill kombini
 - **Don't** generisches SaaS-Neon, großflächige Glow-Effekte oder aggressive Sales-Optik einführen.
 - **Don't** Glassmorphism als allgemeine Materiallogik verwenden.
 - **Don't** dekorative Raster, Linienfelder oder Gradient-Text als wiederkehrende Signatur einsetzen.
-- **Don't** Kupferglut und Vertrauensblau gleichzeitig um dieselbe Aufmerksamkeit konkurrieren lassen.
+- **Don't** Markenorange und Aktionsblau gleichzeitig um dieselbe Aufmerksamkeit konkurrieren lassen.
 - **Don't** KlarKompass oder andere isolierte Referenzdesigns in dieses System übernehmen.

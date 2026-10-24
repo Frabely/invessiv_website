@@ -121,7 +121,7 @@
 }
 
 .journeyGradientEnd {
-  stop-color: var(--color-cta);
+  stop-color: var(--color-accent-warm);
 }
 
 .journeyProgress {
@@ -129,12 +129,9 @@
   stroke: url(#processJourneyGradient);
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 6;
+  stroke-width: 3;
   vector-effect: non-scaling-stroke;
-  filter: drop-shadow(
-      0 0 10px color-mix(in srgb, var(--color-accent-warm) 46%, transparent)
-    )
-    drop-shadow(0 0 12px color-mix(in srgb, var(--color-cta) 42%, transparent));
+  filter: none;
   visibility: hidden;
 }
 
@@ -147,14 +144,8 @@
   height: 14px;
   border: 2px solid rgba(255, 255, 255, 0.9);
   border-radius: 999px;
-  background: linear-gradient(
-    135deg,
-    var(--color-accent-warm),
-    color-mix(in srgb, var(--color-cta) 44%, var(--color-accent-warm) 56%)
-  );
-  box-shadow:
-    0 0 0 6px color-mix(in srgb, var(--color-accent-warm) 28%, transparent),
-    0 0 24px color-mix(in srgb, var(--color-accent-warm) 52%, transparent);
+  background: var(--color-accent-warm);
+  box-shadow: none;
   pointer-events: none;
 }
 
@@ -170,14 +161,8 @@
   width: 18px;
   height: 18px;
   border-width: 2px;
-  background: linear-gradient(
-    135deg,
-    var(--color-cta),
-    var(--color-cta-active)
-  );
-  box-shadow:
-    0 0 0 8px color-mix(in srgb, var(--color-cta) 24%, transparent),
-    0 0 28px color-mix(in srgb, var(--color-cta) 52%, transparent);
+  background: var(--color-cta);
+  box-shadow: none;
   transform: translate(
     calc(var(--process-leader-x) - 9px),
     calc(var(--process-leader-y) - 9px)
@@ -194,7 +179,7 @@
 }
 
 .pathPointLeader[data-finished="true"] {
-  animation: processLeaderPulse 0.72s ease-out 1 both;
+  animation: none;
 }
 
 .endCta {
@@ -204,14 +189,9 @@
   z-index: 4;
   min-height: 42px;
   padding-inline: 16px;
-  border: 1px solid color-mix(in srgb, var(--color-cta) 72%, #ffffff 8%);
+  border: 1px solid var(--color-cta);
   border-radius: 12px;
-  background: linear-gradient(
-    125deg,
-    var(--color-cta-hover) 0%,
-    var(--color-cta) 46%,
-    var(--color-cta-active) 100%
-  );
+  background: var(--color-cta);
   color: var(--color-on-cta);
   white-space: nowrap;
   opacity: 1;
@@ -222,6 +202,14 @@
     transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 220ms ease;
   will-change: transform, opacity;
+}
+
+.endCta:hover {
+  background: var(--color-cta-hover);
+}
+
+.endCta:active {
+  background: var(--color-cta-active);
 }
 
 .endCta:focus-visible {
@@ -248,11 +236,11 @@
   position: relative;
   width: min(100%, 29rem);
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  border-radius: 24px;
-  background: color-mix(in srgb, var(--color-surface-1) 58%, transparent);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 12px 28px rgba(8, 10, 15, 0.2);
+  border-radius: 16px;
+  background: var(--color-surface-1);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
   transition:
     border-color 300ms ease,
     box-shadow 320ms ease,
@@ -291,11 +279,7 @@
     var(--color-cta) 12%,
     var(--color-surface-1) 88%
   );
-  box-shadow:
-    0 0 0 2px var(--color-cta),
-    0 0 0 7px color-mix(in srgb, var(--color-cta) 26%, transparent),
-    0 0 42px color-mix(in srgb, var(--color-cta) 58%, transparent),
-    0 16px 48px color-mix(in srgb, var(--color-cta) 32%, transparent);
+  box-shadow: 0 0 0 1px var(--color-cta);
 }
 
 .step[data-journey-state="active"] .stepResult {
@@ -304,23 +288,19 @@
 
 .step[data-journey-state="passed"] {
   border-color: var(--process-passed-border);
-  filter: brightness(0.68) saturate(0.85);
+  filter: none;
 }
 
 .step[data-journey-state="passed"] .stepInner {
-  opacity: 0.55;
+  opacity: 1;
 }
 
 .stepGlow {
   position: absolute;
   inset: -1px;
   display: none;
-  border-radius: 25px;
-  box-shadow:
-    0 0 0 2px var(--color-cta),
-    0 0 0 7px color-mix(in srgb, var(--color-cta) 26%, transparent),
-    0 0 42px color-mix(in srgb, var(--color-cta) 58%, transparent),
-    0 16px 48px color-mix(in srgb, var(--color-cta) 32%, transparent);
+  border-radius: 17px;
+  box-shadow: 0 0 0 1px var(--color-cta);
   opacity: 0;
   pointer-events: none;
   transition: opacity 280ms ease;
@@ -378,7 +358,6 @@
   border-color: var(--color-cta);
   background: var(--color-cta);
   color: var(--color-on-cta);
-  box-shadow: 0 0 16px color-mix(in srgb, var(--color-cta) 70%, transparent);
 }
 
 .stepTitle {
@@ -413,7 +392,7 @@
 
 .stepResult {
   padding: 0 0 0 16px;
-  border-left: 2px solid
+  border-left: 1px solid
     color-mix(in srgb, var(--color-accent-warm) 48%, var(--color-border) 52%);
 }
 
@@ -440,20 +419,16 @@
 
 :global([data-theme="light"]) .step {
   border-color: var(--color-border);
-  background: color-mix(in srgb, var(--color-surface-1) 68%, transparent);
-  box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
+  background: var(--color-surface-1);
+  box-shadow: none;
 }
 
 :global([data-theme="light"]) .step[data-journey-state="passed"] {
-  filter: brightness(0.93) saturate(0.5);
+  filter: none;
 }
 
 :global([data-theme="light"]) .stepGlow {
-  box-shadow:
-    0 0 0 2px var(--color-cta),
-    0 0 0 7px color-mix(in srgb, var(--color-cta) 18%, transparent),
-    0 0 36px color-mix(in srgb, var(--color-cta) 38%, transparent),
-    0 12px 36px color-mix(in srgb, var(--color-cta) 22%, transparent);
+  box-shadow: 0 0 0 1px var(--color-cta);
 }
 
 :global([data-theme="light"]) .step[data-journey-state="active"] {
@@ -463,11 +438,7 @@
     var(--color-cta) 8%,
     var(--color-surface-1) 92%
   );
-  box-shadow:
-    0 0 0 2px var(--color-cta),
-    0 0 0 7px color-mix(in srgb, var(--color-cta) 18%, transparent),
-    0 0 36px color-mix(in srgb, var(--color-cta) 38%, transparent),
-    0 12px 36px color-mix(in srgb, var(--color-cta) 22%, transparent);
+  box-shadow: 0 0 0 1px var(--color-cta);
 }
 
 :global([data-theme="light"]) .stepNumber {
@@ -491,26 +462,17 @@
 }
 
 :global([data-theme="light"]) .journeyGradientEnd {
-  stop-color: color-mix(in srgb, var(--color-cta) 72%, #ffffff 28%);
+  stop-color: var(--color-accent-warm);
 }
 
 :global([data-theme="light"]) .journeyProgress {
-  filter: drop-shadow(
-      0 0 10px color-mix(in srgb, var(--color-accent-warm) 24%, transparent)
-    )
-    drop-shadow(0 0 12px color-mix(in srgb, var(--color-cta) 22%, transparent));
+  filter: none;
 }
 
 :global([data-theme="light"]) .pathPoint {
   border-color: rgba(255, 255, 255, 0.96);
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-accent-warm) 76%, #ffffff 24%),
-    color-mix(in srgb, var(--color-cta) 34%, #ffffff 66%)
-  );
-  box-shadow:
-    0 0 0 6px color-mix(in srgb, var(--color-accent-warm) 16%, transparent),
-    0 0 24px color-mix(in srgb, var(--color-accent-warm) 24%, transparent);
+  background: var(--color-accent-warm);
+  box-shadow: none;
 }
 
 :global([data-theme="light"]) .pathPointStart {
@@ -518,49 +480,8 @@
 }
 
 :global([data-theme="light"]) .pathPointLeader {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-cta) 76%, #ffffff 24%),
-    color-mix(in srgb, var(--color-cta-active) 72%, #ffffff 28%)
-  );
-  box-shadow:
-    0 0 0 8px color-mix(in srgb, var(--color-cta) 16%, transparent),
-    0 0 28px color-mix(in srgb, var(--color-cta) 24%, transparent);
-}
-
-@keyframes processLeaderPulse {
-  0% {
-    transform: translate(
-        calc(var(--process-leader-x) - 9px),
-        calc(var(--process-leader-y) - 9px)
-      )
-      scale(1);
-    box-shadow:
-      0 0 0 8px color-mix(in srgb, var(--color-cta) 30%, transparent),
-      0 0 28px color-mix(in srgb, var(--color-cta) 66%, transparent);
-  }
-
-  55% {
-    transform: translate(
-        calc(var(--process-leader-x) - 9px),
-        calc(var(--process-leader-y) - 9px)
-      )
-      scale(1.18);
-    box-shadow:
-      0 0 0 18px color-mix(in srgb, var(--color-cta) 20%, transparent),
-      0 0 48px color-mix(in srgb, var(--color-cta-hover) 82%, transparent);
-  }
-
-  100% {
-    transform: translate(
-        calc(var(--process-leader-x) - 9px),
-        calc(var(--process-leader-y) - 9px)
-      )
-      scale(1);
-    box-shadow:
-      0 0 0 8px color-mix(in srgb, var(--color-cta) 30%, transparent),
-      0 0 28px color-mix(in srgb, var(--color-cta) 66%, transparent);
-  }
+  background: var(--color-cta);
+  box-shadow: none;
 }
 
 @keyframes processEndCtaPulseMobile {
@@ -578,16 +499,10 @@
   0%,
   100% {
     transform: translate(-50%, -50%) scale(1);
-    box-shadow:
-      0 10px 24px rgba(31, 70, 137, 0.3),
-      0 0 0 0 color-mix(in srgb, var(--color-cta) 26%, transparent);
   }
 
   50% {
     transform: translate(-50%, -50%) scale(1.03);
-    box-shadow:
-      0 10px 24px rgba(31, 70, 137, 0.3),
-      0 0 0 12px color-mix(in srgb, var(--color-cta-hover) 22%, transparent);
   }
 }
 
@@ -619,7 +534,7 @@
   .step {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+    background: var(--color-surface-1);
   }
 
   .step[data-journey-state="passed"] {
@@ -627,7 +542,7 @@
   }
 
   :global([data-theme="light"]) .step {
-    background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
+    background: var(--color-surface-1);
   }
 
   :global([data-theme="light"]) .step[data-journey-state="passed"] {
@@ -681,13 +596,13 @@
     display: block;
   }
 
-  /* The active glow lives on the overlay so no box-shadow paints while scrolling. */
+  /* The active contour lives on the overlay to keep scrolling inexpensive. */
   .step[data-journey-state="active"] {
-    box-shadow: 0 12px 28px rgba(8, 10, 15, 0.2);
+    box-shadow: none;
   }
 
   :global([data-theme="light"]) .step[data-journey-state="active"] {
-    box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
+    box-shadow: none;
   }
 
   /* Rail node, aligned with the step number: 19px .stepInner padding + 31px / 2.
@@ -734,14 +649,8 @@
     width: 18px;
     height: 18px;
     border-color: rgba(255, 255, 255, 0.9);
-    background: linear-gradient(
-      135deg,
-      var(--color-cta),
-      var(--color-cta-active)
-    );
-    box-shadow:
-      0 0 0 8px color-mix(in srgb, var(--color-cta) 24%, transparent),
-      0 0 28px color-mix(in srgb, var(--color-cta) 52%, transparent);
+    background: var(--color-cta);
+    box-shadow: none;
   }
 
   .step[data-journey-state="passed"]::before {
@@ -756,14 +665,8 @@
 
   :global([data-theme="light"]) .step[data-journey-state="active"]::before {
     border-color: rgba(255, 255, 255, 0.96);
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--color-cta) 76%, #ffffff 24%),
-      color-mix(in srgb, var(--color-cta-active) 72%, #ffffff 28%)
-    );
-    box-shadow:
-      0 0 0 8px color-mix(in srgb, var(--color-cta) 16%, transparent),
-      0 0 28px color-mix(in srgb, var(--color-cta) 24%, transparent);
+    background: var(--color-cta);
+    box-shadow: none;
   }
 
   .step[data-journey-state="passed"]::after {
@@ -780,7 +683,7 @@
     border-right: 0;
     border-bottom: 2px solid
       color-mix(in srgb, var(--color-border) 55%, transparent);
-    border-left: 2px solid
+    border-left: 1px solid
       color-mix(in srgb, var(--color-border) 55%, transparent);
     border-radius: 0 0 0 12px;
     background: none;

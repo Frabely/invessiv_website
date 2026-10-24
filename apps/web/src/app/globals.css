@@ -28,11 +28,17 @@
 
 :root {
   color-scheme: light dark;
-  --color-bg: #1d1a18;
-  --color-surface-1: #282320;
-  --color-surface-2: #312b27;
-  --color-text: #f4f7fd;
-  --color-text-muted: #d2dae8;
+  /* Palette foundations. Override the action base to recolor interactions
+     independently of the brand, chat surfaces, and display typography. */
+  --color-brand-primary: #e38a3c;
+  --color-brand-secondary: #86ace6;
+  --color-highlight-base: #d9b08c;
+  --color-action-base: var(--color-brand-secondary);
+  --color-bg: #191a1c;
+  --color-surface-1: #222426;
+  --color-surface-2: #2c2e31;
+  --color-text: #f4f3ef;
+  --color-text-muted: #b9bcc2;
   --color-text-faint: color-mix(
     in srgb,
     var(--color-text-muted) 62%,
@@ -43,20 +49,24 @@
     var(--color-text-muted) 56%,
     transparent
   );
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-border-strong: rgba(255, 255, 255, 0.18);
+  --color-border: rgba(244, 243, 239, 0.14);
+  --color-border-strong: rgba(244, 243, 239, 0.26);
   --color-shadow: rgba(0, 0, 0, 0.42);
-  --color-accent-warm: #e79a49;
-  --color-accent-gold: #c8ad59;
-  --color-accent-orange: #dd8a3c;
-  --color-accent-orange-text: #dd8a3c;
-  --color-accent-orange-text-hover: #e3a05f;
-  --color-cta: #4e83e6;
-  --color-cta-hover: #6899f0;
-  --color-focus: rgba(104, 153, 240, 0.78);
-  --color-cta-active: #3d6fcb;
+  --color-accent-warm: var(--color-brand-primary);
+  --color-accent-gold: var(--color-accent-warm);
+  --color-accent-orange: var(--color-accent-warm);
+  --color-accent-orange-text: var(--color-highlight-base);
+  --color-accent-orange-text-hover: color-mix(
+    in srgb,
+    var(--color-highlight-base) 75%,
+    var(--color-text)
+  );
+  --color-cta: var(--color-action-base);
+  --color-cta-hover: color-mix(in srgb, var(--color-action-base) 82%, #ffffff);
+  --color-focus: var(--color-action-base);
+  --color-cta-active: color-mix(in srgb, var(--color-action-base) 88%, #000000);
   --color-danger: #d92d20;
-  --color-on-cta: #0f1b32;
+  --color-on-cta: #18212f;
   --color-faq-open-surface: color-mix(
     in srgb,
     var(--color-cta) 38%,
@@ -155,34 +165,40 @@
   --mobile-viewport-height: 100dvh;
   --mobile-safe-top: env(safe-area-inset-top, 0px);
   --mobile-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --shadow-action: 0 3px 8px rgba(0, 0, 0, 0.16);
 }
 
 [data-theme="light"] {
-  --color-bg: #eef4fb;
+  --color-brand-primary: #af581f;
+  --color-brand-secondary: #3568ad;
+  --color-highlight-base: #925d3e;
+  --color-bg: #f6f5f2;
   --color-surface-1: #ffffff;
-  --color-surface-2: #e2ebf6;
-  --color-text: #162033;
-  --color-text-muted: #445775;
+  --color-surface-2: #eeede9;
+  --color-text: #232526;
+  --color-text-muted: #5a5d62;
   --color-text-faint: var(--color-text-muted);
   --color-text-struck: color-mix(
     in srgb,
     var(--color-text-muted) 85%,
     transparent
   );
-  --color-border: rgba(42, 64, 102, 0.24);
-  --color-border-strong: rgba(42, 64, 102, 0.36);
-  --color-shadow: rgba(28, 41, 67, 0.18);
-  --color-accent-warm: #cb7728;
-  --color-accent-gold: #b68f2a;
-  --color-accent-orange: #c97322;
-  --color-accent-orange-text: #a65314;
-  --color-accent-orange-text-hover: #8c440f;
-  --color-cta: #285fc1;
-  --color-cta-hover: #346ed4;
-  --color-focus: rgba(52, 110, 212, 0.48);
-  --color-cta-active: #1f50a8;
+  --color-border: rgba(35, 37, 38, 0.18);
+  --color-border-strong: rgba(35, 37, 38, 0.3);
+  --color-shadow: rgba(35, 37, 38, 0.14);
+  --color-accent-warm: var(--color-brand-primary);
+  --color-accent-gold: var(--color-accent-warm);
+  --color-accent-orange: var(--color-accent-warm);
+  --color-accent-orange-text: var(--color-highlight-base);
+  --color-accent-orange-text-hover: color-mix(
+    in srgb,
+    var(--color-highlight-base) 85%,
+    #000000
+  );
+  --color-cta-hover: color-mix(in srgb, var(--color-action-base) 85%, #000000);
+  --color-cta-active: color-mix(in srgb, var(--color-action-base) 70%, #000000);
   --color-danger: #b91c1c;
-  --color-on-cta: #f5f8ff;
+  --color-on-cta: #ffffff;
   --color-faq-open-surface: color-mix(
     in srgb,
     var(--color-cta) 18%,
@@ -234,6 +250,7 @@
     var(--color-surface-1) 84%,
     var(--color-surface-2) 16%
   );
+  --shadow-action: 0 3px 8px rgba(35, 37, 38, 0.1);
 }
 
 *,
@@ -246,41 +263,12 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background:
-    radial-gradient(
-        1280px 760px at 8% -8%,
-        rgba(231, 154, 73, 0.18),
-        transparent 60%
-      )
-      fixed,
-    radial-gradient(
-        980px 660px at 92% 10%,
-        rgba(124, 156, 208, 0.12),
-        transparent 66%
-      )
-      fixed,
-    radial-gradient(
-        1020px 700px at 52% 104%,
-        rgba(211, 112, 45, 0.11),
-        transparent 66%
-      )
-      fixed,
-    radial-gradient(
-        920px 580px at 88% 86%,
-        rgba(216, 132, 54, 0.08),
-        transparent 66%
-      )
-      fixed,
-    radial-gradient(
-        900px 540px at 16% 82%,
-        rgba(221, 129, 57, 0.05),
-        transparent 66%
-      )
-      fixed,
-    linear-gradient(180deg, #1d1a18 0%, #211c19 46%, #171411 100%) fixed #1d1a18;
+  background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-family-base), sans-serif;
   font-weight: 350;
+  accent-color: var(--color-cta);
+  caret-color: var(--color-cta);
 }
 
 h1,
@@ -313,39 +301,9 @@ section[id] {
   );
 }
 
-[data-theme="light"] body {
-  background:
-    radial-gradient(
-        1220px 720px at 8% -2%,
-        rgba(205, 126, 49, 0.11),
-        transparent 58%
-      )
-      fixed,
-    radial-gradient(
-        940px 620px at 94% 8%,
-        rgba(86, 129, 203, 0.11),
-        transparent 60%
-      )
-      fixed,
-    radial-gradient(
-        980px 620px at 50% 104%,
-        rgba(213, 137, 67, 0.08),
-        transparent 62%
-      )
-      fixed,
-    radial-gradient(
-        880px 520px at 86% 84%,
-        rgba(218, 144, 84, 0.05),
-        transparent 62%
-      )
-      fixed,
-    radial-gradient(
-        840px 480px at 18% 82%,
-        rgba(194, 122, 58, 0.03),
-        transparent 62%
-      )
-      fixed,
-    linear-gradient(180deg, #eef4fb 0%, #e2ebf6 48%, #f7f1e9 100%) fixed #eef4fb;
+::selection {
+  background: var(--color-accent-orange-text);
+  color: var(--color-bg);
 }
 
 a {
@@ -442,79 +400,6 @@ main {
     );
     --hero-grid-columns: 1fr;
     --hero-grid-gap: 24px;
-  }
-
-  html,
-  body {
-    background:
-      radial-gradient(
-          1280px 760px at 8% -8%,
-          rgba(231, 154, 73, 0.18),
-          transparent 60%
-        )
-        scroll,
-      radial-gradient(
-          980px 660px at 92% 10%,
-          rgba(124, 156, 208, 0.12),
-          transparent 66%
-        )
-        scroll,
-      radial-gradient(
-          1020px 700px at 52% 104%,
-          rgba(211, 112, 45, 0.11),
-          transparent 66%
-        )
-        scroll,
-      radial-gradient(
-          920px 580px at 88% 86%,
-          rgba(216, 132, 54, 0.08),
-          transparent 66%
-        )
-        scroll,
-      radial-gradient(
-          900px 540px at 16% 82%,
-          rgba(221, 129, 57, 0.05),
-          transparent 66%
-        )
-        scroll,
-      linear-gradient(180deg, #1d1a18 0%, #211c19 46%, #171411 100%) scroll
-        #1d1a18;
-  }
-
-  [data-theme="light"] body {
-    background:
-      radial-gradient(
-          1220px 720px at 8% -2%,
-          rgba(205, 126, 49, 0.11),
-          transparent 58%
-        )
-        scroll,
-      radial-gradient(
-          940px 620px at 94% 8%,
-          rgba(86, 129, 203, 0.11),
-          transparent 60%
-        )
-        scroll,
-      radial-gradient(
-          980px 620px at 50% 104%,
-          rgba(213, 137, 67, 0.08),
-          transparent 62%
-        )
-        scroll,
-      radial-gradient(
-          880px 520px at 86% 84%,
-          rgba(218, 144, 84, 0.05),
-          transparent 62%
-        )
-        scroll,
-      radial-gradient(
-          840px 480px at 18% 82%,
-          rgba(194, 122, 58, 0.03),
-          transparent 62%
-        )
-        scroll,
-      linear-gradient(180deg, #eef4fb 0%, #e2ebf6 48%, #f7f1e9 100%) scroll
-        #eef4fb;
   }
 }
 
