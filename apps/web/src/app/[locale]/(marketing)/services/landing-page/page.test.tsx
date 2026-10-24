@@ -74,7 +74,7 @@ describe("LandingRoute", () => {
       {
         alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
         height: 630,
-        url: "https://www.invessiv.com/og/landing.png",
+        url: "https://www.invessiv.com/og/landing-de.png",
         width: 1200,
       },
     ]);
@@ -85,7 +85,7 @@ describe("LandingRoute", () => {
       images: [
         {
           alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
-          url: "https://www.invessiv.com/og/landing.png",
+          url: "https://www.invessiv.com/og/landing-de.png",
         },
       ],
       title: "Landingpage erstellen lassen | in 5–10 Tagen | Invessiv",

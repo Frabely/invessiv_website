@@ -1,7 +1,3 @@
-export const BRAND_ASSETS = {
-  logo: {
-    src: "/brand/invessiv-logo-mehr-abstand.svg",
-    width: 1562,
-    height: 1333,
-  },
-} as const;
+import brandAssets from "./brand-assets.json";
+
+export const BRAND_ASSETS = brandAssets;

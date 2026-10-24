@@ -1,7 +1,8 @@
 {
   "title": "Get a Landing Page Built | in 5–10 Days | Invessiv",
   "description": "Fast, focused landing pages for service businesses and SMBs – online in 5–10 days. Structure, design, and development in one place. Request a free initial assessment.",
-  "imageUrl": "https://www.invessiv.com/og/landing.png",
+  "imageUrl": "/og/landing-en.png",
+  "imageKicker": "LANDING PAGE STARTER",
   "imageWidth": 1200,
   "imageHeight": 630,
   "imageAlt": "Invessiv landing page offer for solo businesses and small companies"

@@ -13,6 +13,7 @@ type HomeMetaContent = {
   imageTitle: string;
   imageUrl: string;
   imageWidth: number;
+  squareImageUrl: string;
   serviceName: string;
   serviceType: string;
   title: string;

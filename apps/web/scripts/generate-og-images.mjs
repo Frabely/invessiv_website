@@ -1,59 +1,19 @@
-import { mkdir, readFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "@playwright/test";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const webRoot = path.resolve(scriptDirectory, "..");
-const outputDirectory = path.join(webRoot, "public", "og");
+const outputDirectory = path.join(webRoot, "public/og");
 const siteUrl = process.env.OG_PREVIEW_URL ?? "http://localhost:3000";
 
-const imagePaths = {
-  home: path.join(webRoot, "assets", "home", "hero_cutted.jpg"),
-  references: path.join(webRoot, "assets", "reference-allmacher.png"),
-  logo: path.join(webRoot, "public", "brand", "icon.png"),
-};
+async function readJson(relativePath) {
+  return JSON.parse(await readFile(path.join(webRoot, relativePath), "utf8"));
+}
 
-const metaPaths = {
-  home: {
-    de: path.join(
-      webRoot,
-      "src",
-      "i18n",
-      "dictionaries",
-      "marketing",
-      "home-meta.de.json",
-    ),
-    en: path.join(
-      webRoot,
-      "src",
-      "i18n",
-      "dictionaries",
-      "marketing",
-      "home-meta.en.json",
-    ),
-  },
-  references: {
-    de: path.join(
-      webRoot,
-      "src",
-      "i18n",
-      "dictionaries",
-      "marketing",
-      "references-meta.de.json",
-    ),
-    en: path.join(
-      webRoot,
-      "src",
-      "i18n",
-      "dictionaries",
-      "marketing",
-      "references-meta.en.json",
-    ),
-  },
-};
-
-function asDataUrl(buffer, mimeType) {
+async function imageData(relativePath, mimeType) {
+  const buffer = await readFile(path.join(webRoot, relativePath));
   return `data:${mimeType};base64,${buffer.toString("base64")}`;
 }
 
@@ -66,173 +26,130 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function formatTitle(title, accentText) {
-  const accentIndex = title.lastIndexOf(accentText);
-
-  if (accentIndex < 0) {
-    return escapeHtml(title);
-  }
-
-  const prefix = title.slice(0, accentIndex);
-  return `${escapeHtml(prefix)}<span>${escapeHtml(accentText)}</span>`;
-}
-
-function brandMarkup(logoDataUrl) {
-  return `
-    <div class="brand">
-      <img alt="" src="${logoDataUrl}" />
-      <strong>Invessiv</strong>
-    </div>
+function imageMarkup(
+  content,
+  assets,
+  { square = false, references = false } = {},
+) {
+  return `<main class="canvas ${square ? "square" : "wide"} ${references ? "references" : "portrait"}">
+    ${references ? "" : `<img class="photo" alt="" src="${assets.home}"/><div class="shade"></div>`}
+    <div class="brand"><img alt="" src="${assets.logo}"/><strong>Invessiv</strong></div>
     <div class="domain">invessiv.com</div>
-  `;
+    <section class="copy">
+      <div class="kicker">${escapeHtml(content.imageKicker)}</div>
+      <h1>${escapeHtml(content.imageTitle)}</h1>
+      <p>${escapeHtml(content.imageSupportingText)}</p>
+    </section>
+    ${
+      references
+        ? `<section class="browser"><div class="browser-bar"><span>allmacher-coaching.de</span></div>
+      <img alt="" src="${assets.references}"/></section>`
+        : `<div class="contact"><b>Moritz Hecht</b><span>${escapeHtml(content.imageContactLabel)}</span></div>`
+    }
+  </main>`;
 }
 
-function homeMarkup(content, assets) {
-  return `
-    <main class="canvas canvas-home">
-      <img class="home-photo" alt="" src="${assets.home}" />
-      <div class="home-shade"></div>
-      <div class="grid"></div>
-      <div class="orange-glow"></div>
-      ${brandMarkup(assets.logo)}
-      <section class="copy home-copy">
-        <div class="kicker"><i></i>${escapeHtml(content.imageKicker)}</div>
-        <h1>${formatTitle(content.imageTitle, content.imageAccentText)}</h1>
-        <p>${escapeHtml(content.imageSupportingText)}</p>
-        <div class="contact"><i></i><b>Moritz Hecht</b><span>· ${escapeHtml(content.imageContactLabel)}</span></div>
-      </section>
-    </main>
-  `;
-}
-
-function referencesMarkup(content, assets) {
-  return `
-    <main class="canvas canvas-references">
-      <div class="grid"></div>
-      <div class="orange-glow"></div>
-      <div class="blue-glow"></div>
-      ${brandMarkup(assets.logo)}
-      <section class="copy references-copy">
-        <div class="kicker"><i></i>${escapeHtml(content.imageKicker)}</div>
-        <h1>${formatTitle(content.imageTitle, content.imageAccentText)}</h1>
-        <p>${escapeHtml(content.imageSupportingText)}</p>
-      </section>
-      <section class="browser" aria-hidden="true">
-        <div class="browser-bar">
-          <i></i><i></i><i></i>
-          <span>allmacher-coaching.de</span>
-        </div>
-        <div class="browser-image">
-          <img alt="" src="${assets.references}" />
-        </div>
-      </section>
-    </main>
-  `;
-}
-
-const sharedCss = `
-  * { box-sizing: border-box; }
-  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
-  body { color: #f8f5f0; background: #171412; font-family: var(--font-plus-jakarta-sans, "Plus Jakarta Sans"), "Segoe UI", sans-serif; }
-  .canvas { position: relative; width: 1200px; height: 630px; overflow: hidden; background: #171412; }
-  .grid { position: absolute; inset: 0; opacity: .12; background-image: linear-gradient(rgba(255,255,255,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.16) 1px, transparent 1px); background-size: 64px 64px; mask-image: linear-gradient(90deg, #000, transparent 78%); }
-  .orange-glow { position: absolute; width: 520px; height: 520px; left: -210px; top: -180px; border-radius: 50%; background: rgba(239, 132, 36, .28); filter: blur(105px); }
-  .blue-glow { position: absolute; width: 560px; height: 500px; right: -180px; bottom: -220px; border-radius: 50%; background: rgba(61, 132, 255, .24); filter: blur(115px); }
-  .brand { position: absolute; z-index: 5; left: 66px; top: 50px; display: flex; align-items: center; gap: 14px; }
-  .brand img { width: 43px; height: 43px; object-fit: contain; }
-  .brand strong { font-size: 30px; line-height: 1; letter-spacing: -.035em; }
-  .domain { position: absolute; z-index: 5; right: 66px; top: 62px; color: rgba(255,255,255,.7); font-size: 17px; font-weight: 700; letter-spacing: .04em; }
-  .copy { position: absolute; z-index: 4; }
-  .kicker { display: flex; align-items: center; gap: 13px; color: #ef9c4a; font-size: 17px; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
-  .kicker i { display: block; width: 34px; height: 2px; border-radius: 2px; background: #ef9c4a; box-shadow: 0 0 18px rgba(239,156,74,.65); }
-  h1 { margin: 27px 0 0; font-family: var(--font-bricolage-grotesque, "Bricolage Grotesque"), var(--font-plus-jakarta-sans, "Plus Jakarta Sans"), "Segoe UI", sans-serif; font-size: 61px; font-weight: 760; line-height: .99; letter-spacing: -.052em; text-wrap: balance; }
-  h1 span { display: block; color: #77a8ff; text-shadow: 0 8px 34px rgba(75,128,255,.22); }
-  .copy > p { margin: 27px 0 0; color: rgba(255,255,255,.78); font-size: 22px; font-weight: 550; line-height: 1.45; }
-  .canvas-home .grid { opacity: .09; }
-  .home-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 51%; filter: saturate(.82) contrast(1.02); }
-  .home-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(19,17,16,.98) 0%, rgba(19,17,16,.93) 38%, rgba(19,17,16,.56) 62%, rgba(19,17,16,.14) 82%, rgba(19,17,16,.2) 100%), linear-gradient(180deg, rgba(10,10,10,.34), transparent 35%, rgba(10,10,10,.24)); }
-  .home-copy { left: 66px; top: 148px; width: 690px; }
-  .home-copy h1 { font-size: 64px; max-width: 680px; }
-  .home-copy .contact { display: flex; align-items: center; gap: 9px; margin-top: 20px; color: rgba(255,255,255,.72); font-size: 15px; }
-  .home-copy .contact i { width: 7px; height: 7px; border-radius: 50%; background: #ef9c4a; box-shadow: 0 0 16px rgba(239,156,74,.55); }
-  .home-copy .contact b { color: #fff; font-size: 16px; }
-  .canvas-home .domain { left: 66px; right: auto; top: auto; bottom: 30px; font-size: 15px; }
-  .canvas-references { background: radial-gradient(circle at 66% 35%, rgba(255,255,255,.035), transparent 32%), #171412; }
-  .references-copy { left: 66px; top: 152px; width: 520px; }
-  .references-copy h1 { max-width: 500px; font-size: 50px; line-height: 1.02; }
-  .references-copy > p { max-width: 455px; font-size: 20px; }
-  .browser { position: absolute; z-index: 3; right: 54px; top: 132px; width: 565px; height: 426px; overflow: hidden; border: 1px solid rgba(119,168,255,.58); border-radius: 23px; background: #242221; box-shadow: 0 36px 80px rgba(0,0,0,.48), 0 0 46px rgba(72,126,237,.11); transform: rotate(1.3deg); }
-  .browser::after { content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 1px rgba(255,255,255,.08); }
-  .browser-bar { display: grid; grid-template-columns: auto auto auto minmax(0,1fr); align-items: center; gap: 8px; height: 50px; padding: 0 15px; border-bottom: 1px solid rgba(255,255,255,.08); background: linear-gradient(#312e2c, #252321); }
-  .browser-bar i { width: 9px; height: 9px; border-radius: 50%; background: #e49b55; }
-  .browser-bar i:nth-child(2) { opacity: .72; }
-  .browser-bar i:nth-child(3) { opacity: .45; }
-  .browser-bar span { overflow: hidden; margin-left: 9px; padding: 7px 13px; border-radius: 999px; background: rgba(255,255,255,.06); color: rgba(255,255,255,.64); font-size: 13px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-  .browser-image { position: relative; width: 100%; height: calc(100% - 50px); overflow: hidden; background: #ece8df; }
-  .browser-image img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-`;
-
-async function readJson(filePath) {
-  return JSON.parse(await readFile(filePath, "utf8"));
-}
-
-async function renderImage(page, { content, fileName, markup }) {
-  await page.goto(`${siteUrl}/de`, { waitUntil: "networkidle" });
+async function renderImage(page, assets, content, fileName, options = {}) {
+  const height = options.square ? 1200 : 630;
+  await page.setViewportSize({ width: 1200, height });
   await page.evaluate(
-    ({ css, html }) => {
+    ({ html, height }) => {
+      document.documentElement.style.height = `${height}px`;
       document.body.innerHTML = html;
-      const style = document.createElement("style");
-      style.dataset.ogGenerator = "true";
-      style.textContent = css;
-      document.head.append(style);
+      window.scrollTo(0, 0);
     },
-    { css: sharedCss, html: markup(content) },
+    { html: imageMarkup(content, assets, options), height },
   );
-  await page.evaluate(() => document.fonts.ready);
-  await page.evaluate(() => window.scrollTo({ left: 0, top: 0 }));
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    await Promise.all([...document.images].map((image) => image.decode()));
+  });
   await page.screenshot({
-    clip: { height: 630, width: 1200, x: 0, y: 0 },
     path: path.join(outputDirectory, fileName),
+    clip: { width: 1200, height, x: 0, y: 0 },
     type: "png",
   });
+  console.info(`Generated ${fileName} (1200 × ${height})`);
 }
 
 await mkdir(outputDirectory, { recursive: true });
-
-const [homeImage, referenceImage, logoImage] = await Promise.all([
-  readFile(imagePaths.home),
-  readFile(imagePaths.references),
-  readFile(imagePaths.logo),
+const { logo } = await readJson("common/constants/brand/brand-assets.json");
+const [home, references, logoImage, css] = await Promise.all([
+  imageData("assets/home/hero_cutted.jpg", "image/jpeg"),
+  imageData("assets/reference-allmacher.png", "image/png"),
+  imageData(`public${logo.src}`, "image/svg+xml"),
+  readFile(path.join(scriptDirectory, "og-images.css"), "utf8"),
 ]);
-
-const assets = {
-  home: asDataUrl(homeImage, "image/jpeg"),
-  references: asDataUrl(referenceImage, "image/png"),
-  logo: asDataUrl(logoImage, "image/png"),
-};
-
+const assets = { home, references, logo: logoImage };
 const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({
-  deviceScaleFactor: 1,
-  viewport: { height: 630, width: 1200 },
-});
 
 try {
+  const page = await browser.newPage({
+    deviceScaleFactor: 1,
+    viewport: { width: 1200, height: 630 },
+  });
+  // Keep the app's generated font faces and theme tokens; replace only its body.
+  await page.goto(`${siteUrl}/de`, { waitUntil: "networkidle" });
+  await page.evaluate(() =>
+    document.documentElement.setAttribute("data-theme", "dark"),
+  );
+  await page.evaluate((logoSrc) => {
+    const lockup = document.querySelector(
+      `header img[src="${logoSrc}"]`,
+    )?.parentElement;
+    const gradient =
+      lockup &&
+      getComputedStyle(lockup).getPropertyValue("--brand-label-gradient");
+    if (!gradient) throw new Error("Homepage brand gradient not found");
+    document.documentElement.style.setProperty(
+      "--og-brand-label-gradient",
+      gradient,
+    );
+  }, logo.src);
+  await page.addStyleTag({ content: css });
   for (const locale of ["de", "en"]) {
-    const homeContent = await readJson(metaPaths.home[locale]);
-    await renderImage(page, {
-      content: homeContent,
-      fileName: `home-${locale}.png`,
-      markup: (content) => homeMarkup(content, assets),
+    const homeContent = await readJson(
+      `src/i18n/dictionaries/marketing/home-meta.${locale}.json`,
+    );
+    await renderImage(page, assets, homeContent, `home-${locale}.png`);
+    await renderImage(page, assets, homeContent, `home-square-${locale}.png`, {
+      square: true,
     });
-
-    const referencesContent = await readJson(metaPaths.references[locale]);
-    await renderImage(page, {
-      content: referencesContent,
-      fileName: `references-${locale}.png`,
-      markup: (content) => referencesMarkup(content, assets),
-    });
+    const referencesContent = await readJson(
+      `src/i18n/dictionaries/marketing/references-meta.${locale}.json`,
+    );
+    await renderImage(
+      page,
+      assets,
+      referencesContent,
+      `references-${locale}.png`,
+      { references: true },
+    );
+    for (const service of ["landing", "linkedin-post"]) {
+      const hero = await readJson(
+        `src/i18n/dictionaries/${service}/hero/${locale}.json`,
+      );
+      const meta = await readJson(
+        `src/i18n/dictionaries/${service}/meta/${locale}.json`,
+      );
+      await renderImage(
+        page,
+        assets,
+        {
+          imageTitle: hero.title,
+          imageKicker: meta.imageKicker ?? hero.tag,
+          imageSupportingText: hero.description,
+          imageContactLabel: homeContent.imageContactLabel,
+        },
+        `${service}-${locale}.png`,
+      );
+    }
   }
+  // Preserve existing external URLs while replacing their old artwork too.
+  await copyFile(
+    path.join(outputDirectory, "landing-de.png"),
+    path.join(outputDirectory, "landing.png"),
+  );
 } finally {
   await browser.close();
 }

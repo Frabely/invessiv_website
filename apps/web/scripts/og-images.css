@@ -1,0 +1,245 @@
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 1200px;
+  overflow: hidden;
+}
+body {
+  color: #f4f3ef;
+  background: #191a1c;
+  font-family: var(--font-family-base), sans-serif;
+}
+.canvas {
+  position: relative;
+  width: 1200px;
+  height: 630px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #191a1c;
+}
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 51%;
+}
+.shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      #191a1cfa 0%,
+      #191a1ce6 38%,
+      #191a1c50 72%,
+      #191a1c26
+    ),
+    linear-gradient(180deg, #191a1c75, #191a1c10 48%, #191a1cbb);
+}
+.brand {
+  position: absolute;
+  z-index: 2;
+  left: 64px;
+  top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.brand img {
+  width: 66px;
+  height: 64px;
+  object-fit: contain;
+  padding: 3px;
+}
+.brand strong {
+  font-family: var(--font-family-base), sans-serif;
+  font-size: 32px;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  background: var(--og-brand-label-gradient);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.domain {
+  position: absolute;
+  z-index: 2;
+  right: 64px;
+  top: 61px;
+  font-size: 17px;
+  color: #f4f3efb3;
+}
+.copy {
+  position: absolute;
+  z-index: 2;
+  top: 157px;
+  left: 64px;
+  width: 690px;
+}
+.kicker {
+  color: #a0b8da;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  line-height: 1.5;
+}
+h1 {
+  margin: 24px 0 0;
+  padding: 0 0 0.12em;
+  max-width: 680px;
+  font-family: var(--font-family-display), sans-serif;
+  font-size: 59px;
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  white-space: pre-line;
+  color: #f4f3ef;
+  background: linear-gradient(
+    118deg,
+    #ead4c2 0%,
+    #d4b39a 26%,
+    #e9eced 56%,
+    #c3d3eb 100%
+  );
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.copy > p {
+  margin: 22px 0 0;
+  max-width: 585px;
+  font-size: 21px;
+  line-height: 1.5;
+  color: #d3d4d5;
+  text-wrap: pretty;
+}
+.contact {
+  position: absolute;
+  z-index: 2;
+  left: 64px;
+  bottom: 43px;
+  display: flex;
+  align-items: baseline;
+  gap: 15px;
+}
+.contact b {
+  font-weight: 600;
+  font-size: 18px;
+}
+.contact span {
+  font-size: 16px;
+  color: #b9bcc2;
+}
+.references .copy {
+  width: 490px;
+  top: 163px;
+}
+.references h1 {
+  font-size: 53px;
+}
+.references .copy > p {
+  font-size: 19px;
+  max-width: 450px;
+}
+.browser {
+  position: absolute;
+  right: 48px;
+  top: 152px;
+  width: 535px;
+  height: 416px;
+  overflow: hidden;
+  border: 1px solid #86ace64d;
+  border-radius: 14px;
+  background: #222426;
+  box-shadow: 0 24px 50px #0005;
+}
+.browser-bar {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  font-size: 13px;
+  color: #b9bcc2;
+  border-bottom: 1px solid #ffffff14;
+}
+.browser > img {
+  display: block;
+  width: 100%;
+  height: calc(100% - 40px);
+  object-fit: cover;
+  object-position: top;
+}
+.square {
+  height: 1200px;
+}
+.square .photo {
+  top: 300px;
+  height: 900px;
+  object-position: 82% center;
+}
+.square .shade {
+  background:
+    linear-gradient(
+      180deg,
+      #191a1c 0%,
+      #191a1c 29%,
+      #191a1cdb 38%,
+      #191a1c25 60%,
+      #191a1c10 79%,
+      #191a1ca6
+    ),
+    linear-gradient(90deg, #191a1c66, transparent 70%);
+}
+.square .brand {
+  top: 55px;
+  left: 72px;
+}
+.square .brand img {
+  width: 88px;
+  height: 84px;
+}
+.square .brand strong {
+  font-size: 40px;
+}
+.square .domain {
+  top: 87px;
+  right: 72px;
+  font-size: 22px;
+}
+.square .copy {
+  top: 206px;
+  left: 72px;
+  width: 1020px;
+}
+.square .kicker {
+  font-size: 20px;
+}
+.square h1 {
+  font-size: 77px;
+  max-width: 1030px;
+  line-height: 1.06;
+  margin-top: 28px;
+}
+.square .copy > p {
+  max-width: 940px;
+  font-size: 27px;
+  margin-top: 18px;
+}
+.square .contact {
+  left: 72px;
+  bottom: 52px;
+  flex-direction: column;
+  gap: 6px;
+}
+.square .contact b {
+  font-size: 28px;
+}
+.square .contact span {
+  font-size: 22px;
+  color: #dedfe1;
+}
