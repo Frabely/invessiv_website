@@ -28,6 +28,14 @@ function getButtonClassName(variant: ButtonVariant, className?: string) {
   return [styles.button, styles[variant], className].filter(Boolean).join(" ");
 }
 
+function renderButtonContent(variant: ButtonVariant, children: ReactNode) {
+  return variant === "ghost" ? (
+    <span className={styles.ghostLabel}>{children}</span>
+  ) : (
+    children
+  );
+}
+
 export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
   function ButtonLink(
     {
@@ -45,14 +53,14 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
     if (useNextLink) {
       return (
         <Link {...props} className={buttonClassName} href={href} ref={ref}>
-          {children}
+          {renderButtonContent(variant, children)}
         </Link>
       );
     }
 
     return (
       <a {...props} className={buttonClassName} href={href} ref={ref}>
-        {children}
+        {renderButtonContent(variant, children)}
       </a>
     );
   },
@@ -69,7 +77,7 @@ export const ButtonControl = forwardRef<HTMLButtonElement, ButtonControlProps>(
         className={getButtonClassName(variant, className)}
         ref={ref}
       >
-        {children}
+        {renderButtonContent(variant, children)}
       </button>
     );
   },

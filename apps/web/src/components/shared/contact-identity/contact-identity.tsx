@@ -9,6 +9,7 @@ import styles from "./contact-identity.module.css";
 
 type ContactIdentityProps = {
   analyticsArea: AnalyticsArea;
+  animateBrandLink?: boolean;
   centerOnMobile?: boolean;
   channels: readonly ContactChannelKey[];
   locale: Locale;
@@ -16,6 +17,7 @@ type ContactIdentityProps = {
 
 export function ContactIdentity({
   analyticsArea,
+  animateBrandLink = false,
   centerOnMobile = false,
   channels,
   locale,
@@ -25,7 +27,10 @@ export function ContactIdentity({
   return (
     <div className={styles.root} data-center-mobile={centerOnMobile}>
       <p className={styles.name}>{COMPANY.owner}</p>
-      <a className={styles.brand} href={companyDetailsHref}>
+      <a
+        className={`${styles.brand}${animateBrandLink ? ` ${styles.animatedBrand}` : ""}`}
+        href={companyDetailsHref}
+      >
         {COMPANY.brandName}
       </a>
 

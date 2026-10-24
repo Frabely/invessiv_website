@@ -9,6 +9,7 @@ import type { QnaItemCopy } from "@/common/contracts/marketing/qna-copy";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { getNavigationItem } from "@/lib/analytics/get-navigation-item";
 import styles from "./qna-question-bubble.module.css";
+import { TextCta } from "@/components/shared/text-cta/text-cta";
 
 type QnaQuestionBubbleProps = {
   answerId: string;
@@ -70,7 +71,8 @@ export function QnaQuestionBubble({
         <div className={styles.answerContent}>
           <p className={styles.answer}>{item.answer}</p>
           {item.link && isOpen ? (
-            <a
+            <TextCta
+              variant="quaternary"
               className={styles.answerLink}
               href={item.link.href}
               {...analyticsAttributes(AnalyticsEventName.NavClicked, {
@@ -79,7 +81,7 @@ export function QnaQuestionBubble({
               })}
             >
               {item.link.label}
-            </a>
+            </TextCta>
           ) : null}
         </div>
       </div>

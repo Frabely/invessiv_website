@@ -13,17 +13,10 @@
 }
 
 .link {
-  color: color-mix(in srgb, var(--color-cta) 78%, var(--color-text) 22%);
+  color: var(--color-cta);
   font-size: var(--font-size-body-md);
   font-weight: 600;
   line-height: 1.4;
-  text-decoration-color: color-mix(in srgb, var(--color-cta) 44%, transparent);
-  text-decoration-thickness: 0.08em;
-  text-underline-offset: 0.2em;
-}
-
-.link:hover {
-  color: var(--color-cta-hover);
 }
 
 .link:focus-visible {

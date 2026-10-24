@@ -6,6 +6,7 @@ import type {
 } from "react";
 
 import styles from "./service-action-cta.module.css";
+import { TextCta } from "@/components/shared/text-cta/text-cta";
 
 type BaseServiceActionCtaProps = {
   children: ReactNode;
@@ -29,8 +30,7 @@ type ServiceActionCtaButtonProps = BaseServiceActionCtaProps & {
   >;
 
 type ServiceActionCtaProps =
-  | ServiceActionCtaLinkProps
-  | ServiceActionCtaButtonProps;
+  ServiceActionCtaLinkProps | ServiceActionCtaButtonProps;
 
 function actionClassName(className?: string) {
   return className ? `${styles.cta} ${className}` : styles.cta;
@@ -43,18 +43,10 @@ export function ServiceActionCta({
   onClick,
   ...restProps
 }: ServiceActionCtaProps) {
-  const content = (
-    <>
-      <span className={styles.label}>{children}</span>
-      <span aria-hidden="true" className={styles.arrow}>
-        &rsaquo;
-      </span>
-    </>
-  );
-
   if (href !== undefined) {
     return (
-      <a
+      <TextCta
+        arrow
         className={actionClassName(className)}
         href={href}
         {...(restProps as Omit<
@@ -62,13 +54,15 @@ export function ServiceActionCta({
           "children" | "className" | "href"
         >)}
       >
-        {content}
-      </a>
+        {children}
+      </TextCta>
     );
   }
 
   return (
-    <button
+    <TextCta
+      as="button"
+      arrow
       className={actionClassName(className)}
       onClick={onClick}
       type="button"
@@ -77,7 +71,7 @@ export function ServiceActionCta({
         "children" | "className" | "onClick" | "type"
       >)}
     >
-      {content}
-    </button>
+      {children}
+    </TextCta>
   );
 }

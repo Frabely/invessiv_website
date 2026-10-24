@@ -23,10 +23,14 @@
   transition: color 180ms ease;
 }
 
-.brand:hover {
+.brand:not(.animatedBrand):hover {
   color: var(--color-text);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.animatedBrand {
+  composes: link from "../navigation-link/navigation-link.module.css";
 }
 
 .brand:focus-visible {

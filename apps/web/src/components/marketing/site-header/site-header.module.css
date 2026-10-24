@@ -72,6 +72,7 @@
 }
 
 .navLink {
+  composes: link from "../../shared/navigation-link/navigation-link.module.css";
   color: inherit;
   text-decoration: none;
 }
@@ -200,7 +201,6 @@
   text-decoration: none;
 }
 
-.mobileMenuLink:hover,
 .mobileMenuLink:focus-visible {
   background: rgba(255, 255, 255, 0.09);
 }

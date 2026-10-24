@@ -35,7 +35,7 @@ export function ProjectScopeField({
       <div className={styles.chips}>
         {CONTACT_PROJECT_SCOPES.map((scope) => (
           <label
-            className={styles.chip}
+            className={`${styles.chip}${scope === selectedScope ? ` ${styles.selected}` : ""}`}
             data-selected={scope === selectedScope ? "true" : undefined}
             key={scope}
           >
@@ -62,7 +62,15 @@ export function ProjectScopeField({
             <span className={styles.iconSlot}>
               <ProjectScopeIcon scope={scope} />
             </span>
-            <span className={styles.chipLabel}>{optionLabels[scope]}</span>
+            <span
+              className={
+                scope === selectedScope
+                  ? styles.selectedLabel
+                  : styles.chipLabel
+              }
+            >
+              {optionLabels[scope]}
+            </span>
           </label>
         ))}
       </div>

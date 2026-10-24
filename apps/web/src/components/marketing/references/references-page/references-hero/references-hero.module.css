@@ -53,12 +53,12 @@
 }
 
 .keyword {
+  composes: palette from "../../../../shared/action-color/action-color.module.css";
   padding: 0 0.12em;
-  background: linear-gradient(
-      transparent 58%,
-      color-mix(in srgb, var(--color-cta) 34%, transparent) 58%
-    )
-    no-repeat;
+  background-image: var(--action-gradient);
+  background-size: 100% 0.12em;
+  background-position: left bottom;
+  background-repeat: no-repeat;
   color: var(--text);
   font-weight: 700;
   font-size: 1.14em;
@@ -85,13 +85,6 @@
 
 :global([data-theme="light"]) .question {
   color: color-mix(in srgb, var(--text) 80%, var(--muted) 20%);
-}
-
-:global([data-theme="light"]) .keyword {
-  background-image: linear-gradient(
-    transparent 58%,
-    color-mix(in srgb, var(--color-cta) 22%, transparent) 58%
-  );
 }
 
 @media (min-width: 640px) {

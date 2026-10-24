@@ -1,14 +1,14 @@
 .root {
   --eyebrow-arc-size: 1.6em;
   --eyebrow-arc-stroke: 1px;
-  --eyebrow-arc-color: var(--color-accent-orange);
+  --eyebrow-arc-color: var(--color-highlight);
 
   margin: 0;
   width: fit-content;
   display: inline-flex;
   align-items: center;
   gap: 0.4em;
-  color: var(--color-accent-orange-text);
+  color: var(--color-highlight);
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -29,7 +29,7 @@
   --eyebrow-arc-size: 1.45em;
   --eyebrow-arc-color: color-mix(
     in srgb,
-    var(--color-accent-orange) 45%,
+    var(--color-highlight) 45%,
     transparent
   );
 

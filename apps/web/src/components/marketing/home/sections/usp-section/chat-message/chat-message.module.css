@@ -83,7 +83,7 @@
 }
 
 .highlight {
-  color: var(--color-accent-orange-text);
+  color: var(--color-highlight);
   font-weight: 700;
 }
 

@@ -1,0 +1,92 @@
+.palette {
+  --action-gradient-start: var(--color-action-accent);
+  --action-gradient-end: var(--color-cta);
+  --action-gradient: linear-gradient(
+    118deg,
+    var(--action-gradient-start) 0%,
+    color-mix(
+        in srgb,
+        var(--action-gradient-start) 70%,
+        var(--action-gradient-end)
+      )
+      28%,
+    var(--action-gradient-end) 100%
+  );
+}
+
+.palette:where(:not([aria-pressed="true"], [data-selected="true"])):is(
+    :hover,
+    :focus-visible,
+    :focus-within
+  ) {
+  --action-gradient-start: var(--color-action-accent-hover);
+  --action-gradient-end: var(--color-cta-hover);
+}
+
+.palette:where(:not([aria-pressed="true"], [data-selected="true"])):active {
+  --action-gradient-start: var(--color-action-accent-active);
+  --action-gradient-end: var(--color-cta-active);
+}
+
+.text {
+  color: var(--color-cta);
+  -webkit-text-fill-color: currentColor;
+  text-decoration-color: var(--color-cta);
+}
+
+@supports ((background-clip: text) or (-webkit-background-clip: text)) and
+  (color: color-mix(in srgb, red, blue)) {
+  .text,
+  .palette:where(:not([aria-pressed="true"], [data-selected="true"])):is(
+      :hover,
+      :focus-within
+    )
+    .hoverText {
+    background-image: var(--action-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+}
+
+.fill {
+  background-image: var(--action-gradient);
+}
+
+.subtlePalette {
+  --action-subtle-gradient:
+    linear-gradient(
+      color-mix(in srgb, var(--color-surface-1) 94%, transparent),
+      color-mix(in srgb, var(--color-surface-1) 94%, transparent)
+    ),
+    var(--action-gradient);
+}
+
+.subtleFill {
+  composes: subtlePalette;
+  background-image: var(--action-subtle-gradient);
+}
+
+.palette.outlineOnHover:where(
+    :not([aria-pressed="true"], [data-selected="true"])
+  ):is(:hover, :focus-within) {
+  border-color: transparent;
+  background-image:
+    linear-gradient(
+      var(--action-surface, var(--color-surface-1)),
+      var(--action-surface, var(--color-surface-1))
+    ),
+    var(--action-gradient);
+  background-origin: padding-box, border-box;
+  background-clip: padding-box, border-box;
+}
+
+@media (forced-colors: active) {
+  .text,
+  .palette:is(:hover, :focus-within) .hoverText {
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+  }
+}

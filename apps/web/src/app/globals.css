@@ -38,6 +38,18 @@
     var(--color-brand-secondary) 55%,
     var(--color-text-muted)
   );
+  /* Informational emphasis only; actions use --color-action-base. */
+  --color-highlight: var(--color-highlight-base);
+  --color-highlight-surface: color-mix(
+    in srgb,
+    var(--color-highlight) 10%,
+    var(--color-surface-2)
+  );
+  --color-highlight-border: color-mix(
+    in srgb,
+    var(--color-highlight) 45%,
+    var(--color-border)
+  );
   --color-action-base: var(--color-brand-secondary);
   --color-action-accent: var(--color-brand-primary);
   --color-action-accent-hover: color-mix(
@@ -71,7 +83,7 @@
   --color-accent-warm: var(--color-brand-primary);
   --color-accent-gold: var(--color-accent-warm);
   --color-accent-orange: var(--color-accent-warm);
-  --color-accent-orange-text: var(--color-highlight-base);
+  --color-accent-orange-text: var(--color-highlight);
   --color-accent-orange-text-hover: color-mix(
     in srgb,
     var(--color-highlight-base) 75%,
@@ -210,7 +222,7 @@
   --color-accent-warm: var(--color-brand-primary);
   --color-accent-gold: var(--color-accent-warm);
   --color-accent-orange: var(--color-accent-warm);
-  --color-accent-orange-text: var(--color-highlight-base);
+  --color-accent-orange-text: var(--color-highlight);
   --color-accent-orange-text-hover: color-mix(
     in srgb,
     var(--color-highlight-base) 85%,

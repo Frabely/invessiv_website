@@ -1,4 +1,6 @@
 .bubble {
+  composes: palette outlineOnHover from "../../../../../shared/action-color/action-color.module.css";
+  --action-surface: var(--qna-bubble-surface);
   --qna-bubble-surface: color-mix(
     in srgb,
     var(--color-surface-2) 86%,
@@ -45,10 +47,6 @@
   --qna-bubble-border: var(--color-cta);
 
   transform: translateY(-2px);
-}
-
-.bubble:not([data-open="true"]):hover .question {
-  color: color-mix(in srgb, var(--color-cta) 84%, var(--color-text) 16%);
 }
 
 .bubble:not([data-open="true"]):hover .marker {
@@ -99,6 +97,7 @@
 }
 
 .question {
+  composes: hoverText from "../../../../../shared/action-color/action-color.module.css";
   margin: 0;
   color: var(--color-text);
   font-size: var(--font-size-body-md);
@@ -174,7 +173,7 @@
 
 .answerLink:hover,
 .answerLink:focus-visible {
-  text-decoration: underline;
+  text-decoration: none;
   text-underline-offset: 0.22em;
 }
 

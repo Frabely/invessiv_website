@@ -62,11 +62,11 @@
 
 .projectLink {
   width: fit-content;
-  color: var(--color-accent-orange-text);
+  color: var(--color-cta);
   font-size: var(--font-size-body-sm);
   font-weight: 700;
   line-height: 1.4;
-  text-decoration: underline;
+  text-decoration: none;
   text-decoration-color: color-mix(
     in srgb,
     var(--color-accent-orange-text) 54%,
@@ -81,7 +81,7 @@
 
 .projectLink:hover,
 .projectLink:focus-visible {
-  color: var(--color-accent-orange-text-hover);
+  color: var(--color-cta);
   text-decoration-color: currentColor;
 }
 

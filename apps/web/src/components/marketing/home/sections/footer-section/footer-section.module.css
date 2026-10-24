@@ -81,6 +81,7 @@
 }
 
 .link {
+  composes: link from "../../../../shared/navigation-link/navigation-link.module.css";
   display: inline-flex;
   align-items: center;
   max-width: 100%;
@@ -90,10 +91,6 @@
   overflow-wrap: anywhere;
   word-break: break-word;
   transition: color 160ms ease;
-}
-
-.link:hover {
-  color: var(--color-text);
 }
 
 .link:focus-visible {

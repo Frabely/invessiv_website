@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { TextCta } from "@/components/shared/text-cta/text-cta";
 import Link from "next/link";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
@@ -96,13 +97,14 @@ export function ReferenceTeaser({
           </div>
         ) : null}
 
-        <Link
+        <TextCta
+          useNextLink
           className={styles.link}
           href={projectHref}
           {...referenceOpenedAttributes}
         >
           {linkLabel}
-        </Link>
+        </TextCta>
       </div>
     </article>
   );

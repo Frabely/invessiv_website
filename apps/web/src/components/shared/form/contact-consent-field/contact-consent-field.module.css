@@ -7,18 +7,19 @@
 }
 
 .link {
-  color: var(--accent);
-  text-decoration: underline;
+  text-decoration: none;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.16em;
-  border-bottom: 1px solid color-mix(in srgb, var(--accent) 62%, transparent);
-  padding-bottom: 1px;
 }
 
 .link:hover,
 .link:focus-visible {
-  color: var(--accent);
-  border-bottom-color: color-mix(in srgb, var(--accent) 72%, transparent);
+  text-decoration-color: var(--color-cta-hover);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
 }
 
 .requiredMarker {
@@ -30,9 +31,4 @@
   align-items: baseline;
   gap: 0.22em;
   white-space: nowrap;
-}
-
-:global([data-theme="light"]) .link {
-  color: var(--accent);
-  border-bottom-color: color-mix(in srgb, var(--accent) 60%, transparent);
 }

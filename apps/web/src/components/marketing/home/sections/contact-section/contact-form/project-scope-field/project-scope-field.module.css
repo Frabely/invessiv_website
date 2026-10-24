@@ -21,6 +21,7 @@
 }
 
 .chip {
+  composes: palette outlineOnHover from "../../../../../../shared/action-color/action-color.module.css";
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -49,16 +50,9 @@
   color: var(--color-text);
 }
 
-/* Pointer devices only: on touch :hover sticks after a tap. The hover state is
-   deliberately neutral — no CTA blue — so it can never read as "selected". */
+/* Keep icon emphasis limited to pointer devices to avoid sticky touch hover. */
 @media (hover: hover) and (pointer: fine) {
   .chip:hover:not([data-selected="true"]) {
-    border-color: var(--color-border-strong);
-    background: color-mix(
-      in srgb,
-      var(--color-surface-1) 88%,
-      var(--color-text) 12%
-    );
     color: var(--color-text);
   }
 
@@ -98,14 +92,19 @@
     opacity 180ms ease;
 }
 
+.selected {
+  composes: subtleFill from "../../../../../../shared/action-color/action-color.module.css";
+}
+
 .chip[data-selected="true"] {
   border-color: color-mix(
     in srgb,
-    var(--color-cta) 58%,
-    var(--color-border) 42%
+    var(--color-cta) 28%,
+    var(--color-border) 72%
   );
   background: color-mix(in srgb, var(--color-cta) 12%, var(--color-surface-1));
-  color: color-mix(in srgb, var(--color-text) 94%, var(--color-text-muted) 6%);
+  background-image: var(--action-subtle-gradient);
+  color: var(--color-text);
   box-shadow: none;
 }
 
@@ -119,6 +118,12 @@
 }
 
 .chipLabel {
+  composes: hoverText from "../../../../../../shared/action-color/action-color.module.css";
+  min-width: 0;
+}
+
+.selectedLabel {
+  composes: text from "../../../../../../shared/action-color/action-color.module.css";
   min-width: 0;
 }
 

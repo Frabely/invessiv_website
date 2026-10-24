@@ -43,7 +43,7 @@
 }
 
 .activeEyebrow {
-  color: var(--color-accent-orange-text);
+  color: var(--color-highlight);
   font-size: var(--font-size-ui-xs);
   font-weight: 650;
   letter-spacing: 0.12em;
@@ -66,6 +66,7 @@
 }
 
 .serviceChip {
+  composes: palette outlineOnHover from "../../../../shared/action-color/action-color.module.css";
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -102,12 +103,6 @@
     var(--color-cta) 42%,
     var(--color-border) 58%
   );
-  background: color-mix(
-    in srgb,
-    var(--color-surface-1) 82%,
-    var(--color-cta) 18%
-  );
-  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
   box-shadow: none;
 }
 
@@ -116,25 +111,39 @@
   outline-offset: 3px;
 }
 
-.serviceChipActive,
-:global([data-theme="light"]) .serviceChipActive {
+.serviceChipActive {
+  composes: subtleFill from "../../../../shared/action-color/action-color.module.css";
+}
+
+.serviceChip[aria-pressed="true"],
+:global([data-theme="light"]) .serviceChip[aria-pressed="true"] {
   border-color: color-mix(
     in srgb,
-    var(--color-cta) 58%,
-    var(--color-border) 42%
+    var(--color-cta) 28%,
+    var(--color-border) 72%
   );
   background: color-mix(in srgb, var(--color-cta) 12%, var(--color-surface-1));
-  color: color-mix(in srgb, var(--color-text) 92%, var(--color-text-muted) 8%);
+  background-image: var(--action-subtle-gradient);
+  color: var(--color-text);
   box-shadow: none;
+}
+
+.serviceChip:hover,
+.serviceChip:focus-visible {
+  color: var(--color-text);
+}
+
+.serviceChipLabel {
+  composes: hoverText from "../../../../shared/action-color/action-color.module.css";
+}
+
+.selectedLabel {
+  composes: text from "../../../../shared/action-color/action-color.module.css";
 }
 
 .sectionDivider {
   height: 1px;
-  background: color-mix(
-    in srgb,
-    var(--color-accent-warm) 45%,
-    var(--color-border)
-  );
+  background: var(--color-highlight-border);
   box-shadow: none;
 }
 
@@ -197,7 +206,7 @@
 }
 
 .titleDot {
-  color: var(--color-accent-warm);
+  color: var(--color-highlight);
 }
 
 .activeDescription {
@@ -233,7 +242,7 @@
   width: 0.58rem;
   height: 0.58rem;
   border-radius: 999px;
-  background: var(--color-accent-warm);
+  background: var(--color-highlight);
   box-shadow: none;
 }
 
@@ -257,13 +266,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.8rem;
-  border: 1px solid var(--color-border);
-  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
-  color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 68%,
-    var(--color-text) 32%
-  );
+  border: 1px solid var(--color-highlight-border);
+  background: var(--color-highlight-surface);
+  color: var(--color-highlight);
 }
 
 .timeIconImage {
@@ -271,35 +276,13 @@
   flex: 0 0 auto;
   width: clamp(2.1rem, 2.5vw, 2.4rem);
   height: clamp(2.1rem, 2.5vw, 2.4rem);
-  background-color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 72%,
-    var(--color-text) 28%
-  );
+  background-color: currentColor;
   -webkit-mask-position: center;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: contain;
   mask-position: center;
   mask-repeat: no-repeat;
   mask-size: contain;
-}
-
-:global([data-theme="light"]) .timeIcon {
-  border-color: color-mix(
-    in srgb,
-    var(--color-border) 74%,
-    var(--color-accent-warm) 26%
-  );
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 88%,
-    var(--color-accent-warm) 12%
-  );
-  color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 60%,
-    var(--color-text) 40%
-  );
 }
 
 .timeText {
@@ -388,11 +371,7 @@
     bottom: 0;
     left: 0;
     width: 1px;
-    background: color-mix(
-      in srgb,
-      var(--color-accent-warm) 45%,
-      var(--color-border)
-    );
+    background: var(--color-highlight-border);
     box-shadow: none;
     pointer-events: none;
   }
@@ -454,8 +433,7 @@
 
   .activeAside {
     padding-top: 1.35rem;
-    border-top: 1px solid
-      color-mix(in srgb, var(--color-border) 82%, transparent);
+    border-top: 1px solid var(--color-highlight-border);
     grid-template-columns: minmax(0, 1fr);
   }
 }

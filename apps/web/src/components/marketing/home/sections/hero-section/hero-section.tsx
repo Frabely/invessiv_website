@@ -4,10 +4,9 @@ import type { TrustPoint } from "@/common/contracts/marketing/trust-point";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 import { TrustPoints } from "@/components/marketing/shared/trust-points/trust-points";
-import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { ButtonLink, PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { GradientText } from "@/components/shared/gradient-text/gradient-text";
-import buttonStyles from "@/components/shared/button/button.module.css";
 import { HERO_SECTION_ID } from "@/config/navigation/home";
 import { HeroBackground } from "./hero-background/hero-background";
 import styles from "./hero-section.module.css";
@@ -93,8 +92,9 @@ export function HeroSection(props: HeroSectionProps) {
             >
               {heroPrimaryCta}
             </PrimaryCtaLink>
-            <a
-              className={`${buttonStyles.button} ${buttonStyles.ghost} ${styles.ctaButton} ${styles.secondaryCta}`}
+            <ButtonLink
+              variant="ghost"
+              className={`${styles.ctaButton} ${styles.secondaryCta}`}
               href={secondaryCtaHref}
               {...analyticsAttributes(
                 AnalyticsEventName.CtaClicked,
@@ -102,7 +102,7 @@ export function HeroSection(props: HeroSectionProps) {
               )}
             >
               {heroSecondaryCta}
-            </a>
+            </ButtonLink>
           </div>
 
           {heroTrustChips ? (

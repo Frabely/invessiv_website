@@ -12,6 +12,169 @@ const GRADIENT_PAGES = [
 ];
 
 for (const theme of THEMES) {
+  test(`uses the shared CTA gradient for action links in ${theme.name}`, async ({
+    page,
+  }) => {
+    await page.addInitScript((name) => {
+      localStorage.setItem("invessiv-theme", name);
+    }, theme.name);
+    await page.goto("/de");
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-theme",
+      theme.name,
+    );
+
+    const selectors = [
+      '[class*="usp-section"][class*="replyLabel"]',
+      '[class*="usp-section"][class*="replySend"]',
+      'a[class*="service-action-cta"] [class*="text-cta"][class*="label"]',
+      'a[class*="service-action-cta"] [class*="text-cta"][class*="arrow"]',
+      '[class*="reference-teaser"][class*="link"] [class*="text-cta"][class*="label"]',
+      '[class*="qna-contact-cta"][class*="link"] [class*="text-cta"][class*="label"]',
+      '[class*="contact-consent-field"][class*="link"] [class*="text-cta"][class*="label"]',
+    ];
+    const readGradients = () =>
+      page.evaluate(
+        (items) =>
+          items.map((selector) => {
+            const element = document.querySelector(selector);
+            if (!element) throw new Error(`Missing action: ${selector}`);
+            return getComputedStyle(element).backgroundImage;
+          }),
+        selectors,
+      );
+    const before = await readGradients();
+    for (const gradient of before)
+      expect(gradient).toContain("linear-gradient");
+
+    await page.evaluate(() => {
+      document.documentElement.style.setProperty(
+        "--color-highlight-base",
+        "#b386b3",
+      );
+    });
+    expect(await readGradients()).toEqual(before);
+    await page.evaluate((green) => {
+      document.documentElement.style.setProperty("--color-action-base", green);
+    }, theme.green);
+    const after = await readGradients();
+    after.forEach((gradient, index) =>
+      expect(gradient).not.toBe(before[index]),
+    );
+
+    const privacy = page
+      .locator('a[class*="contact-consent-field"][class*="link"]')
+      .first();
+    await privacy.focus();
+    await expect(privacy).toHaveCSS("outline-style", "solid");
+    await expect(privacy).toHaveCSS("outline-width", "2px");
+    for (const width of [1440, 360]) {
+      await page.setViewportSize({ width, height: 1000 });
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+    }
+
+    const choices = page.locator(
+      '[class*="services-section"][class*="serviceChip"][aria-pressed]',
+    );
+    await expect(choices).toHaveCount(3);
+    await page.mouse.move(0, 0);
+    const selectedChoice = page.locator(
+      '[class*="services-section"][aria-pressed="true"]',
+    );
+    await expect(selectedChoice).toHaveCSS(
+      "background-image",
+      /linear-gradient/,
+    );
+    for (const choice of await choices.all()) {
+      await choice.hover();
+      await expect(choice).toHaveCSS("background-image", /linear-gradient/);
+    }
+
+    await page.goto("/de/references");
+    const markers = page.locator(
+      '[class*="references-hero"][class*="keyword"]',
+    );
+    await expect(markers).toHaveCount(3);
+    for (const marker of await markers.all()) {
+      await expect(marker).toHaveCSS("background-image", /linear-gradient/);
+      await expect(marker).toHaveCSS("background-repeat", "no-repeat");
+    }
+  });
+
+  test(`updates informational highlights without changing actions in ${theme.name}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.addInitScript((name) => {
+      localStorage.setItem("invessiv-theme", name);
+    }, theme.name);
+    await page.goto("/de");
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-theme",
+      theme.name,
+    );
+
+    const readColors = () =>
+      page.evaluate(() => {
+        const css = (selector: string, pseudo?: string) => {
+          const element = document.querySelector(selector);
+          if (!element) throw new Error(`Missing element: ${selector}`);
+          return getComputedStyle(element, pseudo);
+        };
+        return {
+          highlights: {
+            trustLabel: css("#hero ul li span").color,
+            trustIcon: css("#hero ul li svg").color,
+            problemIcon: css('[class*="problem-section"][class*="iconWell"]')
+              .color,
+            problemIconSurface: css(
+              '[class*="problem-section"][class*="iconWell"]',
+            ).backgroundColor,
+            problemResolution: css(
+              '[class*="problem-section"][class*="resolution"]',
+            ).color,
+            serviceIcon: css('#services [role="img"]').color,
+            serviceGlyph: css('#services [class*="iconImageMask"]')
+              .backgroundColor,
+            serviceTimeGlyph: css('#services [class*="timeIconImage"]')
+              .backgroundColor,
+            serviceDivider: css('#services [class*="sectionDivider"]')
+              .backgroundColor,
+            serviceAsideDivider: css("#services aside", "::before")
+              .backgroundColor,
+            serviceDot: css('#services [class*="titleDot"]').color,
+            serviceBullet: css('#services [class*="bulletList"] li', "::before")
+              .backgroundColor,
+          },
+          action: css("#hero a").backgroundImage,
+          selection: css('#services button[aria-pressed="true"]')
+            .backgroundColor,
+        };
+      });
+
+    const before = await readColors();
+    await page.evaluate(() => {
+      document.documentElement.style.setProperty(
+        "--color-highlight-base",
+        "#bd9ad7",
+      );
+    });
+    const after = await readColors();
+    for (const key of Object.keys(before.highlights)) {
+      expect(
+        Object.entries(after.highlights).find(([name]) => name === key)?.[1],
+      ).not.toBe(
+        Object.entries(before.highlights).find(([name]) => name === key)?.[1],
+      );
+    }
+    expect(after.action).toBe(before.action);
+    expect(after.selection).toBe(before.selection);
+  });
+
   for (const route of GRADIENT_PAGES) {
     test(`shares the animated headline on ${route} in ${theme.name}`, async ({
       page,

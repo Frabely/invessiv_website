@@ -1,4 +1,5 @@
 import styles from "./reference-full-quote.module.css";
+import { TextCta } from "@/components/shared/text-cta/text-cta";
 
 type ReferenceFullQuoteProps = {
   collapseLabel: string;
@@ -13,10 +14,10 @@ export function ReferenceFullQuote({
 }: ReferenceFullQuoteProps) {
   return (
     <details className={styles.details}>
-      <summary className={styles.summary}>
+      <TextCta as="summary" variant="quaternary" className={styles.summary}>
         <span className={styles.expandLabel}>{expandLabel}</span>
         <span className={styles.collapseLabel}>{collapseLabel}</span>
-      </summary>
+      </TextCta>
       <blockquote className={styles.quote}>
         <p className={styles.text}>{quote}</p>
       </blockquote>

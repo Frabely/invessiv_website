@@ -150,7 +150,13 @@ export function ServicesSection({
                     option: optionServiceKey,
                   }))}
             >
-              {option.label}
+              <span
+                className={
+                  isActive ? styles.selectedLabel : styles.serviceChipLabel
+                }
+              >
+                {option.label}
+              </span>
             </button>
           );
         })}

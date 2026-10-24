@@ -280,10 +280,10 @@
 .answerLink {
   display: inline-block;
   margin-top: 0.7rem;
-  color: var(--color-accent-warm);
+  color: var(--color-cta);
   font-size: clamp(0.95rem, 0.92rem + 0.18vw, 1.02rem);
   font-weight: 500;
-  text-decoration: underline;
+  text-decoration: none;
   text-underline-offset: 4px;
   text-decoration-thickness: 1px;
   transition:

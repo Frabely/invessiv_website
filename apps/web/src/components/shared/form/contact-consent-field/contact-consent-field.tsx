@@ -5,6 +5,7 @@ import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/con
 import { CONTACT_FORM_FIELD_NAME } from "@invessiv/common/constants/contact/contact-form-field-names";
 import { FormRequiredMarker } from "@/components/shared/form/form-required-marker/form-required-marker";
 import styles from "./contact-consent-field.module.css";
+import { TextCta } from "@/components/shared/text-cta/text-cta";
 
 type ContactConsentFieldProps<TValues extends FieldValues> = {
   checkboxClassName?: string;
@@ -48,9 +49,14 @@ export function ContactConsentField<TValues extends FieldValues>({
       <span className={styles.text}>
         {consentLabel}{" "}
         <span className={styles.privacyGroup}>
-          <a className={styles.link} href={privacyHref} target="_self">
+          <TextCta
+            variant="quaternary"
+            className={styles.link}
+            href={privacyHref}
+            target="_self"
+          >
             {privacyLabel}
-          </a>
+          </TextCta>
           {privacySuffix}
           <FormRequiredMarker className={styles.requiredMarker} />
         </span>
