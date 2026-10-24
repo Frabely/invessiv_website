@@ -312,8 +312,11 @@ describe("home dictionary", () => {
       heroSecondaryCta: "Leistungen ansehen",
       heroTag: "WEBDESIGN AUS CHEMNITZ UND UMGEBUNG",
       heroTrustChips: [
-        "Direkter Ansprechpartner",
-        "Softwareentwicklungs-Background",
+        { iconKey: "directContact", label: "Direkter Ansprechpartner" },
+        {
+          iconKey: "softwareBackground",
+          label: "Softwareentwicklungs-Background",
+        },
       ],
       heroVisualAriaLabel:
         "Moritz Hecht, persönlicher Ansprechpartner für Webdesign aus Chemnitz",
@@ -330,8 +333,11 @@ describe("home dictionary", () => {
       heroSecondaryCta: "Explore services",
       heroTag: "WEB DESIGN · CHEMNITZ & REGION",
       heroTrustChips: [
-        "Direct point of contact",
-        "Software development background",
+        { iconKey: "directContact", label: "Direct point of contact" },
+        {
+          iconKey: "softwareBackground",
+          label: "Software development background",
+        },
       ],
       heroVisualAriaLabel:
         "Moritz Hecht, your personal web design contact in Chemnitz",

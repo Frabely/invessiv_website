@@ -91,7 +91,7 @@ export function LandingPage({ locale }: LandingPageProps) {
               heroPrimaryCta={hero.primaryCta}
               heroSecondaryCta={hero.secondaryCta}
               heroTag={hero.tag}
-              heroTrustLine={hero.trustLine}
+              heroTrustChips={hero.trustPoints}
               heroVideoSrc="/assets/landing-page/spotlight.mp4"
               primaryCtaAnalytics={{
                 cta: AnalyticsCtaId.LandingHeroPrimary,

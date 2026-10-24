@@ -1,4 +1,5 @@
 export * from "./hero-visual-tilt-options";
+export * from "./hero-trust-point";
 export * from "./landing-coaching-preview-content";
 export * from "./landing-problem-solution-content";
 export * from "./linkedin-post-author";

@@ -1,13 +1,14 @@
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import type { CtaClickedPayload } from "@/common/contracts/analytics/analytics-event-payloads";
+import type { HeroTrustPoint } from "@/common/contracts/marketing/hero-trust-point";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
-import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { HERO_SECTION_ID } from "@/config/navigation/home";
 import { HeroBackground } from "./hero-background/hero-background";
+import { HeroTrustPoints } from "./hero-trust-points/hero-trust-points";
 import styles from "./hero-section.module.css";
 
 type HeroSectionBaseProps = {
@@ -20,8 +21,7 @@ type HeroSectionBaseProps = {
   heroPrimaryCta: string;
   heroSecondaryCta: string;
   heroTag: string;
-  heroTrustChips?: string[];
-  heroTrustLine?: string;
+  heroTrustChips?: HeroTrustPoint[];
   heroVideoSrc?: string;
   fullscreenVisual?: boolean;
   title: string;
@@ -58,7 +58,6 @@ export function HeroSection(props: HeroSectionProps) {
     heroSecondaryCta,
     heroTag,
     heroTrustChips,
-    heroTrustLine,
     heroVideoSrc,
     fullscreenVisual = false,
     title,
@@ -105,13 +104,11 @@ export function HeroSection(props: HeroSectionProps) {
             </a>
           </div>
 
-          <SectionScanPoints
-            className={styles.trustChips}
-            points={heroTrustChips}
-          />
-
-          {heroTrustLine ? (
-            <p className={styles.trustLine}>{heroTrustLine}</p>
+          {heroTrustChips ? (
+            <HeroTrustPoints
+              className={styles.trustChips}
+              points={heroTrustChips}
+            />
           ) : null}
         </div>
 

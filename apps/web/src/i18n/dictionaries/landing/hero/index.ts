@@ -1,4 +1,7 @@
-import type { LandingCoachingPreviewContent } from "@/common/contracts/marketing";
+import type {
+  HeroTrustPoint,
+  LandingCoachingPreviewContent,
+} from "@/common/contracts/marketing";
 import type { Locale } from "@/config/i18n";
 import de from "./de.json";
 import en from "./en.json";
@@ -10,12 +13,12 @@ type LandingHeroContent = {
   secondaryCta: string;
   tag: string;
   title: string;
-  trustLine: string;
+  trustPoints: HeroTrustPoint[];
 };
 
 const LANDING_HERO_CONTENT: Record<Locale, LandingHeroContent> = {
-  de,
-  en,
+  de: de as LandingHeroContent,
+  en: en as LandingHeroContent,
 };
 
 export function getLandingHeroContent(locale: Locale): LandingHeroContent {

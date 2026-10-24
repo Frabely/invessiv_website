@@ -1,4 +1,5 @@
 export * from "./contact-offer-groups";
+export * from "./hero-trust-icon-key";
 export * from "./landing-preview-anchor";
 export * from "./linkedin-post-caption-clamp";
 export * from "./linkedin-post-caption-fit";
