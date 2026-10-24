@@ -1,6 +1,6 @@
 .icon {
   display: block;
-  color: var(--color-cta);
+  color: var(--action-icon-color, var(--color-cta));
 }
 
 .gradient {

@@ -162,6 +162,8 @@ Buttons, Text-CTAs und der Chat-Sendepfeil teilen sich den Orange-Blau-Verlauf a
 
 Header-Navigation und Footer-Textlinks verwenden `components/shared/navigation-link/`: Ab 901 px und ausschließlich bei `hover: hover` mit `pointer: fine` erhalten sie beim Hover Text im CTA-Verlauf und eine über 240 ms von links einlaufende Verlaufsunterstreichung. Auf Touch-Geräten und im mobilen Layout bleibt der Effekt aus. Bei reduzierter Bewegung erscheint die Linie ohne Übergang; Tastaturfokus bleibt über eine sichtbare Kontur erkennbar.
 
+Theme- und Sprachumschalter teilen ihren Desktop-Hover über `components/shared/header-control/`: Rahmen und Icons wechseln zum CTA-Verlauf, beim Sprachumschalter auch der aktuelle Sprachcode und die DE/EN-Auswahl. Das Sprachmenü schließt bei Außenklick beziehungsweise Touch, beim Verlassen per Tastatur und mit Escape; Escape setzt den Fokus auf den Auslöser zurück. Die Dismiss-Logik liegt in `hooks/shared/use-dismissible-details.ts`.
+
 Inaktive Prozesskarten (bereits durchlaufen und noch bevorstehend) nehmen sich durch Flächen nahe am Seitenhintergrund, schwache Konturen und gedämpfte, kontrastgeprüfte Texte zurück. Der aktive Schritt bleibt klar hervorgehoben. Die animierte Verbindung sowie die Unterstreichungen der Referenzfragen behalten ihren gewünschten Markenverlauf. Informative Highlight-Icons, Trennlinien und Zitat-Anführungszeichen bleiben bei ihrer separaten Highlight-Rolle.
 
 Die verbindlichen Laufzeitwerte stehen in `src/app/globals.css`. `DESIGN.md` beschreibt die Gestaltung; die Palette wird nicht aus diesem Dokument geladen.

@@ -1,9 +1,12 @@
 "use client";
 
-import type { MouseEvent } from "react";
+import { useRef, type MouseEvent } from "react";
+import { useDismissibleDetails } from "@/hooks/shared/use-dismissible-details";
 
 import { SUPPORTED_LOCALES, type Locale } from "@/config/i18n";
 import styles from "./locale-switch.module.css";
+import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { ActionIcon } from "@/components/shared/action-icon/action-icon";
 
 type LocaleSwitchProps = {
   className?: string;
@@ -27,20 +30,17 @@ export function LocaleSwitch({
   onSelectAction,
   variant = "desktop",
 }: LocaleSwitchProps) {
+  const detailsRef = useRef<HTMLDetailsElement | null>(null);
+  useDismissibleDetails(detailsRef);
   const rootClassName = className
     ? `${styles.root} ${styles[variant]} ${className}`
     : `${styles.root} ${styles[variant]}`;
 
   return (
-    <details className={rootClassName}>
+    <details className={rootClassName} ref={detailsRef}>
       <summary aria-label={localeMenuLabel} className={styles.summary}>
         <span aria-hidden="true" className={styles.icon}>
-          <svg fill="none" viewBox="0 0 24 24">
-            <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
-            <path d="M3 12h18" />
-            <path d="M12 3a15.5 15.5 0 0 1 0 18" />
-            <path d="M12 3a15.5 15.5 0 0 0 0 18" />
-          </svg>
+          <ActionIcon icon={faGlobe} />
         </span>
         <span className={styles.code}>{locale.toUpperCase()}</span>
       </summary>
@@ -62,7 +62,9 @@ export function LocaleSwitch({
               onClick={(event) => onSelectAction(supportedLocale, event)}
               type="button"
             >
-              {supportedLocale.toUpperCase()}
+              <span className={styles.optionLabel}>
+                {supportedLocale.toUpperCase()}
+              </span>
             </button>
           );
         })}

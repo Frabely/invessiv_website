@@ -167,7 +167,6 @@ export function ProcessSection({
                 key={step.step}
                 role="listitem"
               >
-                <span aria-hidden="true" className={styles.stepGlow} />
                 <div className={styles.stepInner}>
                   <header className={styles.stepTitleRow}>
                     <p className={styles.stepNumber}>{step.step}</p>

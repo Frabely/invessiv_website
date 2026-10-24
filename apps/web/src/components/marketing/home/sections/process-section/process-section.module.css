@@ -222,6 +222,12 @@
 }
 
 .step {
+  composes: palette from "../../../../shared/action-color/action-color.module.css";
+  --process-active-surface: color-mix(
+    in srgb,
+    var(--color-cta) 12%,
+    var(--color-surface-1)
+  );
   position: relative;
   width: min(100%, 29rem);
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
@@ -261,14 +267,17 @@
   grid-row: 3;
 }
 
-.step[data-journey-state="active"] {
-  border-color: var(--color-cta);
-  background: color-mix(
-    in srgb,
-    var(--color-cta) 12%,
-    var(--color-surface-1) 88%
-  );
-  box-shadow: 0 0 0 1px var(--color-cta);
+.step[data-journey-state="active"],
+:global([data-theme="light"]) .step[data-journey-state="active"] {
+  border-color: transparent;
+  background:
+    linear-gradient(
+        var(--process-active-surface),
+        var(--process-active-surface)
+      )
+      padding-box,
+    var(--action-gradient) border-box;
+  box-shadow: none;
 }
 
 .step[data-journey-state="active"] .stepResult {
@@ -314,21 +323,6 @@
   border-left-color: color-mix(in srgb, var(--color-border) 45%, transparent);
 }
 
-.stepGlow {
-  position: absolute;
-  inset: -1px;
-  display: none;
-  border-radius: 17px;
-  box-shadow: 0 0 0 1px var(--color-cta);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 280ms ease;
-}
-
-.step[data-journey-state="active"] .stepGlow {
-  opacity: 1;
-}
-
 .stepInner {
   display: flex;
   flex-direction: column;
@@ -344,6 +338,7 @@
 }
 
 .stepNumber {
+  position: relative;
   margin: 0;
   display: inline-flex;
   align-items: center;
@@ -369,10 +364,41 @@
     color 300ms ease;
 }
 
-.step[data-journey-state="active"] .stepNumber {
+.step[data-journey-state="active"] .stepNumber,
+:global([data-theme="light"]) .step[data-journey-state="active"] .stepNumber {
   border-color: var(--color-cta);
-  background: var(--color-cta);
-  color: var(--color-on-cta);
+  background: transparent;
+  color: var(--color-cta);
+}
+
+@supports ((background-clip: text) or (-webkit-background-clip: text)) and
+  (mask-composite: exclude) {
+  .step[data-journey-state="active"] .stepNumber,
+  :global([data-theme="light"]) .step[data-journey-state="active"] .stepNumber {
+    border-color: transparent;
+    background-image: var(--action-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .step[data-journey-state="active"] .stepNumber::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    padding: 1px;
+    border-radius: inherit;
+    background-image: var(--action-gradient);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
 }
 
 .stepTitle {
@@ -442,30 +468,18 @@
   filter: none;
 }
 
-:global([data-theme="light"]) .stepGlow {
-  box-shadow: 0 0 0 1px var(--color-cta);
-}
-
 :global([data-theme="light"]) .step[data-journey-state="active"] {
-  border-color: var(--color-cta);
-  background: color-mix(
+  --process-active-surface: color-mix(
     in srgb,
     var(--color-cta) 8%,
-    var(--color-surface-1) 92%
+    var(--color-surface-1)
   );
-  box-shadow: 0 0 0 1px var(--color-cta);
 }
 
 :global([data-theme="light"]) .stepNumber {
   border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
   background: color-mix(in srgb, var(--color-highlight) 10%, #ffffff 90%);
   color: color-mix(in srgb, var(--color-text) 82%, var(--color-highlight) 18%);
-}
-
-:global([data-theme="light"]) .step[data-journey-state="active"] .stepNumber {
-  border-color: var(--color-cta);
-  background: var(--color-cta);
-  color: var(--color-on-cta);
 }
 
 :global([data-theme="light"]) .journeyProgress {
@@ -593,19 +607,6 @@
     grid-column: 2;
     justify-self: stretch;
     width: 100%;
-  }
-
-  .stepGlow {
-    display: block;
-  }
-
-  /* The active contour lives on the overlay to keep scrolling inexpensive. */
-  .step[data-journey-state="active"] {
-    box-shadow: none;
-  }
-
-  :global([data-theme="light"]) .step[data-journey-state="active"] {
-    box-shadow: none;
   }
 
   /* Rail node, aligned with the step number: 19px .stepInner padding + 31px / 2.
@@ -749,7 +750,6 @@
   .step,
   .step::before,
   .step::after,
-  .stepGlow,
   .stepInner,
   .stepNumber,
   .endCta {

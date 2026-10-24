@@ -21,10 +21,19 @@
 }
 
 .frame {
+  position: relative;
   grid-area: frame;
   overflow: hidden;
   min-height: 100%;
   background: color-mix(in srgb, var(--color-surface-2) 70%, transparent);
+}
+
+:global([data-theme="dark"]) .frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-bg) 28%, transparent);
+  pointer-events: none;
 }
 
 .image {
