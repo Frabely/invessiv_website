@@ -12,7 +12,7 @@ import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
-import { BrandLockup } from "@/components/marketing/shared/brand-lockup/brand-lockup";
+import { BrandLockup } from "@invessiv/ui";
 import { ReadingProgress } from "@/components/marketing/shared/reading-progress/reading-progress";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";

@@ -4,7 +4,7 @@ import "@testing-library/jest-dom/vitest";
 
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ColorField } from "./color-field";
+import { ColorField } from "@invessiv/ui";
 
 function renderField(value: string) {
   const onChangeAction = vi.fn();

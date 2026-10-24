@@ -5,7 +5,7 @@ import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import { FormField } from "./form-field";
+import { FormField } from "@invessiv/ui";
 
 describe("FormField", () => {
   it("renders input, number, and textarea controls with shared accessibility wiring", () => {

@@ -3,7 +3,7 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { TabList } from "./tab-list";
+import { TabList } from "@invessiv/ui";
 
 describe("TabList", () => {
   afterEach(cleanup);

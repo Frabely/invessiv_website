@@ -13,7 +13,7 @@ import type { FooterColumnCopy } from "@/i18n/dictionaries/marketing/home";
 import { getFooterStaticContent } from "@/i18n/dictionaries/shared/footer";
 import { CONTACT_CHANNEL_KEYS } from "@/common/constants/contact/contact-channel-keys";
 import { ContactIdentity } from "@/components/shared/contact-identity/contact-identity";
-import { BrandLockup } from "@/components/marketing/shared/brand-lockup/brand-lockup";
+import { BrandLockup } from "@invessiv/ui";
 import styles from "./footer-section.module.css";
 
 export type FooterSectionProps = {

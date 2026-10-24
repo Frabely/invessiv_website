@@ -3,7 +3,7 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SegmentedControl } from "./segmented-control";
+import { SegmentedControl } from "@invessiv/ui";
 
 const items = [
   { value: "project", label: "Relaunch" },

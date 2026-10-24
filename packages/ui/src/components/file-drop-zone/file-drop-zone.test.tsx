@@ -4,7 +4,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { FileDropZone } from "./file-drop-zone";
+import { FileDropZone } from "@invessiv/ui";
 
 function files(...names: string[]) {
   return names.map((name) => new File(["x"], name));

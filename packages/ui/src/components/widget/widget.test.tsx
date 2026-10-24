@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { faFolderOpen } from "@fortawesome/free-solid-svg-icons";
 import { WidgetAccent } from "@invessiv/common/constants/ui/widget-accents";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
-import { Widget } from "./widget";
+import { Widget } from "@invessiv/ui";
 
 describe("Widget", () => {
   afterEach(cleanup);

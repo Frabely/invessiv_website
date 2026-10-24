@@ -1,7 +1,7 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import Image from "next/image";
+import { BrandLockup } from "@invessiv/ui";
 import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
@@ -98,18 +98,12 @@ export function WorkspaceHeader({
             className={styles.brand}
             href={workspaceHref}
           >
-            <span className={styles.brandMark}>
-              <Image
-                alt={headerContent.brandLogoAlt}
-                height={26}
-                priority
-                src="/brand/invessiv-logo.svg"
-                width={26}
-              />
-            </span>
-            <span className={styles.brandLabel}>
-              {headerContent.brandLabel}
-            </span>
+            <BrandLockup
+              collapseLabelOnMobile
+              label={headerContent.brandLabel}
+              logoAlt={headerContent.brandLogoAlt}
+              priority
+            />
           </a>
         </div>
 

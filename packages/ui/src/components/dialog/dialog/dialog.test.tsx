@@ -5,7 +5,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
-import { Dialog } from "./dialog";
+import { Dialog } from "@invessiv/ui";
 
 describe("Dialog", () => {
   afterEach(cleanup);

@@ -5,7 +5,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
-import { Badge } from "./badge";
+import { Badge } from "@invessiv/ui";
 
 afterEach(() => {
   cleanup();

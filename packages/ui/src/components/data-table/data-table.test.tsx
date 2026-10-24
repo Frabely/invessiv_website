@@ -13,7 +13,7 @@ import {
   DataTableHeaderCell,
   DataTableLayout,
   DataTableRow,
-} from "./data-table";
+} from "@invessiv/ui";
 
 afterEach(cleanup);
 

@@ -3,7 +3,7 @@ import "@testing-library/jest-dom/vitest";
 import { useState } from "react";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { DurationInput } from "./duration-input";
+import { DurationInput } from "@invessiv/ui";
 
 class TestPointerEvent extends MouseEvent {
   pointerId: number;

@@ -34,3 +34,9 @@
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
+
+@media (max-width: 639px) {
+  .lockup[data-collapse-label="true"] .label {
+    display: none;
+  }
+}

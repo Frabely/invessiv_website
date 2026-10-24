@@ -18,6 +18,7 @@ export * from "./components/empty-state/empty-state";
 export * from "./components/linked-text/linked-text";
 export * from "./components/file-drop-zone/file-drop-zone";
 export * from "./components/badge/badge";
+export * from "./components/brand-lockup/brand-lockup";
 export * from "./components/data-table/data-table";
 export * from "./components/data-table/data-table-loading-overlay";
 export * from "./components/detail/definition-list/definition-list";
