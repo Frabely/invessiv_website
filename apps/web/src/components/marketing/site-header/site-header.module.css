@@ -263,6 +263,5 @@
 @media (hover: hover) and (pointer: fine) and (min-width: 901px) {
   .navCta:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-action);
   }
 }

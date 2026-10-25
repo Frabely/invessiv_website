@@ -136,6 +136,11 @@
   --mobile-safe-top: env(safe-area-inset-top, 0px);
   --mobile-safe-bottom: env(safe-area-inset-bottom, 0px);
   --shadow-action: 0 3px 8px rgba(0, 0, 0, 0.16);
+  /* Faint halo of the primary action: gradient start on the left, gradient end on the right. */
+  --shadow-action-glow:
+    -6px 2px 20px -6px
+      color-mix(in srgb, var(--color-action-accent) 60%, transparent),
+    6px 2px 20px -6px color-mix(in srgb, var(--color-cta) 64%, transparent);
   /* One height for text inputs, option tiles and form buttons; 44px is the smallest touch target. */
   --control-height: 44px;
   /* Corner radius of the same controls. */
@@ -202,6 +207,10 @@
     var(--color-surface-2) 16%
   );
   --shadow-action: 0 3px 8px rgba(35, 37, 38, 0.1);
+  --shadow-action-glow:
+    -6px 2px 16px -6px
+      color-mix(in srgb, var(--color-action-accent) 42%, transparent),
+    6px 2px 16px -6px color-mix(in srgb, var(--color-cta) 46%, transparent);
 }
 
 @media (max-width: 900px) {

@@ -216,7 +216,9 @@ Das System ist sanft geschichtet. Tonale Oberflächen und feine Konturen leisten
 ### Shadow Vocabulary
 
 - **Ambient Card:** `0 10px 24px rgba(8, 10, 15, 0.2)` – ruhige Trennung wichtiger Karten vom Hintergrund.
-- **Action Lift:** `var(--shadow-action)` – kleiner neutraler Schlagschatten an primären Aktionen, ohne farbigen Glow.
+- **Action Lift:** `var(--shadow-action)` – kleiner neutraler Schlagschatten an primären Aktionen.
+- **Action Glow:** `var(--shadow-action-glow)` – ganz leichter Schein am Primary CTA, links im Verlaufsanfang, rechts im
+  Verlaufsende; immer zusammen mit _Action Lift_, im hellen Theme schwächer (Entscheidung 25.10.2026).
 - **Header Float:** `0 10px 24px rgba(6, 8, 12, 0.24)` – ausschließlich für den gescrollten Header im dunklen Theme.
 - **Ambient Card (Light):** `0 8px 18px rgba(36, 55, 90, 0.08)` – Pendant zu _Ambient Card_ im hellen Theme; kühler und
   deutlich zurückhaltender, damit Karten auf hellem Grund nicht schweben.

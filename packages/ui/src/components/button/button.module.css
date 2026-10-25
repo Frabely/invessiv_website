@@ -33,7 +33,7 @@
   background-origin: border-box;
   background-color: var(--color-cta);
   color: var(--color-on-cta);
-  box-shadow: var(--shadow-action);
+  box-shadow: var(--shadow-action), var(--shadow-action-glow);
 }
 
 .primary:focus-visible {

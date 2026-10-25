@@ -112,14 +112,9 @@
   text-align: center;
 }
 
-.primaryCta {
-  box-shadow: var(--shadow-action);
-}
-
 .primaryCta:hover,
 .primaryCta:focus-visible {
   transform: translateY(-1px);
-  box-shadow: var(--shadow-action);
 }
 
 .secondaryCta {
