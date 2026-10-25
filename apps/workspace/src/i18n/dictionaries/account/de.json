@@ -1,0 +1,181 @@
+{
+  "reverification": {
+    "alternativeMethods": {
+      "actionLink": "Eine andere Methode verwenden",
+      "actionText": "Verwende eine andere Verifizierungsmethode",
+      "blockButton__passkey": "Verwende deinen Passkey",
+      "getHelp": {
+        "content": "Wenn du Hilfe brauchst, wende dich bitte an unseren Support."
+      },
+      "subtitle": "Wähle eine Methode, um dich zu verifizieren"
+    },
+    "backupCodeMfa": {
+      "subtitle": "Verwende den Wiederherstellungscode, den du bei der Registrierung erhalten hast."
+    },
+    "emailCode": {
+      "formTitle": "Gib den Code ein, den wir an deine E-Mail-Adresse gesendet haben.",
+      "subtitle": "Prüfe deine E-Mails auf den Verifizierungscode."
+    },
+    "noAvailableMethods": {
+      "subtitle": "Bitte kontaktiere den Support, um Hilfe zu erhalten."
+    },
+    "passkey": {
+      "blockButton__passkey": "Verwende deinen Passkey",
+      "subtitle": "Dein Passkey bestätigt deine Identität. Dein Gerät kann nach deinem Fingerabdruck, Gesicht oder deiner Bildschirmsperre fragen.",
+      "title": "Verwende deinen Passkey"
+    },
+    "password": { "subtitle": "Gib dein Passwort ein, um fortzufahren." },
+    "phoneCode": {
+      "formTitle": "Gib den Code ein, den wir an deine Telefonnummer gesendet haben.",
+      "subtitle": "Prüfe deine SMS auf den Verifizierungscode."
+    },
+    "phoneCodeMfa": {
+      "formTitle": "Gib den Code ein, den wir dir per SMS gesendet haben.",
+      "subtitle": "Prüfe deine SMS auf den Verifizierungscode."
+    },
+    "totpMfa": {
+      "formTitle": "Gib den Code aus deiner Authentifikator-App ein.",
+      "subtitle": "Verwende die Authentifikator-App, die du eingerichtet hast."
+    }
+  },
+  "userProfile": {
+    "backupCodePage": {
+      "actionLabel__download": "Lade .txt herunter",
+      "infoText2": "Halte die Wiederherstellungscodes geheim und bewahre sie sicher auf. Du kannst Wiederherstellungscodes neu generieren, wenn du vermutest, dass sie kompromittiert wurden.",
+      "subtitle__codelist": "Bewahre die Codes sicher auf und halte sie geheim.",
+      "successMessage": "Wiederherstellungscodes sind jetzt aktiviert. Du kannst einen davon verwenden, um dich bei deinem Konto anzumelden, wenn du den Zugriff auf dein Authentifizierungsgerät verlierst. Jeder Code kann nur einmal verwendet werden.",
+      "successSubtitle": "Du kannst diese Codes verwenden, um dich bei deinem Konto anzumelden, wenn du den Zugriff auf dein Authentifizierungsgerät verlierst."
+    },
+    "billingPage": {
+      "paymentMethodsSection": {
+        "addSubtitle": "Füge eine neue Zahlungsmethode hinzu.",
+        "removeMethod": {
+          "messageLine2": "In Zukunft kannst du diese Zahlungsmethode nicht mehr verwenden. Alle laufenden Abonnements, die diese Zahlungsmethode verwenden, werden aufhören zu funktionieren."
+        }
+      }
+    },
+    "connectedAccountPage": {
+      "formHint": "Wähle einen Anbieter aus, um dein Konto zu verbinden.",
+      "removeResource": {
+        "messageLine2": "Du kannst dieses verbundene Konto nicht mehr verwenden und alle abhängigen Funktionen funktionieren nicht mehr.",
+        "successMessage": "{{connectedAccount}} wurde aus deinem Konto entfernt."
+      },
+      "successMessage": "Der Anbieter wurde deinem Konto hinzugefügt"
+    },
+    "deletePage": {
+      "actionDescription": "Gib \"Konto löschen\" ein, um fortzufahren.",
+      "messageLine1": "Möchtest du dein Konto wirklich löschen? Einige zugehörige Daten können gespeichert bleiben. Um die vollständige Löschung der Daten anzufordern, wende dich bitte an den Support."
+    },
+    "emailAddressPage": {
+      "emailCode": {
+        "formSubtitle": "Gib den Bestätigungscode ein, der an {{identifier}} gesendet wird",
+        "successMessage": "Die E-Mail-Adresse {{identifier}} wurde deinem Konto hinzugefügt."
+      },
+      "emailLink": {
+        "formSubtitle": "Klicke auf den Bestätigungslink in der an {{identifier}} gesendeten E-Mail",
+        "successMessage": "Die E-Mail-Adresse {{identifier}} wurde deinem Konto hinzugefügt."
+      },
+      "enterpriseSSOLink": {
+        "formButton": "Klicke zum Anmelden",
+        "formSubtitle": "Schließe die Anmeldung mit {{identifier}} ab"
+      },
+      "formHint": "Du musst diese E-Mail-Adresse verifizieren, bevor sie deinem Konto hinzugefügt werden kann.",
+      "removeResource": {
+        "messageLine2": "Du kannst dich nicht mehr mit dieser E-Mail-Adresse anmelden.",
+        "successMessage": "{{emailAddress}} wurde aus deinem Konto entfernt."
+      }
+    },
+    "mfaPage": {
+      "formHint": "Wähle eine Methode aus.",
+      "title": "Aktiviere Zweifaktor-Authentifizierung"
+    },
+    "mfaPhoneCodePage": {
+      "primaryButton__addPhoneNumber": "Füge eine Telefonnummer hinzu",
+      "removeResource": {
+        "messageLine2": "Dein Konto ist möglicherweise nicht so sicher. Bist du dir sicher, dass du fortfahren möchtest?",
+        "title": "Entferne die Bestätigung in zwei Schritten"
+      },
+      "subtitle__availablePhoneNumbers": "Wähle eine Telefonnummer aus, um dich für die Bestätigung in zwei Schritten per SMS-Code zu registrieren.",
+      "successMessage1": "Wenn du dich anmeldest, musst du einen Bestätigungscode eingeben, der an diese Telefonnummer gesendet wird.",
+      "successMessage2": "Speichere diese Wiederherstellungscodes und bewahre sie an einem sicheren Ort auf. Falls du den Zugriff auf dein Authentifizierungsgerät verlierst, kannst du dich mit diesen Codes anmelden."
+    },
+    "mfaTOTPPage": {
+      "authenticatorApp": {
+        "buttonAbleToScan__nonPrimary": "Scanne stattdessen den QR-Code",
+        "infoText__ableToScan": "Richte eine neue Anmeldemethode in deiner Authentifizierungs-App ein und scanne den folgenden QR-Code, um ihn mit deinem Konto zu verknüpfen.",
+        "infoText__unableToScan": "Richte eine neue Anmeldemethode in deinem Authentifikator ein und gib den unten angegebenen Schlüssel ein.",
+        "inputLabel__unableToScan1": "Stelle sicher, dass zeitbasierte oder einmalige Passwörter aktiviert sind, und schließe dann die Verknüpfung deines Kontos ab.",
+        "inputLabel__unableToScan2": "Wenn dein Authentifikator TOTP-URIs unterstützt, kannst du alternativ auch die vollständige URI kopieren."
+      },
+      "removeResource": {
+        "messageLine2": "Dein Konto ist möglicherweise nicht mehr so sicher. Bist du dir sicher, dass du fortfahren willst?",
+        "title": "Entferne die Bestätigung in zwei Schritten"
+      },
+      "successMessage": "Die Bestätigung in zwei Schritten ist jetzt aktiviert. Bei der Anmeldung musst du als zusätzlichen Schritt einen Bestätigungscode von diesem Authentifikator eingeben.",
+      "verifySubtitle": "Gib den von deinem Authentifikator generierten Bestätigungscode ein"
+    },
+    "navbar": {
+      "description": "Verwalte deine Kontoinformationen."
+    },
+    "passkeyScreen": {
+      "subtitle__rename": "Du kannst den Namen des Passkeys ändern, um ihn leichter zu finden."
+    },
+    "passwordPage": {
+      "checkboxInfoText__signOutOfOtherSessions": "Es wird empfohlen, sich von allen anderen Geräten abzumelden, die möglicherweise dein altes Passwort verwendet haben.",
+      "readonly": "Dein Passwort kann derzeit nicht geändert werden, da du dich nur über die Enterprise-Verbindung anmelden kannst.",
+      "successMessage__set": "Dein Passwort wurde festgelegt."
+    },
+    "phoneNumberPage": {
+      "removeResource": {
+        "messageLine2": "Du kannst dich nicht mehr mit dieser Telefonnummer anmelden.",
+        "successMessage": "{{phoneNumber}} wurde aus deinem Konto entfernt."
+      },
+      "successMessage": "{{identifier}} wurde deinem Konto hinzugefügt.",
+      "verifySubtitle": "Gib den Bestätigungscode ein, der an {{identifier}} gesendet wurde"
+    },
+    "profilePage": {
+      "fileDropAreaHint": "Lade ein JPG-, PNG-, GIF- oder WEBP-Bild hoch, das kleiner als 10 MB ist",
+      "readonly": "Deine Profilinformationen wurden durch dein Unternehmen bereitgestellt und können nicht bearbeitet werden.",
+      "successMessage": "Dein Profil wurde aktualisiert."
+    },
+    "start": {
+      "connectedAccountsSection": {
+        "actionLabel__connectionFailed": "Versuche es nochmal",
+        "subtitle__disconnected": "Dein Konto ist derzeit getrennt. Bitte verbinde es erneut.",
+        "subtitle__reauthorize": "Die erforderlichen Berechtigungen wurden aktualisiert, wodurch deine Funktionalität möglicherweise eingeschränkt ist. Bitte autorisiere diese Anwendung erneut, um Probleme zu vermeiden."
+      },
+      "emailAddressesSection": {
+        "primaryButton": "Füge eine E-Mail-Adresse hinzu"
+      },
+      "mfaSection": {
+        "backupCodes": {
+          "subtitle__regenerate": "Generiere einen neuen Satz sicherer Wiederherstellungscodes. Alte Wiederherstellungscodes werden gelöscht und können nicht mehr verwendet werden."
+        },
+        "primaryButton": "Aktiviere die Zweifaktor-Authentifizierung"
+      },
+      "phoneNumbersSection": {
+        "primaryButton": "Füge eine Telefonnummer hinzu"
+      },
+      "web3WalletsSection": {
+        "web3SelectSolanaWalletScreen": {
+          "subtitle": "Wähle eine Solana-Wallet aus, um sie mit deinem Konto zu verbinden."
+        }
+      }
+    },
+    "usernamePage": {
+      "successMessage": "Dein Benutzername wurde aktualisiert."
+    },
+    "web3WalletPage": {
+      "removeResource": {
+        "messageLine2": "Du kannst dich nicht mehr mit diesem Web3-Wallet anmelden.",
+        "successMessage": "{{web3Wallet}} wurde aus deinem Konto entfernt.",
+        "title": "Entferne das Web3-Wallet"
+      },
+      "subtitle__availableWallets": "Wähle ein Web3-Wallet aus, um dich mit deinem Konto zu verbinden.",
+      "successMessage": "Die Brieftasche wurde deinem Konto hinzugefügt."
+    }
+  },
+  "userButton": {
+    "action__signOutAll": "Melde dich von allen Konten ab"
+  }
+}

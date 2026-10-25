@@ -8,17 +8,6 @@
   white-space: pre-wrap;
 }
 
-.text a {
-  color: var(--color-cta-hover);
-  text-underline-offset: 0.2em;
-}
-
-.text a:focus-visible {
-  border-radius: 4px;
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
 .choices {
   display: grid;
   gap: 0.2rem;

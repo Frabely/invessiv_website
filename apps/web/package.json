@@ -2,6 +2,8 @@
   "name": "@invessiv/web",
   "private": true,
   "scripts": {
+    "assets:brand": "node scripts/generate-brand-assets.mjs",
+    "assets:og": "node scripts/generate-og-images.mjs",
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start --port 3000",

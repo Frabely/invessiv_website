@@ -40,8 +40,9 @@
   width: 56px;
   height: 56px;
   border-radius: 18px;
-  color: var(--color-cta);
-  background: color-mix(in srgb, var(--color-cta) 12%, transparent);
+  --action-icon-gradient-opacity: 1;
+  background: var(--color-surface-2);
+  font-size: 1.5rem;
 }
 
 .content {
@@ -75,4 +76,9 @@
   .panel {
     flex-direction: column;
   }
+}
+
+.iconFrame svg {
+  width: 1em;
+  height: 1em;
 }

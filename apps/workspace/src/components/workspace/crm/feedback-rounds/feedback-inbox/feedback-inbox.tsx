@@ -3,7 +3,6 @@ import {
   faCircleCheck,
   faFilterCircleXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { FeedbackInboxDto } from "@invessiv/common/contracts/crm/feedback-inbox.dto";
 import { EmptyState, PrimaryCtaLink } from "@invessiv/ui";
 import type { FeedbackInboxFilters } from "@/common/contracts/crm/feedback-inbox-filters";
@@ -65,11 +64,7 @@ export function FeedbackInbox({
             </PrimaryCtaLink>
           }
           description={emptyTexts.description}
-          icon={
-            <FontAwesomeIcon
-              icon={hasActiveFilters ? faFilterCircleXmark : faCircleCheck}
-            />
-          }
+          icon={hasActiveFilters ? faFilterCircleXmark : faCircleCheck}
           title={emptyTexts.title}
           variant={hasActiveFilters ? "filtered" : undefined}
         />

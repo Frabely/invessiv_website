@@ -11,7 +11,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
 import type { FileEntryItem } from "@invessiv/common/contracts/files/file-entry-item";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ButtonControl } from "../../button/button";
+import { QuaternaryCta } from "../../text-cta/text-cta";
+import { ButtonLink, ButtonControl } from "../../button/button";
 import { CheckboxControl } from "../../checkbox-control/checkbox-control";
 import { FileEntryMeta } from "../file-entry-meta/file-entry-meta";
 import { FileThumbnail } from "../file-thumbnail/file-thumbnail";
@@ -94,7 +95,7 @@ export function FileEntryRow<TFile extends FileEntryItem>({
       </span>
       <div className={styles.identity}>
         {linkUrl ? (
-          <a
+          <QuaternaryCta
             aria-label={`${file.displayName} (${labels.opensInNewTab})`}
             className={styles.name}
             href={linkUrl}
@@ -102,15 +103,16 @@ export function FileEntryRow<TFile extends FileEntryItem>({
             target="_blank"
           >
             {file.displayName}
-          </a>
+          </QuaternaryCta>
         ) : onPreviewAction ? (
-          <button
+          <QuaternaryCta
+            as="button"
             className={styles.name}
             onClick={() => onPreviewAction(file)}
             type="button"
           >
             {file.displayName}
-          </button>
+          </QuaternaryCta>
         ) : (
           <span className={styles.name}>{file.displayName}</span>
         )}
@@ -131,7 +133,7 @@ export function FileEntryRow<TFile extends FileEntryItem>({
         {onPreviewAction ? (
           <ButtonControl
             aria-label={formatMessage(labels.previewNamed, name)}
-            className={styles.action}
+            size="icon"
             onClick={() => onPreviewAction(file)}
             title={labels.preview}
             type="button"
@@ -141,9 +143,10 @@ export function FileEntryRow<TFile extends FileEntryItem>({
           </ButtonControl>
         ) : null}
         {linkUrl ? (
-          <a
+          <ButtonLink
+            variant="ghost"
             aria-label={formatMessage(labels.openNamed, name)}
-            className={styles.action}
+            size="icon"
             href={linkUrl}
             rel="noopener noreferrer"
             target="_blank"
@@ -153,11 +156,11 @@ export function FileEntryRow<TFile extends FileEntryItem>({
               aria-hidden="true"
               icon={faArrowUpRightFromSquare}
             />
-          </a>
+          </ButtonLink>
         ) : (
           <ButtonControl
             aria-label={formatMessage(labels.downloadNamed, name)}
-            className={styles.action}
+            size="icon"
             onClick={() => onDownloadAction(file)}
             title={labels.download}
             type="button"
@@ -169,7 +172,7 @@ export function FileEntryRow<TFile extends FileEntryItem>({
         {extraActions?.map((action) => (
           <ButtonControl
             aria-label={action.label}
-            className={styles.action}
+            size="icon"
             data-tone={action.danger ? "danger" : undefined}
             key={action.title}
             onClick={action.onClick}

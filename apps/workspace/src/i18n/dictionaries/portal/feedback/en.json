@@ -1,11 +1,11 @@
 {
   "meta": {
-    "title": "Feedback | Invessiv",
+    "title": "Feedback",
     "description": "Give us feedback on the current state of your project – point by point, with screenshots."
   },
   "page": {
     "heading": "Feedback on {project}",
-    "back": "Back to overview",
+    "breadcrumb": "Breadcrumb",
     "ownerHint": "You can't give feedback in the portal view.",
     "ownerLink": "View in the CRM",
     "readOnlyHint": "You can read the feedback but not edit it. Ask the person who looks after the project on your side.",

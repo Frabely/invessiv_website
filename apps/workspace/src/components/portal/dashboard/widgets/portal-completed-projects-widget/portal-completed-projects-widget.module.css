@@ -26,34 +26,6 @@
   overflow-wrap: anywhere;
 }
 
-.visit {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  min-height: 2.75rem;
-  color: var(--color-text);
-  font-size: var(--font-size-ui-sm);
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-color: var(--widget-accent);
-  text-underline-offset: 0.25em;
-}
-
-.visit svg {
-  width: 0.7rem;
-  height: 0.7rem;
-}
-
-.visit:hover {
-  text-decoration-thickness: 2px;
-}
-
-.visit:focus-visible {
-  border-radius: 6px;
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
 /* Collapsed, the titles read as one quiet line; the list with links lives in the expansion. */
 .summary {
   display: -webkit-box;
@@ -63,4 +35,16 @@
   font-size: var(--font-size-ui-sm);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
+}
+
+.visit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  font-size: var(--font-size-ui-sm);
+}
+.visit svg {
+  width: 0.7rem;
+  height: 0.7rem;
 }

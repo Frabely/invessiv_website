@@ -1,11 +1,12 @@
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import type { CtaClickedPayload } from "@/common/contracts/analytics/analytics-event-payloads";
+import type { TrustPoint } from "@/common/contracts/marketing/trust-point";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
-import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
-import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { TrustPoints } from "@/components/marketing/shared/trust-points/trust-points";
+import { PrimaryCtaLink, SecondaryCtaLink } from "@invessiv/ui";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
-import buttonStyles from "@/components/shared/button/button.module.css";
+import { GradientText } from "@/components/shared/gradient-text/gradient-text";
 import { HERO_SECTION_ID } from "@/config/navigation/home";
 import { HeroBackground } from "./hero-background/hero-background";
 import styles from "./hero-section.module.css";
@@ -20,8 +21,7 @@ type HeroSectionBaseProps = {
   heroPrimaryCta: string;
   heroSecondaryCta: string;
   heroTag: string;
-  heroTrustChips?: string[];
-  heroTrustLine?: string;
+  heroTrustChips?: TrustPoint[];
   heroVideoSrc?: string;
   fullscreenVisual?: boolean;
   title: string;
@@ -58,7 +58,6 @@ export function HeroSection(props: HeroSectionProps) {
     heroSecondaryCta,
     heroTag,
     heroTrustChips,
-    heroTrustLine,
     heroVideoSrc,
     fullscreenVisual = false,
     title,
@@ -78,7 +77,7 @@ export function HeroSection(props: HeroSectionProps) {
         <div className={styles.content}>
           <EyebrowPill className={styles.tag}>{heroTag}</EyebrowPill>
           <h1 className={styles.title}>
-            <span className={styles.titleGradient}>{title}</span>
+            <GradientText className={styles.titleText}>{title}</GradientText>
           </h1>
           <p className={styles.description}>{description}</p>
 
@@ -93,8 +92,8 @@ export function HeroSection(props: HeroSectionProps) {
             >
               {heroPrimaryCta}
             </PrimaryCtaLink>
-            <a
-              className={`${buttonStyles.button} ${buttonStyles.ghost} ${styles.ctaButton} ${styles.secondaryCta}`}
+            <SecondaryCtaLink
+              className={`${styles.ctaButton} ${styles.secondaryCta}`}
               href={secondaryCtaHref}
               {...analyticsAttributes(
                 AnalyticsEventName.CtaClicked,
@@ -102,16 +101,14 @@ export function HeroSection(props: HeroSectionProps) {
               )}
             >
               {heroSecondaryCta}
-            </a>
+            </SecondaryCtaLink>
           </div>
 
-          <SectionScanPoints
-            className={styles.trustChips}
-            points={heroTrustChips}
-          />
-
-          {heroTrustLine ? (
-            <p className={styles.trustLine}>{heroTrustLine}</p>
+          {heroTrustChips ? (
+            <TrustPoints
+              className={styles.trustChips}
+              points={heroTrustChips}
+            />
           ) : null}
         </div>
 

@@ -8,7 +8,7 @@ import {
   ButtonLink,
   PrimaryCtaButton,
   PrimaryCtaLink,
-} from "./button";
+} from "@invessiv/ui";
 
 describe("shared button", () => {
   it("keeps list-row actions accessible and respects the native disabled state", () => {

@@ -1,4 +1,4 @@
-import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { PrimaryCtaLink, SecondaryCtaButton } from "@invessiv/ui";
 import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
@@ -71,14 +71,15 @@ export function SuccessPreview({
           captionMore={success.captionMore}
           className={styles.postCard}
           headerAction={
-            <button
+            <SecondaryCtaButton
               className={styles.copyButton}
-              data-state={hasCopied ? "copied" : "default"}
+              aria-live="polite"
               onClick={() => onCopyCaption(caption)}
+              size="control"
               type="button"
             >
               {hasCopied ? success.copyCaptionCopied : success.copyCaption}
-            </button>
+            </SecondaryCtaButton>
           }
           image={
             <figure aria-label={postTitle} className={styles.postImage}>

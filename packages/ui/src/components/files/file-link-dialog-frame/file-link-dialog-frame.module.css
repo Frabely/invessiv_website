@@ -3,6 +3,12 @@
   gap: 1rem;
 }
 
+/* Everything below the navigation; the tab panel when the navigation is a tab list. */
+.panel {
+  display: grid;
+  gap: 1rem;
+}
+
 .form {
   display: grid;
   gap: 0.9rem;

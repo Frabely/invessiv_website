@@ -1,11 +1,11 @@
 {
   "meta": {
-    "title": "Onboarding | Invessiv",
+    "title": "Onboarding",
     "description": "Gib uns alles, was wir für dein Projekt brauchen – in deinem Tempo, Schritt für Schritt."
   },
   "page": {
     "heading": "Onboarding für {project}",
-    "back": "Zurück zum Überblick",
+    "breadcrumb": "Breadcrumb",
     "backShort": "Überblick",
     "ownerHint": "In der Portalansicht kannst du das Onboarding nur lesen.",
     "ownerLink": "Im CRM ansehen",

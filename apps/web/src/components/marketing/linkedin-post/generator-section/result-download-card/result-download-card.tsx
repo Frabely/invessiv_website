@@ -1,7 +1,4 @@
-import {
-  ButtonControl,
-  PrimaryCtaButton,
-} from "@/components/shared/button/button";
+import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { linkedinPostZipDownloadService } from "@/client/linkedin-post/services/linkedin-post-zip-download-service";
 import type { LinkedInPostGeneratorResultDownloadCopy } from "@/i18n/dictionaries/linkedin-post/generator";
 import styles from "./result-download-card.module.css";

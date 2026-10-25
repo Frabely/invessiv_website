@@ -1,13 +1,21 @@
+"use client";
+
+import { useRef } from "react";
+import {
+  QuaternaryCta,
+  SecondaryCtaLink,
+  useDismissibleDetails,
+} from "@invessiv/ui";
 import type { PortalMembershipOptionDto } from "@invessiv/common/contracts/portal/portal-membership-option.dto";
 import type { Locale } from "@/config/i18n";
-import type { PortalShellDictionary } from "@/i18n/dictionaries/portal";
+import type { PortalCompanySwitcherDictionary } from "@/common/contracts/portal/portal-company-switcher-dictionary";
 import { portalPathFor } from "@/lib/auth/routes";
 import styles from "./customer-switcher.module.css";
 
 type CustomerSwitcherProps = {
   activeCustomerId: string;
   companies: readonly PortalMembershipOptionDto[];
-  content: PortalShellDictionary["switcher"];
+  content: PortalCompanySwitcherDictionary;
   locale: Locale;
   homeHref?: string;
 };
@@ -23,6 +31,8 @@ export function CustomerSwitcher({
   locale,
   homeHref,
 }: CustomerSwitcherProps) {
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  useDismissibleDetails(detailsRef);
   const activeCompany = companies.find(
     (company) => company.customerId === activeCustomerId,
   );
@@ -42,11 +52,11 @@ export function CustomerSwitcher({
       <a className={styles.current} href={overviewHref}>
         {activeName}
       </a>
-      <details>
-        <summary className={styles.summary}>
+      <details ref={detailsRef}>
+        <QuaternaryCta as="summary" className={styles.summary}>
           <span className="sr-only">{content.menuLabel}: </span>
           <span aria-hidden="true">▾</span>
-        </summary>
+        </QuaternaryCta>
         <div
           aria-label={content.groupLabel}
           className={styles.popover}
@@ -64,12 +74,12 @@ export function CustomerSwitcher({
                     </span>
                   </span>
                 ) : (
-                  <a
+                  <SecondaryCtaLink
                     className={styles.optionLink}
                     href={portalPathFor(locale, company.customerId)}
                   >
                     {company.displayName}
-                  </a>
+                  </SecondaryCtaLink>
                 )}
               </span>
             );

@@ -16,23 +16,10 @@
 
 .brand {
   justify-self: start;
+  margin: 0;
   color: color-mix(in srgb, var(--color-text) 62%, var(--color-text-muted) 38%);
   font-size: var(--font-size-label-md);
   line-height: 1.4;
-  text-decoration: none;
-  transition: color 180ms ease;
-}
-
-.brand:hover {
-  color: var(--color-text);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.brand:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 3px;
-  border-radius: 4px;
 }
 
 /* The buttons form their own row under the identity. */
@@ -48,11 +35,5 @@
 
   .root[data-center-mobile="true"] .brand {
     justify-self: center;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .brand {
-    transition: none;
   }
 }

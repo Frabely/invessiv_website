@@ -12,7 +12,7 @@ import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import type { PortalRequestableServiceDto } from "@invessiv/common/contracts/portal/portal-requestable-service.dto";
 import { PORTAL_SERVICE_REQUEST_CUSTOM } from "@/common/constants/portal/portal-dashboard-query-params";
-import { ButtonControl } from "@invessiv/ui";
+import { ActionIcon, ButtonControl } from "@invessiv/ui";
 import styles from "./portal-service-picker.module.css";
 
 export type PortalServicePickerProps = {
@@ -79,11 +79,9 @@ export function PortalServicePicker({
               type="button"
               variant={ButtonVariant.Row}
             >
-              <FontAwesomeIcon
-                aria-hidden="true"
-                className={styles.icon}
-                icon={option.icon}
-              />
+              <span aria-hidden="true" className={styles.icon}>
+                <ActionIcon icon={option.icon} />
+              </span>
               <span className={styles.text}>
                 <span className={styles.title}>
                   {option.title}

@@ -29,6 +29,8 @@ type BaseFormFieldProps = {
   hint?: ReactNode;
   hintId?: string;
   label: string;
+  /** Sits at the end of the label row, e.g. a character counter; hidden from assistive tech. */
+  labelSuffix?: ReactNode;
   required?: boolean;
   /**
    * Keeps an empty line below the control for an error, so it does not push the form when it
@@ -85,6 +87,7 @@ export function FormField(props: FormFieldProps) {
     hint,
     hintId,
     label,
+    labelSuffix,
     required = false,
     reserveErrorSpace = true,
   } = props;
@@ -96,12 +99,24 @@ export function FormField(props: FormFieldProps) {
   const rootClassName = className
     ? `${styles.field} ${className}`
     : styles.field;
+  const labelElement = (
+    <label className={styles.label} htmlFor={controlId}>
+      <FormFieldLabel label={label} required={required} />
+    </label>
+  );
 
   return (
     <div className={rootClassName}>
-      <label className={styles.label} htmlFor={controlId}>
-        <FormFieldLabel label={label} required={required} />
-      </label>
+      {labelSuffix ? (
+        <div className={styles.labelRow}>
+          {labelElement}
+          <span aria-hidden="true" className={styles.labelSuffix}>
+            {labelSuffix}
+          </span>
+        </div>
+      ) : (
+        labelElement
+      )}
       <div className={styles.control}>
         {props.kind === FormFieldKind.Textarea
           ? renderTextarea(
@@ -263,17 +278,19 @@ function renderTextarea(
     .join(" ");
 
   return (
-    <textarea
-      rows={props.autoGrow ? 1 : undefined}
-      {...props.textareaProps}
-      aria-describedby={describedBy || undefined}
-      aria-invalid={
-        props.textareaProps?.["aria-invalid"] ??
-        (props.errorMessage ? "true" : undefined)
-      }
-      className={className || undefined}
-      id={controlId}
-    />
+    <span className={styles.inputShell}>
+      <textarea
+        rows={props.autoGrow ? 1 : undefined}
+        {...props.textareaProps}
+        aria-describedby={describedBy || undefined}
+        aria-invalid={
+          props.textareaProps?.["aria-invalid"] ??
+          (props.errorMessage ? "true" : undefined)
+        }
+        className={className || undefined}
+        id={controlId}
+      />
+    </span>
   );
 }
 

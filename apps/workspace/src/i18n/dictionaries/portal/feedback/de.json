@@ -1,11 +1,11 @@
 {
   "meta": {
-    "title": "Feedback | Invessiv",
+    "title": "Feedback",
     "description": "Gib uns Feedback zum aktuellen Stand deines Projekts – Punkt für Punkt, mit Screenshots."
   },
   "page": {
     "heading": "Feedback zu {project}",
-    "back": "Zurück zum Überblick",
+    "breadcrumb": "Breadcrumb",
     "ownerHint": "In der Portalansicht kannst du kein Feedback abgeben.",
     "ownerLink": "Im CRM ansehen",
     "readOnlyHint": "Du kannst das Feedback lesen, aber nicht bearbeiten. Frag die Person, die bei euch das Projekt betreut.",

@@ -3,8 +3,14 @@
   "heroSecondaryCta": "Leistungen ansehen",
   "heroTag": "WEBDESIGN AUS CHEMNITZ UND UMGEBUNG",
   "heroTrustChips": [
-    "Direkter Ansprechpartner",
-    "Softwareentwicklungs-Background"
+    {
+      "iconKey": "directContact",
+      "label": "Direkter Ansprechpartner"
+    },
+    {
+      "iconKey": "softwareBackground",
+      "label": "Softwareentwicklungs-Background"
+    }
   ],
   "heroVisualAriaLabel": "Moritz Hecht, persönlicher Ansprechpartner für Webdesign aus Chemnitz",
   "mappingWarning": "Navigation/Section Mapping ist unvollständig.",

@@ -7,6 +7,40 @@ und `packages/AGENTS.md` (Abschnitt `packages/ui`).
 
 Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 
+## Änderungen am Standardverhalten vorher abstimmen (verbindlich)
+
+- Wird eine bestehende Komponente direkt geändert und verändert das ihr bisheriges Standardverhalten oder
+  Standardaussehen, **vor der Umsetzung ausdrücklich fragen**, ob diese Änderung für alle betroffenen Verwendungen
+  gelten soll. Das umfasst auch CSS, Hover-, Fokus- und Auswahlzustände, Maße, Prop-Defaults sowie Änderungen an
+  geteilten Hooks, Stilen oder Tokens, die sich auf bestehende Komponenten auswirken.
+- Vor der Rückfrage die Verwendungen in allen Apps und im UI-Paket ermitteln. Konkret erklären, was sich gegenüber
+  bisher ändert, welche Stellen betroffen sind und wo das bisherige Verhalten weiter sinnvoll sein könnte.
+  Ungeprüfte oder dynamische Verwendungen als Unsicherheit benennen.
+- Die Entscheidung ausdrücklich anbieten: **bestehenden Standard überall ändern** oder **bisherigen Standard
+  erhalten und die neue Darstellung bzw. das neue Verhalten über eine app-neutrale Prop/Variante gezielt aktivieren**.
+  Ein Auftrag für eine einzelne Stelle oder einen Bereich ist keine Zustimmung zur Änderung aller Verwendungen.
+- Bis zur ausdrücklichen Entscheidung keine Änderung am bestehenden Standard umsetzen. Wurde die konkrete Änderung
+  samt ihrer Reichweite im laufenden Gespräch bereits ausdrücklich bestätigt, ist keine erneute Rückfrage nötig.
+- Soll der bisherige Standard an einzelnen Stellen erhalten bleiben, eine passende gemeinsame Variante bzw. Prop
+  verwenden und die betroffenen Aufrufer bewusst zuordnen; keine lokalen CSS-Overrides oder Komponenten-Kopien.
+
+## Gemeinsamer Design-Kern (verbindlich)
+
+- **Tokens:** `src/styles/tokens.css` hält Palette (Marken-, Highlight-, Aktions- und Neutralrollen), Schriftfamilien,
+  Schriftgrößen, Layoutschiene und deren Breakpoints für **alle** Apps. Die Werte gehören dem Website-Design
+  (`apps/web/DESIGN.md`); bei Abweichungen gewinnt die Website. `src/styles/base.css` hält Reset und
+  Dokument-Defaults. Jede App importiert beide direkt nach Tailwind in ihrer `globals.css` und ergänzt dort nur eigene
+  Tokens (Web: FAQ-/Hero-/Marketing-Tokens; Workspace: Control-, Status- und Widget-Tokens). Gemeinsame Tokens nicht
+  in einer App-`globals.css` neu definieren.
+- **Schriften:** Jede App lädt die Fonts selbst per `next/font` (Paket bleibt frei von `next/*`), mit denselben
+  Variablennamen (`--font-figtree`, `--font-metrophobic`), die `tokens.css` erwartet.
+- **Aktionsfarbe:** Der Orange-Blau-CTA-Verlauf liegt einmalig in `components/action-color/action-color.module.css`.
+  Paket-Komponenten komponieren ihn relativ, App-CSS-Module über
+  `composes: … from "@invessiv/ui/components/action-color/action-color.module.css"`. `ActionIcon` zeigt
+  Font-Awesome-Icons im selben Verlauf.
+- **Header-Controls:** `ThemeSwitch` und `LocaleSwitch` (inkl. `useDismissibleDetails`) sind die einzigen
+  Theme-/Sprachumschalter aller Apps.
+
 ## Wer eine UI-Komponente nutzt, stylt sie nicht um (verbindlich)
 
 - **Im Regelfall kein eigenes CSS für eine Komponente aus `@invessiv/ui`.** Höhe, Innenabstand, Rahmen, Farben,
@@ -31,8 +65,7 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 ## Formular-Bausteine sehen gleich aus (verbindlich)
 
 - **Eine Höhe und ein Eckenradius für alle Controls:** `--control-height`, `--control-radius` und
-  `--control-border-color` (in der
-  `globals.css` der App definiert). Texteingaben
+  `--control-border-color` (zentral in `src/styles/tokens.css`, gleich für alle Apps). Texteingaben
   (`FormField`), Options-Kacheln (`OptionTile`) und Buttons in Formularen (`ButtonControl` mit `size="control"`)
   richten sich danach. Kein Control setzt eine eigene feste Höhe.
 - **Gleiches Gerüst:** Label, Abstand Label → Control, Hinweis (`FormHint`) und Fehler sehen in `FormField` und
@@ -51,13 +84,57 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - **Buttons:** `variant` wählt das Aussehen (`primary`, `ghost`, `quiet`), `size` die Größe (`default`, `control` in
   Formularen, `icon` für reine Icon-Buttons). Hover-Effekte gelten nur auf Geräten, die hovern können.
   `PrimaryCtaButton` ist die Hauptaktion, `SecondaryCtaButton` die zweite Aktion daneben oder eine einzelne Aktion,
-  die nicht mit ihr konkurrieren soll.
+  die nicht mit ihr konkurrieren soll. `primary` trägt den CTA-Verlauf der Website, `ghost` erhält beim Hover einen
+  Verlaufsrahmen und Verlaufstext (Label-Span mit `gap: inherit`, damit Icon-Abstände bleiben). Icons direkt im
+  Label nehmen dabei die Verlaufsfarbe ihrer Seite an (vorn Anfang, hinten Ende, `ActionIcon` den ganzen Verlauf);
+  die Fläche bleibt unverändert, ohne blaue Tönung.
 - **Das Token muss ankommen:** Fehlt `--control-height` zur Laufzeit, fallen alle Controls still auf ihre Inhaltshöhe
   zurück und sind dann unterschiedlich hoch. Sieht ein Formular so aus, zuerst prüfen, ob das ausgelieferte globale
   Stylesheet das Token enthält (Dev-Server neu starten), bevor an den Komponenten gedreht wird.
-  **Kompatibilitätsausnahme:** `CustomSelect` bewahrt ohne diese Tokens seine bisherigen Werte (44 px Mindesthöhe,
-  10 px Radius und bisherige Rahmenfarbe), damit die Web-App unverändert bleibt. Die vereinheitlichten Tokens
-  werden aktuell nur im Workspace gesetzt; dafür keine Änderungen an `apps/web/src/app/globals.css` vornehmen.
+- **Fokus im Aktionsverlauf:** Form-Controls (`FormField`, `CheckboxControl`, `RadioControl`, `OptionTile`,
+  `CustomSelect`) zeigen den Fokus als Orange→Blau-Verlaufsring über `focusRing` aus
+  `components/action-color/action-color.module.css`. Inputs und Textareas tragen keine Pseudo-Elemente, daher sitzt
+  der Ring auf ihrer Hülle. Einfarbige Fokus-Outlines nutzen immer `--color-focus` (Verlaufsstart), nie `--color-cta`.
+- **Pflicht-Kennzeichnung und Checked im Aktionsverlauf:** `FormRequiredMarker`, der Pflicht-Hinweis in `FormActions`,
+  der Checked- und Teilauswahl-Zustand von `CheckboxControl`, der Checked-Zustand von `RadioControl` (Verlaufsring mit
+  hellem Punkt) und die gewählte `OptionTile` (Verlaufsrahmen auf unveränderter Fläche) nutzen den Aktionsverlauf
+  statt Blau. Ruhend sind Checkbox und Radio neutral. Deaktiviert-gewählt zeigt denselben Verlauf, abgeschwächt wie
+  ein deaktivierter Button (`--button-disabled-opacity`/`-filter`).
+- **Upload-Fläche (`FileDropZone`):** ruhend gestrichelt und neutral; beim Hover (nur Maus) und beim Ziehen einer
+  Datei darüber Verlaufsrahmen und Verlaufstitel, das Icon ist ein `ActionIcon`, der Fokus der Verlaufsring.
+- **Web nutzt dieselben Bausteine:** Die Web-App hat keine eigenen Kopien von `FormField`, `FormActions`,
+  `FormStatus`, `FormRequiredMarker` oder Buttons mehr. Next-Links laufen über `linkComponent={Link}`.
+
+## CTA-Hierarchie (verbindlich)
+
+Aktionen haben vier Stufen. Jede Stufe hat eine benannte Komponente; Apps bauen keine eigenen Varianten.
+
+| Stufe        | Aussehen                                                                       | Komponenten                              |
+| ------------ | ------------------------------------------------------------------------------ | ---------------------------------------- |
+| 1 Primary    | Fläche im Orange→Blau-Verlauf                                                  | `PrimaryCtaButton`, `PrimaryCtaLink`     |
+| 2 Secondary  | ruhige Fläche mit Rahmen, beim Hover Verlaufsrahmen und -text                  | `SecondaryCtaButton`, `SecondaryCtaLink` |
+| 3 Tertiary   | Textlink, Text und Unterstreichung im Verlauf                                  | `TertiaryCta`                            |
+| 4 Quaternary | Textlink in `--color-cta`, Unterstreichung im Verlauf; beim Hover Verlaufstext | `QuaternaryCta`                          |
+
+- `TertiaryCta` und `QuaternaryCta` bauen auf `TextCta` auf (`variant` aus `TextCtaVariant`) und rendern als Link,
+  Button (`as="button"`) oder `summary` (`as="summary"`). Framework-Links laufen über `linkComponent`, wie bei
+  `ButtonLink`; `arrow` hängt einen dekorativen Pfeil an.
+- **Hover nur mit Maus:** Hover-Effekte aller Stufen gelten nur bei `hover: hover` (Textlinks zusätzlich
+  `pointer: fine`). Auf Touch-Geräten gibt es keinen Hover-Zustand.
+- **Hervorhebung nur bei Tastaturfokus:** Die Verlaufszustände in `action-color` (`palette`, `hoverText`,
+  `outlineOnHover`) reagieren auf `:focus-visible` bzw. `:has(:focus-visible)`, nie auf `:focus-within`. Sonst bliebe
+  ein angetipptes Element nach dem Tippen hervorgehoben.
+- **Größe ist Kontext, alles andere gehört der Komponente:** Textlinks haben ein festes Gewicht (600) und erben die
+  Schriftgröße. Aufrufer dürfen Schriftgröße, Zeilenhöhe und Layout (Abstand, Breite, Ausrichtung, Mindesthöhe)
+  setzen. Farbe, Gewicht, Unterstreichung, Hover und Fokus setzen sie nie.
+- Werte, Hover und Fokus der Stufen folgen dem Website-Standard (`apps/web/DESIGN.md`). Eine Abweichung davon wird
+  vorher mit dem Nutzer abgestimmt.
+- **Bestätigungsdialog:** `ConfirmDialog` bestätigt mit `PrimaryCtaButton` und bricht mit `SecondaryCtaButton` ab.
+  Nur `tone="danger"` (Löschen, Unumkehrbares) bestätigt mit dem roten Button.
+- **Schließen-X jedes Dialogs:** kommt aus `DialogCloseButton` (Ghost-Button mit `ActionIcon`: ruhend Textfarbe, bei Hover und
+  Tastaturfokus der volle Verlauf, mindestens 44 × 44 px). `Dialog`, `FormDialog`, `ConfirmDialog`, `FileLightbox`
+  sowie die Web-Lightbox und das Zielgruppen-Sheet nutzen diesen gemeinsamen Baustein. Kein Dialog baut ein
+  eigenes X oder überschreibt es per CSS.
 
 ## Widgets (verbindlich)
 
@@ -66,7 +143,9 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   `accent` (`WidgetAccent`); die App definiert je Wert ein Token `--widget-accent-<wert>` pro Theme sowie
   `--widget-on-accent`.
 - **Eine Aktionsleiste:** Jede Karte endet in derselben Zeile. Weitere Aktionen (`footer`) stehen vorn als
-  `ButtonControl` mit `variant="quiet"`, `size="control"` und Icon **vor** dem Text. Die Öffnen-Aktion steht immer
+  `ButtonControl` mit `variant="quiet"`, `size="control"` und Icon **vor** dem Text. Eine Anlegen-Aktion (etwa
+  „Aufgabe anlegen“) ist stattdessen ein `SecondaryCtaButton` mit `size="control"` und `+` vor dem Text (Entscheidung
+  25.10.2026). Die Öffnen-Aktion steht immer
   zuletzt, rechts, und ihr Icon **hinter** dem Text sagt, was passiert: `→` Seite (`openMode="page"`), `⤢` Dialog,
   Spalten für ein Seitenpanel, `⌄` aufklappen; externe Links tragen `↗`.
 - **Buttons stehen beieinander:** Die Aktionsleiste richtet alle Buttons rechts als Gruppe aus. Reicht der Platz
@@ -97,6 +176,16 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 
 ## Tabellen und Mehrfachauswahl (verbindlich)
 
+- **Zeilenzustände gehören `DataTableRow`:** `interactive` (Hover nur mit Maus, Tastaturfokus), `selected`
+  (Mehrfachauswahl) und `active` (z. B. die im Panel gezeigte Datei, zusätzlich mit Verlaufskante links). Alle zeigen
+  eine leichte Tönung im Aktionsverlauf. Aufrufer setzen keine eigenen Hintergründe für diese Zustände.
+- **Paginator und Zeilenaktionen:** Die aktuelle Seite ist eine Verlaufsfläche wie der Primary-Button, andere Seiten
+  bekommen beim Hover den Verlaufsrahmen. Zeilenaktionen zeigen beim Hover und Fokus die leichte Verlaufstönung, das
+  Icon im Verlaufsanfang; Löschen bleibt rot.
+- **Reiter sind immer `TabList`** (aktive Linie im Verlauf). Es gibt keinen zweiten Umschalter-Baustein;
+  `SegmentedControl` ist entfernt (25.10.2026). Inhalte unter Reitern in Datei-Dialogen werden über `navigationPanel`
+  zum Tab-Panel.
+
 - `DataTableLayout` trägt Seitenwechsel über `pagination` (Links) oder eigenes Nachladen über `footer` (z. B.
   „Weitere laden“); beides steht unter dem Scrollbereich im Rahmen. Die Tabelle scrollt in ihrem Rahmen; Kopf (sticky)
   und `pagination`/`footer` bleiben dabei stehen. Mobile-Cards über `mobileCard`/`mobileCardSlot`.
@@ -106,6 +195,9 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 
 ## Bekannte Altlasten
 
-- `ProcessTrack` setzt die Stile seiner Schritt-Buttons zurück, statt eine eigene Schaltfläche zu nutzen.
-- Im Portal-Bogen macht der Prüfschritt aus `ButtonControl` optisch einen Textlink (`onboarding-submit-step`); dafür
-  fehlt ein Text-Button-Baustein.
+- `ProcessTrack` setzt die Stile seiner Schritt-Buttons zurück, statt eine eigene Schaltfläche zu nutzen. Die
+  Schritte nutzen dafür `variant="quiet"`, nie `ghost`: Ghost verpackt seinen Inhalt in einen Label-Span mit
+  Verlaufs-Hover und zerlegt damit das Raster aus Balken und Beschriftung.
+- Prüfschritt und Feedback-Aufklappen verwenden `TertiaryCta` bzw. `QuaternaryCta` (`as="button"`). Weitere,
+  noch nicht angefasste Workspace-Module können weiterhin eigene Textlinks enthalten und werden bei ihrer Migration
+  auf diese gemeinsamen Bausteine umgestellt.

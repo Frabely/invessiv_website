@@ -3,6 +3,7 @@ import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event
 import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import styles from "./qna-contact-cta.module.css";
+import { TertiaryCta } from "@invessiv/ui";
 
 type QnaContactCtaProps = {
   hint: string;
@@ -14,7 +15,7 @@ export function QnaContactCta({ hint, href, label }: QnaContactCtaProps) {
   return (
     <p className={styles.cta}>
       <span className={styles.hint}>{hint}</span>
-      <a
+      <TertiaryCta
         className={styles.link}
         href={href}
         {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
@@ -23,7 +24,7 @@ export function QnaContactCta({ hint, href, label }: QnaContactCtaProps) {
         })}
       >
         {label}
-      </a>
+      </TertiaryCta>
     </p>
   );
 }

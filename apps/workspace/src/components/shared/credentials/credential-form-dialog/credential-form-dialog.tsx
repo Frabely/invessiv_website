@@ -2,7 +2,6 @@
 
 import { type SubmitEvent, useId, useRef, useState } from "react";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CredentialApiErrorCode } from "@invessiv/common/constants/credentials/credential-api-error-code";
 import { CREDENTIAL_LIMITS } from "@invessiv/common/constants/credentials/credential-limits";
 import type { CredentialRevealIntent } from "@invessiv/common/constants/credentials/credential-reveal-intents";
@@ -12,6 +11,7 @@ import type { CreateCredentialRequestDto } from "@invessiv/common/contracts/cred
 import type { UpdateCredentialRequestDto } from "@invessiv/common/contracts/credentials/update-credential-request.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
+  ActionIcon,
   ButtonControl,
   CheckboxControl,
   CustomSelect,
@@ -347,10 +347,7 @@ export function CredentialFormDialog<TEntry extends CredentialFormSource>({
               title={secretShown ? form.hideSecret : form.showSecret}
               type="button"
             >
-              <FontAwesomeIcon
-                aria-hidden="true"
-                icon={secretShown ? faEyeSlash : faEye}
-              />
+              <ActionIcon icon={secretShown ? faEyeSlash : faEye} />
             </button>
           }
           kind={secretShown ? FormFieldKind.Text : FormFieldKind.Password}

@@ -56,9 +56,9 @@ export function FeedbackPageFrame({
       bar={bar}
       header={
         <PortalStepHeader
-          backHref={backHref}
-          backLabel={content.page.back}
-          backShortLabel={content.page.backShort}
+          overviewHref={backHref}
+          breadcrumbLabel={content.page.breadcrumb}
+          overviewLabel={content.page.backShort}
           summary={<p className={styles.summary}>{summary}</p>}
           title={formatMessage(content.page.heading, { project: projectTitle })}
         >

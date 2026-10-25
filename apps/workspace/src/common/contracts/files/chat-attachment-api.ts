@@ -1,6 +1,6 @@
 import type { ComposerAttachment } from "@invessiv/common/contracts/ui/composer-attachment";
 import type { FileClientResult } from "./file-client-result";
-import type { PagedFiles } from "./paged-files";
+import type { ChatFilePickerListFiles } from "./chat-file-picker-list-files";
 import type { UploadQueueTransport } from "./upload-queue-transport";
 
 /**
@@ -9,12 +9,7 @@ import type { UploadQueueTransport } from "./upload-queue-transport";
  */
 export type ChatAttachmentApi<TFile extends { id: string }> = {
   /** Existing entries the viewer may attach, newest first; null without the read permission. */
-  listFiles:
-    | ((
-        page: number,
-        search: string,
-      ) => Promise<FileClientResult<PagedFiles<ComposerAttachment>>>)
-    | null;
+  listFiles: ChatFilePickerListFiles | null;
   /** Only the CRM list endpoint searches; the portal lists without a search field. */
   searchable: boolean;
   /** Customer-wide upload from the chat; null without the write permission. */

@@ -17,7 +17,7 @@ import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
 import { PendingMessageStatus } from "@invessiv/common/constants/ui/pending-message-statuses";
 import type { MessageThreadLabels } from "@invessiv/common/contracts/ui/message-thread-labels";
-import { MessageThread, type MessageThreadProps } from "./message-thread";
+import { MessageThread, type MessageThreadProps } from "@invessiv/ui";
 
 const labels: MessageThreadLabels = {
   logLabel: "Conversation",

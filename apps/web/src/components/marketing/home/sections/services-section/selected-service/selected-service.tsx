@@ -5,7 +5,7 @@ import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
-import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { PrimaryCtaLink } from "@invessiv/ui";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import type { PrimaryServiceCardData } from "@/common/contracts/marketing";
 

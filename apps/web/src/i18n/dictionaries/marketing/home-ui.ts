@@ -1,5 +1,5 @@
 import type { Locale } from "@/config/i18n";
-import type { ServiceOption } from "@/common/contracts/marketing";
+import type { TrustPoint, ServiceOption } from "@/common/contracts/marketing";
 import de from "./home-ui.de.json";
 import en from "./home-ui.en.json";
 
@@ -52,7 +52,7 @@ export type HomeUiContent = {
   heroPrimaryCta: string;
   heroSecondaryCta: string;
   heroTag: string;
-  heroTrustChips: string[];
+  heroTrustChips: TrustPoint[];
   heroVisualAriaLabel: string;
   mappingWarning: string;
   processKicker: string;

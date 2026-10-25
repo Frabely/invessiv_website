@@ -5,10 +5,10 @@ import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
-import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { PrimaryCtaLink, SecondaryCtaLink } from "@invessiv/ui";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
-import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
-import buttonStyles from "@/components/shared/button/button.module.css";
+import { GradientText } from "@/components/shared/gradient-text/gradient-text";
+import { TrustPoints } from "@/components/marketing/shared/trust-points/trust-points";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { LandingAiHeroContent } from "@/i18n/dictionaries/linkedin-post/hero";
 import styles from "./hero-section.module.css";
@@ -43,7 +43,7 @@ export function AiWorkflowsHeroSection({
           data-reveal-item="true"
           data-visible="true"
         >
-          {title}
+          <GradientText>{title}</GradientText>
         </h1>
 
         <p
@@ -69,8 +69,8 @@ export function AiWorkflowsHeroSection({
           >
             {primaryCta}
           </PrimaryCtaLink>
-          <a
-            className={`${buttonStyles.button} ${buttonStyles.ghost} ${styles.secondaryCta}`}
+          <SecondaryCtaLink
+            className={styles.secondaryCta}
             href={secondaryCtaHref}
             {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
               cta: AnalyticsCtaId.LinkedInHeroSecondary,
@@ -78,7 +78,7 @@ export function AiWorkflowsHeroSection({
             })}
           >
             {secondaryCta}
-          </a>
+          </SecondaryCtaLink>
         </div>
 
         <div
@@ -86,7 +86,7 @@ export function AiWorkflowsHeroSection({
           data-reveal-item="true"
           data-visible="true"
         >
-          <SectionScanPoints
+          <TrustPoints
             ariaLabel={tag}
             className={styles.trustChipList}
             points={trustChips}

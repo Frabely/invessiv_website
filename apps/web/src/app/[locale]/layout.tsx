@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import { Insights } from "@/app/insights";
 import { AppProviders } from "@/components/providers/app-providers";
 import { VercelAnalytics } from "@/components/providers/vercel-analytics/vercel-analytics";
-import { bricolageGrotesque, plusJakartaSans } from "@/config/fonts";
+import { caveat, figtree, metrophobic } from "@/config/fonts";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
 import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
@@ -82,7 +82,7 @@ export default async function LocaleLayout({
     <html
       lang={activeLocale}
       suppressHydrationWarning
-      className={`${plusJakartaSans.variable} ${bricolageGrotesque.variable}`}
+      className={`${figtree.variable} ${metrophobic.variable} ${caveat.variable}`}
     >
       <body>
         <a className="skip-link" href={MAIN_CONTENT_HREF}>

@@ -139,6 +139,6 @@ describe("FeedbackInboxPage", () => {
       follow: false,
       nocache: true,
     });
-    expect(metadata.title).toBe("Feedback | Invessiv");
+    expect(metadata.title).toBe("Feedback");
   });
 });

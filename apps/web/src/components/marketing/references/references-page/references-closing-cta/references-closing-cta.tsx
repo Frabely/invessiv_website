@@ -3,7 +3,8 @@ import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event
 import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { REFERENCES_PAGE_SECTION_IDS } from "@/config/navigation/references";
-import { ButtonLink, PrimaryCtaLink } from "@/components/shared/button/button";
+import Link from "next/link";
+import { PrimaryCtaLink, SecondaryCtaLink } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import { getLocalizedSectionHref } from "@/config/navigation/home";
 import type { ReferencesClosingCtaContent } from "@/i18n/dictionaries/marketing/references";
@@ -37,7 +38,7 @@ export function ReferencesClosingCta({
         <PrimaryCtaLink
           className={styles.closingAction}
           href={getLocalizedSectionHref(locale, "contact")}
-          useNextLink
+          linkComponent={Link}
           {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
             cta: AnalyticsCtaId.ReferencesClosingPrimary,
             target: AnalyticsTarget.ContactForm,
@@ -45,18 +46,17 @@ export function ReferencesClosingCta({
         >
           {content.primaryLabel}
         </PrimaryCtaLink>
-        <ButtonLink
+        <SecondaryCtaLink
           className={styles.closingAction}
           href={getLocalizedSectionHref(locale, "services")}
-          useNextLink
-          variant="ghost"
+          linkComponent={Link}
           {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
             cta: AnalyticsCtaId.ReferencesClosingSecondary,
             target: AnalyticsTarget.Services,
           })}
         >
           {content.secondaryLabel}
-        </ButtonLink>
+        </SecondaryCtaLink>
       </div>
     </section>
   );

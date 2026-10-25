@@ -17,6 +17,7 @@ import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import type { PortalCredentialDto } from "@invessiv/common/contracts/portal/portal-credential.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
+  QuaternaryCta,
   ButtonControl,
   DataTableCell,
   DataTableHeaderCell,
@@ -121,7 +122,7 @@ export function PortalCredentialTableRow({
               <span className={styles.title}>{credential.title}</span>
             </span>
             {link ? (
-              <a
+              <QuaternaryCta
                 className={styles.link}
                 href={link}
                 rel="noopener noreferrer"
@@ -129,7 +130,7 @@ export function PortalCredentialTableRow({
               >
                 {credential.url}
                 <span className="sr-only">{` (${row.opensInNewTab})`}</span>
-              </a>
+              </QuaternaryCta>
             ) : (
               <span className={styles.sub}>
                 {credential.url ?? content.types[credential.credentialType]}

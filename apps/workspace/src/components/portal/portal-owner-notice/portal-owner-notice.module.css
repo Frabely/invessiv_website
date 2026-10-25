@@ -21,23 +21,7 @@
 }
 
 .link {
-  display: inline-flex;
   align-items: center;
   min-height: 2.75rem;
   margin-left: auto;
-  color: var(--color-text);
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-color: var(--color-accent-warm);
-  text-underline-offset: 0.25em;
-}
-
-.link:hover {
-  text-decoration-thickness: 2px;
-}
-
-.link:focus-visible {
-  border-radius: 6px;
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
 }

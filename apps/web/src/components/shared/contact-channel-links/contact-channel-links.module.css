@@ -13,6 +13,8 @@
 }
 
 .link {
+  composes: palette subtlePalette from "@invessiv/ui/components/action-color/action-color.module.css";
+  --action-icon-gradient-opacity: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -38,23 +40,8 @@
     transform 180ms ease;
 }
 
-.link:hover {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 52%,
-    var(--color-border) 48%
-  );
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 64%,
-    var(--color-cta) 36%
-  );
-  color: var(--color-text);
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 16%, transparent);
-  transform: translateY(-1px);
-}
-
 .link:focus-visible {
+  --action-icon-gradient-opacity: 1;
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
@@ -86,16 +73,19 @@
   color: color-mix(in srgb, var(--color-text) 80%, var(--color-cta) 20%);
 }
 
-:global([data-theme="light"]) .link:hover {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 40%,
-    var(--color-border) 60%
-  );
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 74%,
-    var(--color-cta) 26%
-  );
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 12%, transparent);
+@media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+  .link[aria-label]:is(:hover, :focus-visible) {
+    border-color: transparent;
+    background-image: var(--action-subtle-gradient), var(--action-gradient);
+    background-origin: padding-box, padding-box, border-box;
+    background-clip: padding-box, padding-box, border-box;
+    transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 900px), (hover: none), (pointer: coarse) {
+  .link:is(:hover, :focus-within, :active) {
+    --action-gradient-start: var(--color-action-accent);
+    --action-gradient-end: var(--color-cta);
+  }
 }

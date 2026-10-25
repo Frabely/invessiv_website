@@ -1,0 +1,38 @@
+.icon {
+  display: block;
+  color: var(--action-icon-color, var(--color-cta));
+}
+
+.gradient {
+  opacity: var(--action-icon-gradient-opacity);
+  transition: opacity 180ms ease;
+}
+
+.start {
+  stop-color: var(--action-gradient-start, var(--color-action-accent));
+}
+.middle {
+  stop-color: color-mix(
+    in srgb,
+    var(--action-gradient-start, var(--color-action-accent)) 70%,
+    var(--action-gradient-end, var(--color-cta))
+  );
+}
+.end {
+  stop-color: var(--action-gradient-end, var(--color-cta));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .gradient {
+    display: none;
+  }
+  .icon {
+    color: LinkText;
+  }
+}

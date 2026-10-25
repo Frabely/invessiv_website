@@ -4,7 +4,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TreeNode } from "@invessiv/common/contracts/ui/tree-node";
-import { TreeView } from "./tree-view";
+import { TreeView } from "@invessiv/ui";
 
 afterEach(cleanup);
 

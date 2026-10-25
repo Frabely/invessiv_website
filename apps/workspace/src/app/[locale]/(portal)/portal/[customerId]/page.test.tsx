@@ -329,7 +329,7 @@ describe("PortalCustomerPage", () => {
       params: Promise.resolve({ locale: "en", customerId: "customer-1" }),
     });
 
-    expect(metadata.title).toBe("Overview | Invessiv");
+    expect(metadata.title).toBe("Overview");
     expect(metadata.robots).toMatchObject({ index: false, follow: false });
   });
 

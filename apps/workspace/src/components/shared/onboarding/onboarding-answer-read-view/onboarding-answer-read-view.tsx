@@ -13,7 +13,7 @@ import {
 } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { questionnaireSlotKey } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-answer-slot";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { LinkedText } from "@invessiv/ui";
+import { FormRequiredMarker, LinkedText } from "@invessiv/ui";
 import type { OnboardingReadFiles } from "@/common/contracts/shared/onboarding-read-files";
 import type { OnboardingReadTexts } from "@/common/contracts/shared/onboarding-read-texts";
 import { FileAttachmentList } from "@/components/shared/files/file-attachment-list/file-attachment-list";
@@ -222,9 +222,12 @@ export function OnboardingAnswerReadView({
         <dt className={styles.label}>
           {field.label}
           {required ? (
-            <abbr className={styles.required} title={texts.required}>
-              *
-            </abbr>
+            <span>
+              <span aria-hidden="true">
+                <FormRequiredMarker />
+              </span>
+              <span className="sr-only">{texts.required}</span>
+            </span>
           ) : null}
         </dt>
         <dd className={styles.value}>{renderValue(field, groupEntryId)}</dd>

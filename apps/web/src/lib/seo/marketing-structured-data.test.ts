@@ -40,6 +40,7 @@ describe("marketing-structured-data", () => {
 
     expect(organization).toMatchObject({
       "@type": "Organization",
+      logo: "https://www.invessiv.com/brand/icon.png",
       name: "Invessiv",
       legalName: "Invessiv – Inhaber Moritz Hecht",
       founder: {
@@ -86,6 +87,33 @@ describe("marketing-structured-data", () => {
       description: "Invessiv entwickelt Websites und Landingpages.",
     });
   });
+
+  it.each(["de", "en"] as const)(
+    "links the %s homepage to its square preview without changing the brand logo",
+    (locale) => {
+      const data = createMarketingStructuredData(
+        locale,
+        {
+          description: "Webdesign",
+          serviceName: "Webdesign",
+          serviceType: "Webdesign",
+        },
+        [],
+      );
+      const image = data["@graph"].find(
+        (entry) => entry["@type"] === "ImageObject",
+      );
+      const page = data["@graph"].find((entry) => entry["@type"] === "WebPage");
+      expect(image).toMatchObject({
+        "@id": `https://www.invessiv.com/${locale}#primary-image`,
+        url: `https://www.invessiv.com/og/home-square-${locale}.png`,
+        width: 1200,
+        height: 1200,
+        inLanguage: locale,
+      });
+      expect(page?.primaryImageOfPage).toEqual({ "@id": image?.["@id"] });
+    },
+  );
 
   it.each(["de", "en"] as const)(
     "publishes the %s Q&A section as a FAQPage",

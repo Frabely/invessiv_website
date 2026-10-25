@@ -3,6 +3,12 @@
   gap: 1rem;
 }
 
+/* Everything below the navigation; the tab panel when the navigation is a tab list. */
+.panel {
+  display: grid;
+  gap: 1rem;
+}
+
 .largerHint {
   margin: -0.5rem 0 0;
   color: var(--color-text-muted);

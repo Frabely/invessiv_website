@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { DisclosureButton } from "@/components/shared/disclosure-button/disclosure-button";
 
 import type {
   QnaDisclosureCopy,
@@ -131,19 +130,13 @@ export function QnaBubbleBoard({
 
       {hasHiddenQuestions ? (
         <div className={styles.disclosureSlot}>
-          <button
-            aria-expanded={isExpanded}
-            className={styles.disclosure}
+          <DisclosureButton
+            expanded={isExpanded}
             onClick={handleDisclosureToggle}
             type="button"
           >
             {isExpanded ? disclosure.lessLabel : disclosure.moreLabel}
-            <FontAwesomeIcon
-              aria-hidden="true"
-              className={styles.disclosureMarker}
-              icon={faChevronDown}
-            />
-          </button>
+          </DisclosureButton>
         </div>
       ) : null}
 

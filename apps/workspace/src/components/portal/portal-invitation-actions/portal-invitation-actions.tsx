@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PrimaryCtaLink, SecondaryCtaLink } from "@invessiv/ui";
 import styles from "./portal-invitation-actions.module.css";
 
 export type PortalInvitationActionsProps = {
@@ -19,12 +20,12 @@ export function PortalInvitationActions({
 }: PortalInvitationActionsProps) {
   return (
     <nav aria-label={ariaLabel} className={styles.actions}>
-      <Link className={styles.primary} href={signUpHref}>
+      <PrimaryCtaLink linkComponent={Link} href={signUpHref}>
         {signUpLabel}
-      </Link>
-      <Link className={styles.secondary} href={signInHref}>
+      </PrimaryCtaLink>
+      <SecondaryCtaLink linkComponent={Link} href={signInHref}>
         {signInLabel}
-      </Link>
+      </SecondaryCtaLink>
     </nav>
   );
 }

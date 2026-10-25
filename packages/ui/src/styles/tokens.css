@@ -1,0 +1,257 @@
+/*
+ * Shared design tokens for every Invessiv app (palette, typography, layout rail).
+ * The values are owned by the website design (apps/web/DESIGN.md). Apps import this file
+ * right after Tailwind and add only their own tokens on top.
+ */
+
+@property --font-figtree {
+  syntax: "*";
+  inherits: true;
+}
+
+@property --font-metrophobic {
+  syntax: "*";
+  inherits: true;
+}
+
+:root {
+  color-scheme: light dark;
+  /* Palette foundations. Override the action base to recolor interactions
+     independently of the brand, chat surfaces, and display typography. */
+  --color-brand-primary: #e38a3c;
+  --color-brand-secondary: #86ace6;
+  --color-brand-primary-muted: #d9b08c;
+  --color-highlight-base: var(--color-cta);
+  /* Informational emphasis only; actions use --color-action-base. */
+  --color-highlight: var(--color-highlight-base);
+  --color-highlight-surface: color-mix(
+    in srgb,
+    var(--color-highlight) 10%,
+    var(--color-surface-2)
+  );
+  --color-highlight-border: color-mix(
+    in srgb,
+    var(--color-highlight) 45%,
+    var(--color-border)
+  );
+  --color-action-base: var(--color-brand-secondary);
+  --color-action-accent: var(--color-brand-primary);
+  --color-action-accent-hover: color-mix(
+    in srgb,
+    var(--color-action-accent) 82%,
+    #ffffff
+  );
+  --color-action-accent-active: color-mix(
+    in srgb,
+    var(--color-action-accent) 88%,
+    #000000
+  );
+  --color-bg: #191a1c;
+  --color-surface-1: #222426;
+  --color-surface-2: #2c2e31;
+  --color-text: #f4f3ef;
+  --color-text-muted: #b9bcc2;
+  --color-text-faint: color-mix(
+    in srgb,
+    var(--color-text-muted) 62%,
+    transparent
+  );
+  --color-text-struck: color-mix(
+    in srgb,
+    var(--color-text-muted) 56%,
+    transparent
+  );
+  --color-border: rgba(244, 243, 239, 0.14);
+  --color-border-strong: rgba(244, 243, 239, 0.26);
+  --color-shadow: rgba(0, 0, 0, 0.42);
+  --color-accent-warm: var(--color-brand-primary);
+  --color-accent-gold: var(--color-accent-warm);
+  --color-accent-orange: var(--color-accent-warm);
+  --color-accent-orange-text: var(--color-highlight);
+  --color-accent-orange-text-hover: color-mix(
+    in srgb,
+    var(--color-highlight-base) 75%,
+    var(--color-text)
+  );
+  --color-cta: var(--color-action-base);
+  --color-cta-hover: color-mix(in srgb, var(--color-action-base) 82%, #ffffff);
+  /* The start of the action gradient, so single-colour focus outlines match the gradient focus ring. */
+  --color-focus: var(--color-action-accent);
+  --color-cta-active: color-mix(in srgb, var(--color-action-base) 88%, #000000);
+  --color-danger: #d92d20;
+  --color-on-cta: #18212f;
+  --bg: var(--color-bg);
+  --surface: var(--color-surface-1);
+  --text: var(--color-text);
+  --muted: var(--color-text-muted);
+  --border: var(--color-border);
+  --accent: var(--color-accent-warm);
+  --max-content-width: 1520px;
+  --page-inline-gutter: clamp(20px, 3vw, 36px);
+  --focus-lane-max: 44rem;
+  --focus-lane-wide: 50rem;
+  --layout-rail-max-width: var(--max-content-width);
+  --layout-rail-inline-gutter: var(--page-inline-gutter);
+  --measure-text: 72ch;
+  --measure-lead: 64ch;
+  --measure-compact: 58ch;
+  --measure-panel: 76ch;
+  --font-family-base: var(--font-figtree, "Figtree"), "Segoe UI", sans-serif;
+  --font-family-display:
+    var(--font-metrophobic, "Metrophobic"), var(--font-family-base);
+  --font-size-hero-title: clamp(2.35rem, 5.4vw, 4.1rem);
+  --font-size-hero-title-wide: clamp(3.5rem, 4vw, 4rem);
+  --font-size-section-title: clamp(2.05rem, 3.35vw, 2.85rem);
+  --font-size-section-title-wide: clamp(2.25rem, 2.45vw, 2.7rem);
+  --font-size-section-subtitle: clamp(1.38rem, 2.1vw, 1.72rem);
+  --font-size-heading-lg: clamp(1.18rem, 1.2rem + 0.45vw, 1.5rem);
+  --font-size-heading-md: clamp(1.08rem, 1.1vw, 1.2rem);
+  --font-size-heading-sm: clamp(1rem, 0.98vw, 1.08rem);
+  --font-size-body-lg: clamp(1.02rem, 1vw, 1.12rem);
+  --font-size-body-md: 1rem;
+  --font-size-body-md-wide: 1.04rem;
+  --font-size-body-sm: 0.96rem;
+  --font-size-nav: 0.98rem;
+  --font-size-nav-wide: 1rem;
+  --font-size-brand: 1.18rem;
+  --font-size-brand-wide: 1.24rem;
+  --font-size-button: 0.98rem;
+  --font-size-button-wide: 1rem;
+  --font-size-label-sm: 0.88rem;
+  --font-size-label-md: 0.92rem;
+  --font-size-ui-sm: 0.88rem;
+  --font-size-ui-xs: 0.82rem;
+  --font-size-caption: 0.84rem;
+  --font-size-badge: 0.78rem;
+  --font-size-eyebrow: 0.8rem;
+  --header-control-surface: color-mix(
+    in srgb,
+    var(--color-surface-1) 88%,
+    var(--color-surface-2) 12%
+  );
+  --section-space: clamp(5.5rem, 9.6vw, 9.5rem);
+  --anchor-scroll-gap: clamp(0.5rem, 0.8vw, 0.75rem);
+  --anchor-scroll-offset: calc(64px + var(--anchor-scroll-gap));
+  --mobile-viewport-height: 100dvh;
+  --mobile-safe-top: env(safe-area-inset-top, 0px);
+  --mobile-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --shadow-action: 0 3px 8px rgba(0, 0, 0, 0.16);
+  /* Faint halo of the primary action: gradient start on the left, gradient end on the right. */
+  --shadow-action-glow:
+    -6px 2px 20px -6px
+      color-mix(in srgb, var(--color-action-accent) 60%, transparent),
+    6px 2px 20px -6px color-mix(in srgb, var(--color-cta) 64%, transparent);
+  /* One height for text inputs, option tiles and form buttons; 44px is the smallest touch target. */
+  --control-height: 44px;
+  /* Corner radius of the same controls. */
+  --control-radius: 10px;
+  /* Frame of those controls at rest. */
+  --control-border-color: color-mix(
+    in srgb,
+    var(--color-border) 76%,
+    transparent
+  );
+}
+
+[data-theme="light"] {
+  --color-brand-primary: #af581f;
+  --color-brand-secondary: #3568ad;
+  --color-brand-primary-muted: #925d3e;
+  --color-highlight-base: var(--color-cta);
+  --color-bg: #f6f5f2;
+  --color-surface-1: #ffffff;
+  --color-surface-2: #eeede9;
+  --color-text: #232526;
+  --color-text-muted: #5a5d62;
+  --color-text-faint: var(--color-text-muted);
+  --color-text-struck: color-mix(
+    in srgb,
+    var(--color-text-muted) 85%,
+    transparent
+  );
+  --color-border: rgba(35, 37, 38, 0.18);
+  --color-border-strong: rgba(35, 37, 38, 0.3);
+  --color-shadow: rgba(35, 37, 38, 0.14);
+  --color-accent-warm: var(--color-brand-primary);
+  --color-accent-gold: var(--color-accent-warm);
+  --color-accent-orange: var(--color-accent-warm);
+  --color-accent-orange-text: var(--color-highlight);
+  --color-accent-orange-text-hover: color-mix(
+    in srgb,
+    var(--color-highlight-base) 85%,
+    #000000
+  );
+  --color-cta-hover: color-mix(in srgb, var(--color-action-base) 85%, #000000);
+  --color-cta-active: color-mix(in srgb, var(--color-action-base) 70%, #000000);
+  --color-action-accent-hover: color-mix(
+    in srgb,
+    var(--color-action-accent) 85%,
+    #000000
+  );
+  --color-action-accent-active: color-mix(
+    in srgb,
+    var(--color-action-accent) 70%,
+    #000000
+  );
+  --color-danger: #b91c1c;
+  --color-on-cta: #ffffff;
+  --bg: var(--color-bg);
+  --surface: var(--color-surface-1);
+  --text: var(--color-text);
+  --muted: var(--color-text-muted);
+  --border: var(--color-border);
+  --accent: var(--color-accent-warm);
+  --header-control-surface: color-mix(
+    in srgb,
+    var(--color-surface-1) 84%,
+    var(--color-surface-2) 16%
+  );
+  --shadow-action: 0 3px 8px rgba(35, 37, 38, 0.1);
+  --shadow-action-glow:
+    -6px 2px 16px -6px
+      color-mix(in srgb, var(--color-action-accent) 42%, transparent),
+    6px 2px 16px -6px color-mix(in srgb, var(--color-cta) 46%, transparent);
+}
+
+@media (max-width: 900px) {
+  :root {
+    --section-space: clamp(4.5rem, 11.6vw, 7rem);
+    --anchor-scroll-offset: calc(
+      64px + var(--mobile-safe-top) + var(--anchor-scroll-gap)
+    );
+  }
+}
+
+@media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
+  :root {
+    --max-content-width: 1500px;
+    --page-inline-gutter: clamp(136px, 7vw, 172px);
+    --section-space: clamp(6rem, 6vw, 8.5rem);
+  }
+}
+
+@media (min-width: 2200px) {
+  :root {
+    --max-content-width: 1504px;
+    --page-inline-gutter: clamp(240px, 10vw, 400px);
+  }
+}
+
+@media (max-width: 1200px) {
+  :root {
+    --page-inline-gutter: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --page-inline-gutter: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --page-inline-gutter: 14px;
+    --section-space: clamp(4rem, 12vw, 6rem);
+  }
+}

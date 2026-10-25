@@ -7,7 +7,7 @@ import { analyticsAttributes } from "@/common/patterns/analytics/analytics-prope
 import { useRef } from "react";
 
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
-import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { PrimaryCtaLink } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { LandingPricingContent } from "@/i18n/dictionaries/landing/pricing";

@@ -2,14 +2,13 @@ import {
   faArrowLeftLong,
   faCalendarCheck,
   faCheck,
-  faCheckDouble,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import { AnalyticsCalendarSource } from "@/common/constants/analytics/analytics-form";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
-import { ButtonLink, PrimaryCtaLink } from "@/components/shared/button/button";
+import { ActionIcon, PrimaryCtaLink, SecondaryCtaLink } from "@invessiv/ui";
 import type { SuccessPageContent } from "@/i18n/dictionaries/shared/success-page";
 import styles from "./success-page.module.css";
 
@@ -32,22 +31,11 @@ export function SuccessPage({
 }: SuccessPageProps) {
   return (
     <section className={styles.page}>
-      <span aria-hidden="true" className={styles.glow} />
-
       <span aria-hidden="true" className={styles.seal}>
-        <span className={styles.sealPulse} />
-        <span className={styles.sealPulseLate} />
-        <span className={styles.sealDisc}>
-          <FontAwesomeIcon className={styles.sealCheck} icon={faCheck} />
-        </span>
+        <ActionIcon icon={faCheck} />
       </span>
 
       <p className={styles.status}>
-        <FontAwesomeIcon
-          aria-hidden="true"
-          className={styles.statusChecks}
-          icon={faCheckDouble}
-        />
         <span>{statusLabel}</span>
       </p>
 
@@ -74,14 +62,14 @@ export function SuccessPage({
       <div className={styles.contact}>
         <p className={styles.contactLead}>{contactLead}</p>
         <div className={styles.actions}>
-          <ButtonLink className={styles.back} href={backHref} variant="ghost">
+          <SecondaryCtaLink className={styles.back} href={backHref}>
             <FontAwesomeIcon
               aria-hidden="true"
               className={styles.backArrow}
               icon={faArrowLeftLong}
             />
             <span>{backLabel}</span>
-          </ButtonLink>
+          </SecondaryCtaLink>
           <PrimaryCtaLink
             className={styles.contactLink}
             href={contactHref}

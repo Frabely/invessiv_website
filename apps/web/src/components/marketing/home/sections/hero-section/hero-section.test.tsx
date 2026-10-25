@@ -41,8 +41,11 @@ describe("HeroSection", () => {
         heroSecondaryCta="Leistungen ansehen"
         heroTag="WEBDESIGN AUS CHEMNITZ UND UMGEBUNG"
         heroTrustChips={[
-          "Direkter Ansprechpartner",
-          "Softwareentwicklungs-Background",
+          { iconKey: "directContact", label: "Direkter Ansprechpartner" },
+          {
+            iconKey: "softwareBackground",
+            label: "Softwareentwicklungs-Background",
+          },
         ]}
         primaryCtaAnalytics={{
           cta: "home_hero_primary",

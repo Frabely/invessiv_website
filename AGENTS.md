@@ -198,7 +198,11 @@ Detailregeln stehen in den scope-spezifischen Dateien (siehe Index). Global gilt
   und neu verursachte Lint-Fehler beheben. Die gemeinsame Regel `invessiv/no-locally-caught-throw` erkennt explizite
   `throw`-Anweisungen, die im selben Funktionskontext lokal abgefangen werden. Validierung außerhalb des `try`
   bzw. normalen Kontrollfluss verwenden. Fachlich notwendige Ausnahmen nur gezielt und mit begründendem Kommentar
-  unterdrücken; keine pauschale Deaktivierung. Bei Änderungen an eigenen ESLint-Regeln zusätzlich
+  unterdrücken; keine pauschale Deaktivierung. Die Regel `invessiv/prefer-package-barrel-import` verlangt, dass
+  Symbole, die der Barrel eines Pakets (z. B. `@invessiv/ui`) bereits exportiert, darüber importiert werden: in den
+  Apps kein Tiefenpfad wie `@invessiv/ui/components/...`, in Paket-Tests kein relativer Pfad auf die getestete
+  Komponente. Paket-Quellen selbst importieren weiter relativ, damit der Barrel sich nicht selbst importiert.
+  Verstöße sind per `eslint --fix` korrigierbar. Bei Änderungen an eigenen ESLint-Regeln zusätzlich
   `pnpm test:lint-rules` ausführen. Ein reines Review behebt keinen Code und dokumentiert Befunde stattdessen.
 - Senior-Vorgehen: erst Scope/Abhängigkeiten/Risiken festziehen, dann in kleinen reviewbaren Schritten liefern; Tests
   früh anlegen; Refactoring kontinuierlich einplanen.

@@ -19,12 +19,7 @@ export function MessageThreadStatus({
       {failed ? (
         <>
           <p>{labels.loadError}</p>
-          <ButtonControl
-            className={styles.action}
-            onClick={onReloadAction}
-            type="button"
-            variant="ghost"
-          >
+          <ButtonControl onClick={onReloadAction} type="button" variant="ghost">
             {labels.reload}
           </ButtonControl>
         </>

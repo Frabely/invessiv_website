@@ -2,27 +2,11 @@
   --reveal-delay: 0ms;
   --problem-photo-radius: 18px;
   --problem-icon-size: clamp(2.3rem, 3vw, 2.7rem);
-  --problem-leader-color: var(--color-border-strong);
-  --problem-node-color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 70%,
-    transparent
-  );
-  --problem-icon-surface: color-mix(
-    in srgb,
-    var(--color-accent-warm) 13%,
-    transparent
-  );
-  --problem-icon-border: color-mix(
-    in srgb,
-    var(--color-accent-warm) 26%,
-    transparent
-  );
-  --problem-icon-glyph: color-mix(
-    in srgb,
-    var(--color-accent-warm) 76%,
-    var(--color-text) 24%
-  );
+  --problem-leader-color: var(--color-highlight-border);
+  --problem-node-color: var(--color-highlight);
+  --problem-icon-surface: var(--color-highlight-surface);
+  --problem-icon-border: var(--color-highlight-border);
+  --problem-icon-glyph: var(--color-highlight);
 
   position: relative;
   overflow: clip;
@@ -139,7 +123,7 @@
 .text {
   min-width: 0;
   font-size: clamp(1.08rem, 0.96rem + 0.48vw, 1.36rem);
-  font-weight: 650;
+  font-weight: 450;
   line-height: 1.26;
   letter-spacing: -0.01em;
 }
@@ -164,16 +148,16 @@
   margin: 0;
   font-family: var(--font-family-display), serif;
   font-size: var(--font-size-section-subtitle);
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.25;
   text-wrap: balance;
 }
 
 .resolution {
   margin: 0;
-  color: var(--color-accent-warm);
+  color: var(--color-highlight);
   font-size: var(--font-size-heading-lg);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.01em;
 }
 
@@ -337,14 +321,6 @@
 
 :global([data-theme="light"]) .ambient {
   opacity: 0.125;
-}
-
-:global([data-theme="light"]) .section {
-  --problem-node-color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 80%,
-    transparent
-  );
 }
 
 /* The ambient photo is smaller on phones, so it carries more opacity there */

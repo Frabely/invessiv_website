@@ -159,7 +159,8 @@ export function ProcessTrack({
                   className={styles.stepButton}
                   onClick={() => onStepAction(step.label, index)}
                   type="button"
-                  variant="ghost"
+                  // Quiet renders its content directly; ghost would wrap it in a label span.
+                  variant="quiet"
                 >
                   {body}
                 </ButtonControl>

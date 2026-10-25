@@ -15,6 +15,9 @@ import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { LandingFaqContent } from "@/i18n/dictionaries/landing/faq";
 import styles from "./faq-section.module.css";
+import { DisclosureButton } from "@/components/shared/disclosure-button/disclosure-button";
+import { ActionIcon, QuaternaryCta, TertiaryCta } from "@invessiv/ui";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const INITIAL_VISIBLE_ITEMS = 5;
 
@@ -92,15 +95,14 @@ export function FaqSection({
               >
                 <span className={styles.question}>{item.question}</span>
                 <span aria-hidden="true" className={styles.plus}>
-                  <span className={styles.plusBar} />
-                  <span className={styles.plusBar} />
+                  <ActionIcon icon={faPlus} />
                 </span>
               </summary>
               <div className={styles.answerWrapper}>
                 <div className={styles.answerInner}>
                   <p className={styles.answer}>{item.answer}</p>
                   {item.link ? (
-                    <a
+                    <QuaternaryCta
                       className={styles.answerLink}
                       {...analyticsAttributes(AnalyticsEventName.NavClicked, {
                         item: getNavigationItem(item.link.href),
@@ -109,7 +111,7 @@ export function FaqSection({
                       href={item.link.href}
                     >
                       {item.link.label}
-                    </a>
+                    </QuaternaryCta>
                   ) : null}
                 </div>
               </div>
@@ -124,7 +126,7 @@ export function FaqSection({
           data-reveal-item="true"
           data-visible="true"
         >
-          <a
+          <TertiaryCta
             className={styles.ctaLink}
             {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
               cta: AnalyticsCtaId.LandingFaqContact,
@@ -133,21 +135,20 @@ export function FaqSection({
             href={cta.href}
           >
             {cta.label}
-          </a>
+          </TertiaryCta>
         </p>
       ) : null}
 
       {hasExpandableItems ? (
         <div className={styles.showMoreWrap} data-reveal-item="true">
-          <button
+          <DisclosureButton
             aria-controls={`${id}-list`}
-            aria-expanded={showAllItems}
-            className={styles.showMore}
+            expanded={showAllItems}
             onClick={() => setShowAllItems((currentValue) => !currentValue)}
             type="button"
           >
             {showAllItems ? showLessLabel : showMoreLabel}
-          </button>
+          </DisclosureButton>
         </div>
       ) : null}
     </section>

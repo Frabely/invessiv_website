@@ -18,18 +18,18 @@ export function QnaAvatar({ alt }: QnaAvatarProps) {
       <Image
         alt=""
         className={`${styles.image} ${styles.asking}`}
-        height={780}
+        height={1200}
         sizes="(max-width: 959px) 11rem, 18rem"
         src={askingPhoto}
-        width={520}
+        width={1200}
       />
       <Image
         alt={alt}
         className={`${styles.image} ${styles.owner}`}
-        height={693}
+        height={1000}
         sizes="(max-width: 959px) 11rem, 18rem"
         src={profilePhoto}
-        width={520}
+        width={1000}
       />
     </div>
   );

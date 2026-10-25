@@ -2,7 +2,7 @@
 
 import { type ReactNode, useId } from "react";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ActionIcon } from "../action-icon/action-icon";
 import { FileDropZoneVariant } from "@invessiv/common/constants/ui/file-drop-zone-variants";
 import { useFileDragTarget } from "../../hooks/use-file-drag-target";
 import { useFilePicker } from "../../hooks/use-file-picker";
@@ -65,7 +65,7 @@ export function FileDropZone({
       />
       <label className={styles.label} htmlFor={inputId}>
         <span aria-hidden="true" className={styles.icon}>
-          <FontAwesomeIcon icon={faArrowUpFromBracket} />
+          <ActionIcon icon={faArrowUpFromBracket} />
         </span>
         <span className={styles.text}>
           <span className={styles.title} id={titleId}>

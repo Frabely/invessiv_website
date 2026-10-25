@@ -5,12 +5,17 @@ import Image from "next/image";
 import { type ReactNode, useState } from "react";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { BrandLogo } from "@invessiv/common/constants/brand/brand-logo";
 import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
-import { ButtonControl, Dialog, DialogSize } from "@invessiv/ui";
+import {
+  ButtonControl,
+  Dialog,
+  DialogSize,
+  LocaleSwitch,
+  ThemeSwitch,
+} from "@invessiv/ui";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
-import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
-import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
 import type { PortalShellDictionary } from "@/i18n/dictionaries/portal";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import styles from "./portal-shell.module.css";
@@ -90,13 +95,7 @@ export function PortalShell({
             className={styles.brand}
             href={homeHref}
           >
-            <Image
-              alt=""
-              height={28}
-              priority
-              src="/brand/icon.png"
-              width={28}
-            />
+            <Image alt="" height={28} priority src={BrandLogo.src} width={33} />
           </a>
           <div className={styles.switcherSlot}>{switcher}</div>
           {notice ? <div className={styles.noticeSlot}>{notice}</div> : null}

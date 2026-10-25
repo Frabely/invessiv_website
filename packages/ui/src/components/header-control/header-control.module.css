@@ -1,0 +1,47 @@
+.control {
+  composes: palette from "../action-color/action-color.module.css";
+  --action-icon-gradient-opacity: 0;
+  --action-icon-color: currentColor;
+}
+
+.label {
+  -webkit-text-fill-color: currentColor;
+}
+
+@media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+  .control.control:hover {
+    --action-icon-gradient-opacity: 1;
+    border-color: transparent;
+    background-image:
+      linear-gradient(
+        var(--header-control-surface),
+        var(--header-control-surface)
+      ),
+      var(--action-gradient);
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    transform: translateY(-1px);
+  }
+
+  @supports ((background-clip: text) or (-webkit-background-clip: text)) and
+    (color: color-mix(in srgb, red, blue)) {
+    .control:hover .label {
+      background-image: var(--action-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  .control.control:hover {
+    background-image: none;
+    border-color: ButtonText;
+  }
+
+  .control:hover .label {
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+  }
+}

@@ -1,8 +1,6 @@
 import { type ChangeEvent, type CSSProperties, type SubmitEvent } from "react";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import { PrimaryCtaButton } from "@/components/shared/button/button";
-import { FormField } from "@/components/shared/form/form-field/form-field";
-import { CustomSelect } from "@invessiv/ui";
+import { CustomSelect, FormField, PrimaryCtaButton } from "@invessiv/ui";
 import {
   GENERATOR_COLOR_AUTO,
   GENERATOR_COLOR_PAIRS,
@@ -122,16 +120,17 @@ export function GeneratorForm({
         hint={content.form.tone.help}
         kind={FormFieldKind.Custom}
         label={content.form.tone.label}
-      >
-        <CustomSelect
-          describedBy={errors.tone ? `${fieldIds.tone}-error` : undefined}
-          id={fieldIds.tone}
-          invalid={Boolean(errors.tone)}
-          onChange={(next) => onChange("tone", next)}
-          options={toneOptions}
-          value={values.tone}
-        />
-      </FormField>
+        renderControl={({ describedBy, id, invalid }) => (
+          <CustomSelect
+            describedBy={describedBy}
+            id={id}
+            invalid={invalid}
+            onChange={(next) => onChange("tone", next)}
+            options={toneOptions}
+            value={values.tone}
+          />
+        )}
+      />
 
       <fieldset className={styles.colorGroup}>
         <legend className={styles.legend}>{content.form.color.label}</legend>

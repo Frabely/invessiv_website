@@ -10,11 +10,11 @@ import { ContactMessageField } from "@/components/marketing/home/sections/contac
 import { ContactPortraitCard } from "@/components/marketing/home/sections/contact-section/contact-portrait-card/contact-portrait-card";
 import { ProjectScopeField } from "@/components/marketing/home/sections/contact-section/contact-form/project-scope-field/project-scope-field";
 import {
-  ButtonControl,
+  FormActions,
+  FormStatus,
   PrimaryCtaButton,
-} from "@/components/shared/button/button";
-import { FormActions } from "@/components/shared/form/form-actions/form-actions";
-import { FormStatus } from "@/components/shared/form/form-status/form-status";
+  SecondaryCtaButton,
+} from "@invessiv/ui";
 import { useLanguage } from "@/components/providers/language-provider";
 import {
   createCalendlyPrefillHref,
@@ -384,17 +384,16 @@ export function ContactForm({
           ) : null}
 
           <ContactMessageField
-            className={styles.messageField}
             copy={formCopy}
             errors={errors}
             getErrorMessage={getErrorMessage}
             register={register}
             required={false}
-            rows={3}
           />
 
           <div className={styles.submitArea}>
             <ContactConsentField
+              checkboxClassName={sharedStyles.consentCheckbox}
               className={sharedStyles.consent}
               consentLabel={formCopy.consentLabel}
               errorClassName={sharedStyles.consentError}
@@ -438,16 +437,15 @@ export function ContactForm({
           <div className={styles.emailHandoff}>
             <p className={styles.emailQuestion}>{formCopy.emailQuestion}</p>
             <p className={styles.emailNote}>{formCopy.emailNote}</p>
-            <ButtonControl
+            <SecondaryCtaButton
               disabled={isBusy}
               onClick={handleEmailClick}
               type="button"
-              variant="ghost"
             >
               {pendingAction === ContactFormAction.Email
                 ? formCopy.emailSubmittingLabel
                 : formCopy.emailSubmitLabel}
-            </ButtonControl>
+            </SecondaryCtaButton>
           </div>
         </form>
 

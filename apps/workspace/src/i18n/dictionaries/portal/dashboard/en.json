@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Overview | Invessiv",
+    "title": "Overview",
     "description": "Your project status, open items and your contact at a glance."
   },
   "page": {
@@ -93,7 +93,7 @@
       "more": "Show more",
       "less": "Show less",
       "empty": "Nothing visible is on our list for this project right now. We will be in touch as soon as things move on.",
-      "create": "Create a task for us",
+      "create": "Create task",
       "fromYou": "from you",
       "status": {
         "open": "Open",

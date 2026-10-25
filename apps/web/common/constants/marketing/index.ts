@@ -17,3 +17,4 @@ export * from "./reference-shot-images";
 export * from "./reference-shot-key";
 export * from "./reference-testimonial-authors";
 export * from "./service-key-project-scope";
+export * from "./trust-point-icon-key";

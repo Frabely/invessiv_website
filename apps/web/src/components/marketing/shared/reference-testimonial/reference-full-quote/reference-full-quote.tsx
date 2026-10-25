@@ -1,4 +1,5 @@
 import styles from "./reference-full-quote.module.css";
+import { QuaternaryCta } from "@invessiv/ui";
 
 type ReferenceFullQuoteProps = {
   collapseLabel: string;
@@ -13,10 +14,10 @@ export function ReferenceFullQuote({
 }: ReferenceFullQuoteProps) {
   return (
     <details className={styles.details}>
-      <summary className={styles.summary}>
+      <QuaternaryCta as="summary" className={styles.summary}>
         <span className={styles.expandLabel}>{expandLabel}</span>
         <span className={styles.collapseLabel}>{collapseLabel}</span>
-      </summary>
+      </QuaternaryCta>
       <blockquote className={styles.quote}>
         <p className={styles.text}>{quote}</p>
       </blockquote>

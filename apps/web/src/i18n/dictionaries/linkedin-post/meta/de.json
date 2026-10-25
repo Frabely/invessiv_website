@@ -1,10 +1,10 @@
 {
   "title": "LinkedIn-Post Generator | Invessiv",
   "description": "Gib dein Thema ein — der Invessiv-Generator baut Bild und Caption für deinen nächsten LinkedIn-Post in 60 Sekunden. Kostenlos, kein Account.",
-  "imageUrl": "https://www.invessiv.com/og/landing.png",
+  "imageUrl": "/og/linkedin-post-de.png",
   "imageWidth": 1200,
   "imageHeight": 630,
-  "imageAlt": "Invessiv LinkedIn-Post Generator – Vorschau Bild und Caption",
+  "imageAlt": "Moritz Hecht vor einer Berglandschaft mit Invessiv-Logo und der Aussage: Dein nächster LinkedIn-Post in 60 Sekunden.",
   "structuredData": {
     "applicationName": "Invessiv LinkedIn-Post Generator",
     "applicationCategory": "BusinessApplication",

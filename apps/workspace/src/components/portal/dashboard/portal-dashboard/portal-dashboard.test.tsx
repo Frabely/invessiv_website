@@ -169,7 +169,7 @@ describe("PortalDashboard composition", () => {
 
     fireEvent.click(
       within(ourTasksWidget()).getByRole("button", {
-        name: "Create a task for us",
+        name: "Create task",
       }),
     );
 

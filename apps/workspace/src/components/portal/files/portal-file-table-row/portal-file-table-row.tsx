@@ -86,12 +86,12 @@ export function PortalFileTableRow({
 
   return (
     <DataTableRow
+      active={active}
       className={styles.row}
-      data-active={active ? "true" : "false"}
-      data-opens={opens || opensDirectly ? "true" : "false"}
-      data-selected={selected ? "true" : "false"}
+      interactive={opens || opensDirectly}
       mobileCard
       onClick={handleClick}
+      selected={selected}
     >
       <DataTableCell className={styles.selectCell} mobileCardSlot="selection">
         {onSelectAction ? (

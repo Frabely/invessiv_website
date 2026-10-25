@@ -145,12 +145,13 @@ export function LeadsTableRow({
     <DataTableRow
       aria-label={`${tableContent.row.open}: ${displayName}`}
       className={styles.row}
-      data-selected={selected ? "true" : "false"}
+      interactive
       onClick={handleRowClick}
       onKeyDown={handleRowKeyDown}
       mobileCard
-      tabIndex={0}
       role="link"
+      selected={selected}
+      tabIndex={0}
     >
       <DataTableCell className={styles.checkboxCell} mobileCardSlot="selection">
         {actions.canWrite || actions.canDelete ? (

@@ -115,23 +115,7 @@
 }
 
 .link {
-  color: var(--color-cta);
   font-size: var(--font-size-body-sm);
-  font-weight: 700;
-  text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--color-cta) 45%, transparent);
-  text-underline-offset: 0.24em;
-  transition: text-decoration-color 180ms ease;
-}
-
-.link:hover {
-  text-decoration-color: currentColor;
-}
-
-.link:focus-visible {
-  border-radius: 2px;
-  outline: 2px solid var(--color-focus);
-  outline-offset: 3px;
 }
 
 :global([data-theme="light"]) .name {

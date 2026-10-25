@@ -29,7 +29,7 @@
   --process-backdrop-fade: clamp(2.5rem, 4vw, 3.5rem);
   --process-passed-border: color-mix(
     in srgb,
-    var(--color-accent-warm) 26%,
+    var(--color-highlight) 26%,
     var(--color-border) 74%
   );
   --process-start-x: 50%;
@@ -117,7 +117,7 @@
 }
 
 .journeyGradientStart {
-  stop-color: var(--color-accent-warm);
+  stop-color: var(--color-action-accent);
 }
 
 .journeyGradientEnd {
@@ -129,12 +129,13 @@
   stroke: url(#processJourneyGradient);
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 6;
+  stroke-width: 5;
   vector-effect: non-scaling-stroke;
   filter: drop-shadow(
-      0 0 10px color-mix(in srgb, var(--color-accent-warm) 46%, transparent)
+      0 0 6px color-mix(in srgb, var(--color-action-accent) 70%, transparent)
     )
-    drop-shadow(0 0 12px color-mix(in srgb, var(--color-cta) 42%, transparent));
+    drop-shadow(0 0 16px color-mix(in srgb, var(--color-cta) 60%, transparent))
+    drop-shadow(0 0 32px color-mix(in srgb, var(--color-cta) 36%, transparent));
   visibility: hidden;
 }
 
@@ -147,19 +148,13 @@
   height: 14px;
   border: 2px solid rgba(255, 255, 255, 0.9);
   border-radius: 999px;
-  background: linear-gradient(
-    135deg,
-    var(--color-accent-warm),
-    color-mix(in srgb, var(--color-cta) 44%, var(--color-accent-warm) 56%)
-  );
-  box-shadow:
-    0 0 0 6px color-mix(in srgb, var(--color-accent-warm) 28%, transparent),
-    0 0 24px color-mix(in srgb, var(--color-accent-warm) 52%, transparent);
+  background: var(--color-highlight);
+  box-shadow: none;
   pointer-events: none;
 }
 
 .pathPointStart {
-  background: var(--color-accent-warm);
+  background: var(--color-highlight);
   transform: translate(
     calc(var(--process-start-x) - 7px),
     calc(var(--process-start-y) - 7px)
@@ -167,17 +162,21 @@
 }
 
 .pathPointLeader {
+  --process-leader-glow:
+    0 0 0 8px color-mix(in srgb, var(--color-cta) 26%, transparent),
+    0 0 28px color-mix(in srgb, var(--color-cta) 62%, transparent);
+  --process-leader-glow-peak:
+    0 0 0 18px color-mix(in srgb, var(--color-cta) 20%, transparent),
+    0 0 48px color-mix(in srgb, var(--color-cta-hover) 82%, transparent);
   width: 18px;
   height: 18px;
   border-width: 2px;
   background: linear-gradient(
     135deg,
-    var(--color-cta),
-    var(--color-cta-active)
+    var(--color-action-accent),
+    var(--color-cta)
   );
-  box-shadow:
-    0 0 0 8px color-mix(in srgb, var(--color-cta) 24%, transparent),
-    0 0 28px color-mix(in srgb, var(--color-cta) 52%, transparent);
+  box-shadow: var(--process-leader-glow);
   transform: translate(
     calc(var(--process-leader-x) - 9px),
     calc(var(--process-leader-y) - 9px)
@@ -204,15 +203,7 @@
   z-index: 4;
   min-height: 42px;
   padding-inline: 16px;
-  border: 1px solid color-mix(in srgb, var(--color-cta) 72%, #ffffff 8%);
   border-radius: 12px;
-  background: linear-gradient(
-    125deg,
-    var(--color-cta-hover) 0%,
-    var(--color-cta) 46%,
-    var(--color-cta-active) 100%
-  );
-  color: var(--color-on-cta);
   white-space: nowrap;
   opacity: 1;
   transform: translate(-50%, -50%);
@@ -245,14 +236,21 @@
 }
 
 .step {
+  composes: palette from "@invessiv/ui/components/action-color/action-color.module.css";
+  --process-active-surface: color-mix(
+    in srgb,
+    var(--color-cta) 12%,
+    var(--color-surface-1)
+  );
+  --process-active-glow-opacity: 0.72;
   position: relative;
   width: min(100%, 29rem);
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  border-radius: 24px;
-  background: color-mix(in srgb, var(--color-surface-1) 58%, transparent);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 12px 28px rgba(8, 10, 15, 0.2);
+  border-radius: 16px;
+  background: var(--color-surface-1);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
   transition:
     border-color 300ms ease,
     box-shadow 320ms ease,
@@ -284,18 +282,41 @@
   grid-row: 3;
 }
 
-.step[data-journey-state="active"] {
-  border-color: var(--color-cta);
-  background: color-mix(
-    in srgb,
-    var(--color-cta) 12%,
-    var(--color-surface-1) 88%
-  );
-  box-shadow:
-    0 0 0 2px var(--color-cta),
-    0 0 0 7px color-mix(in srgb, var(--color-cta) 26%, transparent),
-    0 0 42px color-mix(in srgb, var(--color-cta) 58%, transparent),
-    0 16px 48px color-mix(in srgb, var(--color-cta) 32%, transparent);
+.step[data-journey-state="active"],
+:global([data-theme="light"]) .step[data-journey-state="active"] {
+  border-width: 2px;
+  border-color: transparent;
+  background:
+    linear-gradient(
+        var(--process-active-surface),
+        var(--process-active-surface)
+      )
+      padding-box,
+    var(--action-gradient) border-box;
+  background-color: var(--process-active-surface);
+  box-shadow: none;
+}
+
+/* A box-shadow cannot carry a gradient, so a blurred layer behind the card mirrors the border. */
+.stepGlow {
+  position: absolute;
+  inset: -6px;
+  z-index: -1;
+  border-radius: 22px;
+  background: var(--action-gradient);
+  filter: blur(18px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 320ms ease;
+}
+
+.step[data-journey-state="active"] .stepGlow {
+  opacity: var(--process-active-glow-opacity);
+}
+
+/* The 2px border takes one pixel from the padding, so the content does not shift. */
+.step[data-journey-state="active"] .stepInner {
+  padding: 23px;
 }
 
 .step[data-journey-state="active"] .stepResult {
@@ -304,33 +325,46 @@
 
 .step[data-journey-state="passed"] {
   border-color: var(--process-passed-border);
-  filter: brightness(0.68) saturate(0.85);
+  filter: none;
 }
 
-.step[data-journey-state="passed"] .stepInner {
-  opacity: 0.55;
+.step[data-journey-state]:not([data-journey-state="active"]) {
+  border-color: color-mix(in srgb, var(--color-border) 22%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 94%, var(--color-surface-1));
 }
 
-.stepGlow {
-  position: absolute;
-  inset: -1px;
-  display: none;
-  border-radius: 25px;
-  box-shadow:
-    0 0 0 2px var(--color-cta),
-    0 0 0 7px color-mix(in srgb, var(--color-cta) 26%, transparent),
-    0 0 42px color-mix(in srgb, var(--color-cta) 58%, transparent),
-    0 16px 48px color-mix(in srgb, var(--color-cta) 32%, transparent);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 280ms ease;
+.step[data-journey-state]:not([data-journey-state="active"]) .stepInner {
+  opacity: 0.68;
 }
 
-.step[data-journey-state="active"] .stepGlow {
-  opacity: 1;
+/* Fade a full-contrast foreground so the quiet cards remain readable in both themes. */
+.step[data-journey-state]:not([data-journey-state="active"])
+  :is(
+    .stepTitle,
+    .stepNumber,
+    .stepEffortLabel,
+    .stepEffortValue,
+    .stepResultLabel,
+    .stepResultValue
+  ) {
+  color: var(--color-text);
+}
+
+.step[data-journey-state]:not([data-journey-state="active"]) .stepTitle {
+  font-weight: 500;
+}
+
+.step[data-journey-state]:not([data-journey-state="active"]) .stepNumber {
+  background: var(--color-bg);
+  border-color: var(--color-border);
+}
+
+.step[data-journey-state]:not([data-journey-state="active"]) .stepResult {
+  border-left-color: color-mix(in srgb, var(--color-border) 45%, transparent);
 }
 
 .stepInner {
+  opacity: 1;
   display: flex;
   flex-direction: column;
   gap: 13px;
@@ -345,6 +379,7 @@
 }
 
 .stepNumber {
+  position: relative;
   margin: 0;
   display: inline-flex;
   align-items: center;
@@ -353,20 +388,16 @@
   width: 34px;
   height: 34px;
   border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 30%, var(--color-border) 70%);
+    color-mix(in srgb, var(--color-highlight) 30%, var(--color-border) 70%);
   border-radius: 999px;
   background: color-mix(
     in srgb,
-    var(--color-accent-warm) 10%,
+    var(--color-highlight) 10%,
     var(--color-surface-2) 90%
   );
-  color: color-mix(
-    in srgb,
-    var(--color-text) 82%,
-    var(--color-accent-warm) 18%
-  );
+  color: color-mix(in srgb, var(--color-text) 82%, var(--color-highlight) 18%);
   font-size: var(--font-size-label-md);
-  font-weight: 800;
+  font-weight: 650;
   letter-spacing: 0.05em;
   transition:
     background-color 300ms ease,
@@ -374,9 +405,10 @@
     color 300ms ease;
 }
 
-.step[data-journey-state="active"] .stepNumber {
-  border-color: var(--color-cta);
-  background: var(--color-cta);
+.step[data-journey-state="active"] .stepNumber,
+:global([data-theme="light"]) .step[data-journey-state="active"] .stepNumber {
+  border-color: transparent;
+  background: var(--action-gradient);
   color: var(--color-on-cta);
   box-shadow: 0 0 16px color-mix(in srgb, var(--color-cta) 70%, transparent);
 }
@@ -401,36 +433,36 @@
 
 .stepEffortLabel {
   color: color-mix(in srgb, var(--color-text) 58%, var(--color-text-muted) 42%);
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 .stepEffortValue {
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
-  font-weight: 560;
+  font-weight: 450;
 }
 
 .stepResult {
   padding: 0 0 0 16px;
-  border-left: 2px solid
-    color-mix(in srgb, var(--color-accent-warm) 48%, var(--color-border) 52%);
+  border-left: 1px solid
+    color-mix(in srgb, var(--color-highlight) 48%, var(--color-border) 52%);
 }
 
 .stepResultLabel {
   margin: 0;
-  color: color-mix(in srgb, var(--color-text) 58%, var(--color-text-muted) 42%);
+  color: var(--color-highlight);
   font-size: var(--font-size-label-sm);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .stepResultValue {
   margin: 5px 0 0;
-  color: color-mix(in srgb, var(--color-text) 92%, var(--color-accent-warm) 8%);
+  color: color-mix(in srgb, var(--color-text) 92%, var(--color-highlight) 8%);
   font-size: var(--font-size-body-lg);
-  font-weight: 660;
+  font-weight: 450;
   line-height: 1.4;
 }
 
@@ -440,104 +472,65 @@
 
 :global([data-theme="light"]) .step {
   border-color: var(--color-border);
-  background: color-mix(in srgb, var(--color-surface-1) 68%, transparent);
-  box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
+  background: var(--color-surface-1);
+  box-shadow: none;
 }
 
 :global([data-theme="light"]) .step[data-journey-state="passed"] {
-  filter: brightness(0.93) saturate(0.5);
-}
-
-:global([data-theme="light"]) .stepGlow {
-  box-shadow:
-    0 0 0 2px var(--color-cta),
-    0 0 0 7px color-mix(in srgb, var(--color-cta) 18%, transparent),
-    0 0 36px color-mix(in srgb, var(--color-cta) 38%, transparent),
-    0 12px 36px color-mix(in srgb, var(--color-cta) 22%, transparent);
+  filter: none;
 }
 
 :global([data-theme="light"]) .step[data-journey-state="active"] {
-  border-color: var(--color-cta);
-  background: color-mix(
+  --process-active-surface: color-mix(
     in srgb,
     var(--color-cta) 8%,
-    var(--color-surface-1) 92%
+    var(--color-surface-1)
   );
-  box-shadow:
-    0 0 0 2px var(--color-cta),
-    0 0 0 7px color-mix(in srgb, var(--color-cta) 18%, transparent),
-    0 0 36px color-mix(in srgb, var(--color-cta) 38%, transparent),
-    0 12px 36px color-mix(in srgb, var(--color-cta) 22%, transparent);
+  --process-active-glow-opacity: 0.42;
 }
 
 :global([data-theme="light"]) .stepNumber {
   border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
-  background: color-mix(in srgb, var(--color-accent-warm) 10%, #ffffff 90%);
-  color: color-mix(
-    in srgb,
-    var(--color-text) 82%,
-    var(--color-accent-warm) 18%
-  );
-}
-
-:global([data-theme="light"]) .step[data-journey-state="active"] .stepNumber {
-  border-color: var(--color-cta);
-  background: var(--color-cta);
-  color: var(--color-on-cta);
-}
-
-:global([data-theme="light"]) .journeyGradientStart {
-  stop-color: color-mix(in srgb, var(--color-accent-warm) 72%, #ffffff 28%);
-}
-
-:global([data-theme="light"]) .journeyGradientEnd {
-  stop-color: color-mix(in srgb, var(--color-cta) 72%, #ffffff 28%);
+  background: color-mix(in srgb, var(--color-highlight) 10%, #ffffff 90%);
+  color: color-mix(in srgb, var(--color-text) 82%, var(--color-highlight) 18%);
 }
 
 :global([data-theme="light"]) .journeyProgress {
   filter: drop-shadow(
-      0 0 10px color-mix(in srgb, var(--color-accent-warm) 24%, transparent)
+      0 0 6px color-mix(in srgb, var(--color-action-accent) 55%, transparent)
     )
-    drop-shadow(0 0 12px color-mix(in srgb, var(--color-cta) 22%, transparent));
+    drop-shadow(0 0 16px color-mix(in srgb, var(--color-cta) 48%, transparent))
+    drop-shadow(0 0 28px color-mix(in srgb, var(--color-cta) 26%, transparent));
 }
 
 :global([data-theme="light"]) .pathPoint {
   border-color: rgba(255, 255, 255, 0.96);
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-accent-warm) 76%, #ffffff 24%),
-    color-mix(in srgb, var(--color-cta) 34%, #ffffff 66%)
-  );
-  box-shadow:
-    0 0 0 6px color-mix(in srgb, var(--color-accent-warm) 16%, transparent),
-    0 0 24px color-mix(in srgb, var(--color-accent-warm) 24%, transparent);
+  background: var(--color-highlight);
+  box-shadow: none;
 }
 
 :global([data-theme="light"]) .pathPointStart {
-  background: color-mix(in srgb, var(--color-accent-warm) 76%, #ffffff 24%);
+  background: color-mix(in srgb, var(--color-highlight) 76%, #ffffff 24%);
 }
 
 :global([data-theme="light"]) .pathPointLeader {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-cta) 76%, #ffffff 24%),
-    color-mix(in srgb, var(--color-cta-active) 72%, #ffffff 28%)
-  );
-  box-shadow:
+  --process-leader-glow:
     0 0 0 8px color-mix(in srgb, var(--color-cta) 16%, transparent),
-    0 0 28px color-mix(in srgb, var(--color-cta) 24%, transparent);
+    0 0 28px color-mix(in srgb, var(--color-cta) 28%, transparent);
+  --process-leader-glow-peak:
+    0 0 0 16px color-mix(in srgb, var(--color-cta) 14%, transparent),
+    0 0 40px color-mix(in srgb, var(--color-cta) 44%, transparent);
 }
 
 @keyframes processLeaderPulse {
-  0% {
+  0%,
+  100% {
     transform: translate(
         calc(var(--process-leader-x) - 9px),
         calc(var(--process-leader-y) - 9px)
       )
       scale(1);
-    box-shadow:
-      0 0 0 8px color-mix(in srgb, var(--color-cta) 30%, transparent),
-      0 0 28px color-mix(in srgb, var(--color-cta) 66%, transparent);
+    box-shadow: var(--process-leader-glow);
   }
 
   55% {
@@ -546,20 +539,7 @@
         calc(var(--process-leader-y) - 9px)
       )
       scale(1.18);
-    box-shadow:
-      0 0 0 18px color-mix(in srgb, var(--color-cta) 20%, transparent),
-      0 0 48px color-mix(in srgb, var(--color-cta-hover) 82%, transparent);
-  }
-
-  100% {
-    transform: translate(
-        calc(var(--process-leader-x) - 9px),
-        calc(var(--process-leader-y) - 9px)
-      )
-      scale(1);
-    box-shadow:
-      0 0 0 8px color-mix(in srgb, var(--color-cta) 30%, transparent),
-      0 0 28px color-mix(in srgb, var(--color-cta) 66%, transparent);
+    box-shadow: var(--process-leader-glow-peak);
   }
 }
 
@@ -578,16 +558,10 @@
   0%,
   100% {
     transform: translate(-50%, -50%) scale(1);
-    box-shadow:
-      0 10px 24px rgba(31, 70, 137, 0.3),
-      0 0 0 0 color-mix(in srgb, var(--color-cta) 26%, transparent);
   }
 
   50% {
     transform: translate(-50%, -50%) scale(1.03);
-    box-shadow:
-      0 10px 24px rgba(31, 70, 137, 0.3),
-      0 0 0 12px color-mix(in srgb, var(--color-cta-hover) 22%, transparent);
   }
 }
 
@@ -619,7 +593,7 @@
   .step {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+    background: var(--color-surface-1);
   }
 
   .step[data-journey-state="passed"] {
@@ -627,7 +601,7 @@
   }
 
   :global([data-theme="light"]) .step {
-    background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
+    background: var(--color-surface-1);
   }
 
   :global([data-theme="light"]) .step[data-journey-state="passed"] {
@@ -677,19 +651,6 @@
     width: 100%;
   }
 
-  .stepGlow {
-    display: block;
-  }
-
-  /* The active glow lives on the overlay so no box-shadow paints while scrolling. */
-  .step[data-journey-state="active"] {
-    box-shadow: 0 12px 28px rgba(8, 10, 15, 0.2);
-  }
-
-  :global([data-theme="light"]) .step[data-journey-state="active"] {
-    box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
-  }
-
   /* Rail node, aligned with the step number: 19px .stepInner padding + 31px / 2.
      Adjust together with .stepInner padding and .stepNumber height below. */
   .step::before {
@@ -726,48 +687,44 @@
     transition: background-color 280ms ease;
   }
 
+  /* One pixel less on top and left: the active card has a 2px border. */
   .step[data-journey-state="active"]::before {
-    top: 25px;
+    top: 24px;
     left: calc(
-      (var(--process-rail-gutter) + var(--page-inline-gutter)) / -2 - 9px
+      (var(--process-rail-gutter) + var(--page-inline-gutter)) / -2 - 10px
     );
     width: 18px;
     height: 18px;
     border-color: rgba(255, 255, 255, 0.9);
     background: linear-gradient(
       135deg,
-      var(--color-cta),
-      var(--color-cta-active)
+      var(--color-action-accent),
+      var(--color-cta)
     );
     box-shadow:
-      0 0 0 8px color-mix(in srgb, var(--color-cta) 24%, transparent),
-      0 0 28px color-mix(in srgb, var(--color-cta) 52%, transparent);
+      0 0 0 6px color-mix(in srgb, var(--color-cta) 24%, transparent),
+      0 0 24px color-mix(in srgb, var(--color-cta) 58%, transparent);
   }
 
   .step[data-journey-state="passed"]::before {
     border-color: rgba(255, 255, 255, 0.9);
-    background: var(--color-accent-warm);
+    background: var(--color-highlight);
   }
 
   :global([data-theme="light"]) .step[data-journey-state="passed"]::before {
     border-color: rgba(255, 255, 255, 0.96);
-    background: color-mix(in srgb, var(--color-accent-warm) 76%, #ffffff 24%);
+    background: color-mix(in srgb, var(--color-highlight) 76%, #ffffff 24%);
   }
 
   :global([data-theme="light"]) .step[data-journey-state="active"]::before {
     border-color: rgba(255, 255, 255, 0.96);
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--color-cta) 76%, #ffffff 24%),
-      color-mix(in srgb, var(--color-cta-active) 72%, #ffffff 28%)
-    );
     box-shadow:
-      0 0 0 8px color-mix(in srgb, var(--color-cta) 16%, transparent),
-      0 0 28px color-mix(in srgb, var(--color-cta) 24%, transparent);
+      0 0 0 6px color-mix(in srgb, var(--color-cta) 16%, transparent),
+      0 0 22px color-mix(in srgb, var(--color-cta) 28%, transparent);
   }
 
   .step[data-journey-state="passed"]::after {
-    background: color-mix(in srgb, var(--color-accent-warm) 52%, transparent);
+    background: color-mix(in srgb, var(--color-highlight) 52%, transparent);
   }
 
   /* The last segment turns right and runs into the CTA. */
@@ -780,7 +737,7 @@
     border-right: 0;
     border-bottom: 2px solid
       color-mix(in srgb, var(--color-border) 55%, transparent);
-    border-left: 2px solid
+    border-left: 1px solid
       color-mix(in srgb, var(--color-border) 55%, transparent);
     border-radius: 0 0 0 12px;
     background: none;
@@ -802,6 +759,10 @@
   .stepInner {
     gap: 11px;
     padding: 19px 20px 18px;
+  }
+
+  .step[data-journey-state="active"] .stepInner {
+    padding: 18px 19px 17px;
   }
 
   .stepTitleRow {

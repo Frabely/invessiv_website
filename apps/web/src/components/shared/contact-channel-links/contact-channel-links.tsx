@@ -1,7 +1,7 @@
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ActionIcon } from "@invessiv/ui";
 
 import {
   CONTACT_CHANNEL_KEY,
@@ -78,10 +78,7 @@ export function ContactChannelLinks({
               href={href}
               {...(isExternal ? { rel: "noreferrer", target: "_blank" } : {})}
             >
-              <FontAwesomeIcon
-                aria-hidden="true"
-                icon={CHANNEL_ICON[channel]}
-              />
+              <ActionIcon icon={CHANNEL_ICON[channel]} />
             </a>
           </li>
         );

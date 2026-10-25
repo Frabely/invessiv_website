@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
-import type { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
+import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import type { ButtonLinkComponentProps } from "@invessiv/common/contracts/ui/button-link-component-props";
 import styles from "./button.module.css";
 
@@ -44,6 +44,15 @@ function getButtonClassName(
     .join(" ");
 }
 
+/** The ghost label carries the gradient hover text without recoloring the button surface. */
+function renderButtonContent(variant: ButtonVariant, children: ReactNode) {
+  return variant === ButtonVariant.Ghost ? (
+    <span className={styles.ghostLabel}>{children}</span>
+  ) : (
+    children
+  );
+}
+
 export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
   function ButtonLink(
     {
@@ -73,14 +82,14 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
           href={href}
           ref={ref}
         >
-          {children}
+          {renderButtonContent(variant, children)}
         </LinkComponentWithExtraProps>
       );
     }
 
     return (
       <a {...props} className={buttonClassName} href={href} ref={ref}>
-        {children}
+        {renderButtonContent(variant, children)}
       </a>
     );
   },
@@ -97,7 +106,7 @@ export const ButtonControl = forwardRef<HTMLButtonElement, ButtonControlProps>(
         className={getButtonClassName(variant, className, size)}
         ref={ref}
       >
-        {children}
+        {renderButtonContent(variant, children)}
       </button>
     );
   },
@@ -115,6 +124,14 @@ export const PrimaryCtaButton = forwardRef<
   Omit<ButtonControlProps, "variant">
 >(function PrimaryCtaButton(props, ref) {
   return <ButtonControl {...props} ref={ref} variant="primary" />;
+});
+
+/** Link form of the second action level. */
+export const SecondaryCtaLink = forwardRef<
+  HTMLAnchorElement,
+  Omit<ButtonLinkProps, "variant">
+>(function SecondaryCtaLink(props, ref) {
+  return <ButtonLink {...props} ref={ref} variant="ghost" />;
 });
 
 /** The second action next to a primary one, or a lone action that must not compete with it. */

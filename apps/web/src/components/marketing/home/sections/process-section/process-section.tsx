@@ -12,7 +12,7 @@ import type {
   ProcessStepCopy,
 } from "@/i18n/dictionaries/marketing/home";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
-import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { PrimaryCtaLink } from "@invessiv/ui";
 import { useProcessJourney } from "@/hooks/marketing/use-process-journey";
 import { useProcessJourneyMobile } from "@/hooks/marketing/use-process-journey-mobile";
 import backdropPhoto from "@/assets/home/Ueberstunde_Torfgrube_Mittweida_1.jpg";

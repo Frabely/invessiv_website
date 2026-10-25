@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { OPEN_GRAPH_LOCALE } from "@invessiv/common";
+import { TertiaryCta } from "@invessiv/ui";
 import { LegalDocumentContent } from "@/components/legal/legal-document-content/legal-document-content";
 import { LegalDocumentLayout } from "@/components/legal/legal-document-layout/legal-document-layout";
 import { COMPANY, COMPANY_MAILTO } from "@/config/company";
@@ -100,7 +101,9 @@ export default async function TermsPage({ params }: TermsPageProps) {
           </p>
           <p>
             <strong>{terms.sections.provider.labels.email}:</strong>{" "}
-            <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
+            <TertiaryCta href={COMPANY_MAILTO}>
+              {COMPANY.contact.email}
+            </TertiaryCta>
           </p>
         </>
       ),

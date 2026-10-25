@@ -12,10 +12,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
-import { ButtonControl } from "../../button/button";
+import { DialogCloseButton } from "../dialog-close-button/dialog-close-button";
 import { DialogPortalRootContext } from "../dialog-portal-root-context";
 import styles from "./dialog.module.css";
 
@@ -159,18 +157,12 @@ export function Dialog({
                 </p>
               ) : null}
             </div>
-            <ButtonControl
+            <DialogCloseButton
               ref={closeButtonRef}
-              aria-label={closeLabel}
-              className={styles.closeButton}
+              label={closeLabel}
               disabled={busy}
               onClick={requestClose}
-              title={closeLabel}
-              type="button"
-              variant="ghost"
-            >
-              <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-            </ButtonControl>
+            />
           </header>
           {children ? (
             <div

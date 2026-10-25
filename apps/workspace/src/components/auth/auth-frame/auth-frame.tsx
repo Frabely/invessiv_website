@@ -1,12 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import type { MouseEvent, ReactNode } from "react";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
-import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
-import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
+import { BrandLockup, LocaleSwitch, ThemeSwitch } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { AuthContent } from "@/i18n/dictionaries/auth";
 import { REDIRECT_URL_QUERY_PARAM, SITE_ROUTES } from "@/config/routes";
@@ -80,14 +78,11 @@ export function AuthFrame({ children, content, locale }: AuthFrameProps) {
           className={styles.brand}
           href={createLocalePathname(SITE_ROUTES.WORKSPACE, locale)}
         >
-          <Image
-            alt={content.brandLogoAlt}
-            height={26}
+          <BrandLockup
+            label={content.brandLabel}
+            logoAlt={content.brandLogoAlt}
             priority
-            src="/brand/icon.png"
-            width={26}
           />
-          <span>{content.brandLabel}</span>
         </a>
         <div aria-label={content.actionsAriaLabel} className={styles.actions}>
           <ThemeSwitch

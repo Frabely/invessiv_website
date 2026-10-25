@@ -1,3 +1,4 @@
+import { SecondaryCtaLink } from "@invessiv/ui";
 import type { PortalMembershipOptionDto } from "@invessiv/common/contracts/portal/portal-membership-option.dto";
 import type { Locale } from "@/config/i18n";
 import type { PortalPickerDictionary } from "@/i18n/dictionaries/portal";
@@ -26,12 +27,12 @@ export function PortalCompanyPicker({
       <ul aria-label={content.listAriaLabel} className={styles.list}>
         {companies.map((company) => (
           <li key={company.customerId}>
-            <a
+            <SecondaryCtaLink
               className={styles.option}
               href={portalPathFor(locale, company.customerId)}
             >
               {company.displayName}
-            </a>
+            </SecondaryCtaLink>
           </li>
         ))}
       </ul>

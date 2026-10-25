@@ -1,0 +1,64 @@
+.link {
+  composes: palette from "@invessiv/ui/components/action-color/action-color.module.css";
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  text-decoration: none;
+  -webkit-text-fill-color: currentColor;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+@media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+  .link::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: -0.14em;
+    height: 1px;
+    background-image: var(--action-gradient);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+
+  .link:hover {
+    color: var(--color-cta-hover);
+  }
+
+  .link:hover::after {
+    transform: scaleX(1);
+  }
+
+  @supports ((background-clip: text) or (-webkit-background-clip: text)) and
+    (color: color-mix(in srgb, red, blue)) {
+    .link:hover {
+      background-image: var(--action-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link::after {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .link:hover {
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+  }
+
+  .link::after {
+    background: LinkText;
+  }
+}

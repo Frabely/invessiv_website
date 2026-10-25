@@ -1,0 +1,179 @@
+{
+  "reverification": {
+    "alternativeMethods": {
+      "actionLink": "Use another method",
+      "actionText": "Use another verification method",
+      "blockButton__passkey": "Use your passkey",
+      "getHelp": {
+        "content": "If you need help, please contact our support team."
+      },
+      "subtitle": "Choose a method to verify your identity"
+    },
+    "backupCodeMfa": {
+      "subtitle": "Use the recovery code you received when you signed up."
+    },
+    "emailCode": {
+      "formTitle": "Enter the code we sent to your email address.",
+      "subtitle": "Check your email for the verification code."
+    },
+    "noAvailableMethods": { "subtitle": "Please contact support for help." },
+    "passkey": {
+      "blockButton__passkey": "Use your passkey",
+      "subtitle": "Your passkey confirms your identity. Your device may ask for your fingerprint, face, or screen lock.",
+      "title": "Use your passkey"
+    },
+    "password": { "subtitle": "Enter your password to continue." },
+    "phoneCode": {
+      "formTitle": "Enter the code we sent to your phone number.",
+      "subtitle": "Check your text messages for the verification code."
+    },
+    "phoneCodeMfa": {
+      "formTitle": "Enter the code we sent you by text message.",
+      "subtitle": "Check your text messages for the verification code."
+    },
+    "totpMfa": {
+      "formTitle": "Enter the code from your authenticator app.",
+      "subtitle": "Use the authenticator app you set up."
+    }
+  },
+  "userProfile": {
+    "backupCodePage": {
+      "actionLabel__download": "Download .txt",
+      "infoText2": "Keep the backup codes secret and store them securely. You may regenerate backup codes if you suspect they have been compromised.",
+      "subtitle__codelist": "Store them securely and keep them secret.",
+      "successMessage": "Backup codes are now enabled. You can use one of these to sign in to your account, if you lose access to your authentication device. Each code can only be used once.",
+      "successSubtitle": "You can use one of these to sign in to your account, if you lose access to your authentication device."
+    },
+    "billingPage": {
+      "paymentMethodsSection": {
+        "addSubtitle": "Add a new payment method to your account.",
+        "removeMethod": {
+          "messageLine2": "You will no longer be able to use this payment source and any recurring subscriptions dependent on it will no longer work."
+        }
+      }
+    },
+    "connectedAccountPage": {
+      "formHint": "Select a provider to connect your account.",
+      "removeResource": {
+        "messageLine2": "You will no longer be able to use this connected account and any dependent features will no longer work.",
+        "successMessage": "{{connectedAccount}} has been removed from your account."
+      },
+      "successMessage": "The provider has been added to your account"
+    },
+    "deletePage": {
+      "actionDescription": "Type \"Delete account\" below to continue.",
+      "messageLine1": "Are you sure you want to delete your account? Some associated data may be retained. To request full data deletion, please contact support."
+    },
+    "emailAddressPage": {
+      "emailCode": {
+        "formSubtitle": "Enter the verification code sent to {{identifier}}",
+        "successMessage": "The email {{identifier}} has been added to your account."
+      },
+      "emailLink": {
+        "formSubtitle": "Click on the verification link in the email sent to {{identifier}}",
+        "successMessage": "The email {{identifier}} has been added to your account."
+      },
+      "enterpriseSSOLink": {
+        "formButton": "Click to sign-in",
+        "formSubtitle": "Complete the sign-in with {{identifier}}"
+      },
+      "formHint": "You'll need to verify this email address before it can be added to your account.",
+      "removeResource": {
+        "messageLine2": "You will no longer be able to sign in using this email address.",
+        "successMessage": "{{emailAddress}} has been removed from your account."
+      }
+    },
+    "mfaPage": {
+      "formHint": "Select a method to add.",
+      "title": "Add two-step verification"
+    },
+    "mfaPhoneCodePage": {
+      "primaryButton__addPhoneNumber": "Add phone number",
+      "removeResource": {
+        "messageLine2": "Your account may not be as secure. Are you sure you want to continue?",
+        "title": "Remove two-step verification"
+      },
+      "subtitle__availablePhoneNumbers": "Select an existing phone number to register for SMS code two-step verification or add a new one.",
+      "successMessage1": "When signing in, you will need to enter a verification code sent to this phone number as an additional step.",
+      "successMessage2": "Save these backup codes and store them somewhere safe. If you lose access to your authentication device, you can use backup codes to sign in."
+    },
+    "mfaTOTPPage": {
+      "authenticatorApp": {
+        "buttonAbleToScan__nonPrimary": "Scan QR code instead",
+        "infoText__ableToScan": "Set up a new sign-in method in your authenticator app and scan the following QR code to link it to your account.",
+        "infoText__unableToScan": "Set up a new sign-in method in your authenticator and enter the Key provided below.",
+        "inputLabel__unableToScan1": "Make sure Time-based or One-time passwords is enabled, then finish linking your account.",
+        "inputLabel__unableToScan2": "Alternatively, if your authenticator supports TOTP URIs, you can also copy the full URI."
+      },
+      "removeResource": {
+        "messageLine2": "Your account may not be as secure. Are you sure you want to continue?",
+        "title": "Remove two-step verification"
+      },
+      "successMessage": "Two-step verification is now enabled. When signing in, you will need to enter a verification code from this authenticator as an additional step.",
+      "verifySubtitle": "Enter verification code generated by your authenticator"
+    },
+    "navbar": {
+      "description": "Manage your account info."
+    },
+    "passkeyScreen": {
+      "subtitle__rename": "You can change the passkey name to make it easier to find."
+    },
+    "passwordPage": {
+      "checkboxInfoText__signOutOfOtherSessions": "It is recommended to sign out of all other devices which may have used your old password.",
+      "readonly": "Your password can currently not be edited because you can sign in only via the enterprise connection.",
+      "successMessage__set": "Your password has been set."
+    },
+    "phoneNumberPage": {
+      "removeResource": {
+        "messageLine2": "You will no longer be able to sign in using this phone number.",
+        "successMessage": "{{phoneNumber}} has been removed from your account."
+      },
+      "successMessage": "{{identifier}} has been added to your account.",
+      "verifySubtitle": "Enter the verification code sent to {{identifier}}"
+    },
+    "profilePage": {
+      "fileDropAreaHint": "Recommended size 1:1, up to 10MB.",
+      "readonly": "Your profile information has been provided by the enterprise connection and cannot be edited.",
+      "successMessage": "Your profile has been updated."
+    },
+    "start": {
+      "connectedAccountsSection": {
+        "actionLabel__connectionFailed": "Reconnect",
+        "subtitle__disconnected": "This account has been disconnected.",
+        "subtitle__reauthorize": "The required scopes have been updated, and you may be experiencing limited functionality. Please re-authorize this application to avoid any issues"
+      },
+      "emailAddressesSection": {
+        "primaryButton": "Add email address"
+      },
+      "mfaSection": {
+        "backupCodes": {
+          "subtitle__regenerate": "Get a fresh set of secure backup codes. Prior backup codes will be deleted and cannot be used."
+        },
+        "primaryButton": "Add two-step verification"
+      },
+      "phoneNumbersSection": {
+        "primaryButton": "Add phone number"
+      },
+      "web3WalletsSection": {
+        "web3SelectSolanaWalletScreen": {
+          "subtitle": "Select a Solana wallet to connect to your account."
+        }
+      }
+    },
+    "usernamePage": {
+      "successMessage": "Your username has been updated."
+    },
+    "web3WalletPage": {
+      "removeResource": {
+        "messageLine2": "You will no longer be able to sign in using this web3 wallet.",
+        "successMessage": "{{web3Wallet}} has been removed from your account.",
+        "title": "Remove web3 wallet"
+      },
+      "subtitle__availableWallets": "Select a web3 wallet to connect to your account.",
+      "successMessage": "The wallet has been added to your account."
+    }
+  },
+  "userButton": {
+    "action__signOutAll": "Sign out of all accounts"
+  }
+}

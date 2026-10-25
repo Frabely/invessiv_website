@@ -1,3 +1,4 @@
+import { QuaternaryCta } from "@invessiv/ui";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -21,9 +22,13 @@ export function PortalOwnerNotice({
     <p className={styles.notice} id={id}>
       <FontAwesomeIcon aria-hidden="true" icon={faLock} />
       <span>{hint}</span>
-      <Link className={styles.link} href={cockpitHref}>
+      <QuaternaryCta
+        className={styles.link}
+        href={cockpitHref}
+        linkComponent={Link}
+      >
         {linkLabel}
-      </Link>
+      </QuaternaryCta>
     </p>
   );
 }

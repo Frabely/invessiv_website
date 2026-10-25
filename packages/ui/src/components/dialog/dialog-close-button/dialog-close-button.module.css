@@ -1,0 +1,10 @@
+.closeButton {
+  --action-icon-color: currentColor;
+  --action-icon-gradient-opacity: 0;
+  flex: 0 0 auto;
+}
+
+.closeButton :global(svg) {
+  width: 0.9rem;
+  height: 0.9rem;
+}

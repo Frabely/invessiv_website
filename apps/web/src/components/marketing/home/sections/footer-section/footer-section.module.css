@@ -34,12 +34,6 @@
 }
 
 .brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.brand strong {
   color: var(--color-text);
   font-size: var(--font-size-heading-lg);
   letter-spacing: -0.03em;
@@ -68,7 +62,7 @@
 
 .heading {
   margin: 0;
-  color: var(--color-text);
+  color: var(--color-highlight);
   font-size: var(--font-size-heading-sm);
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -87,6 +81,7 @@
 }
 
 .link {
+  composes: link from "../../../../shared/navigation-link/navigation-link.module.css";
   display: inline-flex;
   align-items: center;
   max-width: 100%;
@@ -96,10 +91,6 @@
   overflow-wrap: anywhere;
   word-break: break-word;
   transition: color 160ms ease;
-}
-
-.link:hover {
-  color: var(--color-text);
 }
 
 .link:focus-visible {
@@ -137,7 +128,7 @@
     gap: clamp(36px, 4.2vw, 64px);
   }
 
-  .brand strong {
+  .brand {
     font-size: clamp(1.72rem, 1.9vw, 1.95rem);
   }
 }
@@ -161,10 +152,6 @@
 
   .description {
     max-width: 40ch;
-  }
-
-  .brand {
-    justify-content: center;
   }
 
   .grid {
@@ -199,7 +186,7 @@
     padding-top: 14px;
   }
 
-  .brand strong {
+  .brand {
     font-size: var(--font-size-heading-lg);
   }
 

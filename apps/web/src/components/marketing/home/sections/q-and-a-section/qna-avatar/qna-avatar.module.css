@@ -31,15 +31,15 @@
 }
 
 .owner {
-  --qna-avatar-width: 125%;
-  --qna-avatar-left: -24.1%;
-  --qna-avatar-top: -30%;
+  --qna-avatar-width: 100%;
+  --qna-avatar-left: 0%;
+  --qna-avatar-top: 0%;
 }
 
 .asking {
-  --qna-avatar-width: 118%;
-  --qna-avatar-left: -9.9%;
-  --qna-avatar-top: -23%;
+  --qna-avatar-width: 100%;
+  --qna-avatar-left: 0%;
+  --qna-avatar-top: 0%;
 
   opacity: 0;
   visibility: hidden;

@@ -64,6 +64,7 @@
   border: 0;
   background: transparent;
   box-shadow: none;
+  color: inherit;
   transform: none;
 }
 

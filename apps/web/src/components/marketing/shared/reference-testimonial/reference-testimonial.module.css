@@ -49,7 +49,7 @@
 
 .highlight q::before,
 .highlight q::after {
-  color: var(--color-accent-orange);
+  color: var(--color-highlight);
 }
 
 .testimonial[data-variant="highlight"] .author {

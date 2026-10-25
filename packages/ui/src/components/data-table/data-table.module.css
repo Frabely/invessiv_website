@@ -110,6 +110,59 @@
   border-top: 1px solid var(--color-border);
 }
 
+/*
+ * Row states carry a faint wash of the action gradient instead of a flat blue: hover and keyboard
+ * focus the lightest, a selection stronger, the row shown elsewhere (active) strongest with an edge.
+ */
+.row {
+  --row-tint: linear-gradient(
+    118deg,
+    color-mix(in srgb, var(--color-action-accent) 6%, transparent),
+    color-mix(in srgb, var(--color-cta) 6%, transparent)
+  );
+  --row-tint-strong: linear-gradient(
+    118deg,
+    color-mix(in srgb, var(--color-action-accent) 11%, transparent),
+    color-mix(in srgb, var(--color-cta) 11%, transparent)
+  );
+}
+
+.row[data-interactive="true"] {
+  cursor: pointer;
+}
+
+.row[data-interactive="true"]:focus-visible {
+  outline: none;
+  background-image: var(--row-tint);
+}
+
+@media (hover: hover) {
+  .row[data-interactive="true"]:hover {
+    background-image: var(--row-tint);
+  }
+}
+
+.row[data-selected="true"],
+.row[data-selected="true"]:hover {
+  background-image: var(--row-tint-strong);
+}
+
+.row[data-active="true"],
+.row[data-active="true"]:hover {
+  background-image: var(--row-tint-strong);
+}
+
+.row[data-active="true"] > :first-child {
+  background-image: linear-gradient(
+    180deg,
+    var(--color-action-accent),
+    var(--color-cta)
+  );
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-size: 3px 100%;
+}
+
 .cell,
 .row > .headerCell {
   padding: 0.85rem 1.1rem;

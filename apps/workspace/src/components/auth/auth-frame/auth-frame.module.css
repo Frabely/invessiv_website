@@ -23,7 +23,6 @@
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   color: var(--color-text);
   font-size: var(--font-size-brand);
   font-weight: 700;

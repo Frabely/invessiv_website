@@ -1,5 +1,4 @@
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { DialogCloseButton } from "@invessiv/ui";
 import type { ReactNode } from "react";
 import { useRef } from "react";
 import { createPortal } from "react-dom";
@@ -46,15 +45,12 @@ export function PostLightbox({
         ref={dialogRef}
         role="dialog"
       >
-        <button
-          aria-label={closeLabel}
+        <DialogCloseButton
+          label={closeLabel}
           className={styles.close}
           onClick={onClose}
           ref={closeButtonRef}
-          type="button"
-        >
-          <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-        </button>
+        />
         <div className={styles.content}>{children}</div>
       </div>
     </div>,

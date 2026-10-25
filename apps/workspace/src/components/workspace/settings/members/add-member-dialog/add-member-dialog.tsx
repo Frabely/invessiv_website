@@ -1,5 +1,7 @@
 "use client";
 
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+
 import { type SubmitEvent, useEffect, useId, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -140,7 +142,7 @@ export function AddMemberDialog({
     return (
       <EmptyState
         description={text.emptyDescription}
-        icon={<span aria-hidden="true">+</span>}
+        icon={faPlus}
         title={text.emptyTitle}
       />
     );

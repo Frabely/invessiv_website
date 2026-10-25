@@ -10,8 +10,8 @@ import {
 import { useStickyScrollProgress } from "./use-sticky-scroll-progress";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
-const HANDOVER_PROGRESS = 0.37;
-const BOARD_PROGRESS = 0.58;
+const HANDOVER_PROGRESS = 0.28;
+const BOARD_PROGRESS = 0.62;
 
 function resolvePhase(progress: number): QnaStagePhase {
   if (progress < HANDOVER_PROGRESS) {

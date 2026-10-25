@@ -1,0 +1,98 @@
+.root {
+  composes: palette from "../action-color/action-color.module.css";
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-cta);
+  font: inherit;
+  /* Weight is fixed for every level; the size follows the surrounding text. */
+  font-weight: 600;
+  text-align: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* As a disclosure summary it shows no native marker; the label is the affordance. */
+summary.root {
+  list-style: none;
+}
+
+summary.root::-webkit-details-marker {
+  display: none;
+}
+
+.label {
+  min-width: 0;
+  padding-bottom: 0.16em;
+  background-image: var(--action-gradient);
+  background-position: left bottom;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  color: var(--color-cta);
+  -webkit-text-fill-color: currentColor;
+  overflow-wrap: anywhere;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.arrow {
+  composes: text from "../action-color/action-color.module.css";
+  flex: 0 0 auto;
+  font-size: 1.25em;
+  line-height: 1;
+}
+
+/* Appearance adapters can style a third-party text action whose markup has no label span. */
+.standaloneQuaternary {
+  composes: root label;
+}
+
+.root:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@supports ((background-clip: text) or (-webkit-background-clip: text)) and
+  (color: color-mix(in srgb, red, blue)) {
+  .tertiary .label,
+  .quaternary:focus-visible .label,
+  .standaloneQuaternary:focus-visible {
+    background-image: var(--action-gradient), var(--action-gradient);
+    background-size:
+      100% 100%,
+      100% 1px;
+    background-clip: text, border-box;
+    -webkit-background-clip: text, border-box;
+    -webkit-text-fill-color: transparent;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .quaternary:hover .label,
+    .standaloneQuaternary:hover {
+      background-image: var(--action-gradient), var(--action-gradient);
+      background-size:
+        100% 100%,
+        100% 1px;
+      background-clip: text, border-box;
+      -webkit-background-clip: text, border-box;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  .root .label,
+  .quaternary:hover .label,
+  .root .arrow,
+  .standaloneQuaternary {
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+    text-decoration: underline;
+  }
+}

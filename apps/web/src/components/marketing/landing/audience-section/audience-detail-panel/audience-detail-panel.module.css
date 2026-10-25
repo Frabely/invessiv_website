@@ -22,13 +22,13 @@
   flex: 0 0 auto;
   border-radius: 999px;
   border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 42%, var(--color-border) 58%);
+    color-mix(in srgb, var(--color-highlight) 42%, var(--color-border) 58%);
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--color-accent-warm) 22%, transparent),
+    color-mix(in srgb, var(--color-highlight) 22%, transparent),
     color-mix(in srgb, var(--color-cta) 16%, transparent)
   );
-  color: var(--color-accent-warm);
+  color: var(--color-highlight);
   font-size: 0.95rem;
 }
 
@@ -76,7 +76,7 @@
   width: 0.34rem;
   height: 0.34rem;
   border-radius: 999px;
-  background: var(--color-accent-warm);
+  background: var(--color-highlight);
 }
 
 .outcome {

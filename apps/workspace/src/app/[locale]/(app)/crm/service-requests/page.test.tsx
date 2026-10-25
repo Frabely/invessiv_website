@@ -131,6 +131,6 @@ describe("ServiceRequestsPage", () => {
       follow: false,
       nocache: true,
     });
-    expect(metadata.title).toBe("Leistungsanfragen | Invessiv");
+    expect(metadata.title).toBe("Leistungsanfragen");
   });
 });

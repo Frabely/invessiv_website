@@ -1,6 +1,0 @@
-.status {
-  margin: 2px 0 0;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: color-mix(in srgb, var(--color-cta) 66%, var(--color-text) 34%);
-}

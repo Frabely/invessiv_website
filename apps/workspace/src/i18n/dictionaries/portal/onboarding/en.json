@@ -1,11 +1,11 @@
 {
   "meta": {
-    "title": "Onboarding | Invessiv",
+    "title": "Onboarding",
     "description": "Give us everything we need for your project – at your own pace, step by step."
   },
   "page": {
     "heading": "Onboarding for {project}",
-    "back": "Back to overview",
+    "breadcrumb": "Breadcrumb",
     "backShort": "Overview",
     "ownerHint": "In the portal view you can only read the onboarding.",
     "ownerLink": "Open in CRM",

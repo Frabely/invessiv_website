@@ -1,6 +1,8 @@
 import type { ReferenceCaseStudyContent } from "@/common/contracts/marketing/reference-case-study";
-import { Breadcrumbs } from "@/components/legal/breadcrumbs/breadcrumbs";
+import { Breadcrumbs } from "@invessiv/ui";
+import Link from "next/link";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
+import { GradientText } from "@/components/shared/gradient-text/gradient-text";
 import { REFERENCES_PAGE_SECTION_IDS } from "@/config/navigation/references";
 import type {
   ReferencesBreadcrumbsContent,
@@ -27,16 +29,19 @@ export function ReferencesHero({
       <div className={styles.crumbs}>
         <Breadcrumbs
           items={[
-            { href: homeHref, isLink: true, label: breadcrumbs.homeLabel },
-            { isLink: false, label: breadcrumbs.currentLabel },
+            { href: homeHref, label: breadcrumbs.homeLabel },
+            { label: breadcrumbs.currentLabel },
           ]}
+          linkComponent={Link}
           navLabel={breadcrumbs.navLabel}
         />
       </div>
 
       <div className={styles.copy}>
         <EyebrowPill>{content.kicker}</EyebrowPill>
-        <h1 className={styles.title}>{content.title}</h1>
+        <h1 className={styles.title}>
+          <GradientText>{content.title}</GradientText>
+        </h1>
         <ol className={styles.questions}>
           {content.questions.map((question) => (
             <li className={styles.question} key={question.keyword}>

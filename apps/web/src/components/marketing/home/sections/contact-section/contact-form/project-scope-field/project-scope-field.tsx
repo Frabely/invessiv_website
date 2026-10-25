@@ -6,7 +6,7 @@ import {
 import { CONTACT_FORM_FIELD_NAME } from "@invessiv/common/constants/contact/contact-form-field-names";
 import type { ContactFormValues } from "@invessiv/common/contracts/contact/forms/contact-form-values";
 import { ProjectScopeIcon } from "@/components/marketing/home/sections/contact-section/contact-form/project-scope-field/project-scope-icon/project-scope-icon";
-import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-field-label";
+import { FormFieldLabel } from "@invessiv/ui";
 import styles from "./project-scope-field.module.css";
 
 type ProjectScopeFieldProps = {
@@ -35,7 +35,7 @@ export function ProjectScopeField({
       <div className={styles.chips}>
         {CONTACT_PROJECT_SCOPES.map((scope) => (
           <label
-            className={styles.chip}
+            className={`${styles.chip}${scope === selectedScope ? ` ${styles.selected}` : ""}`}
             data-selected={scope === selectedScope ? "true" : undefined}
             key={scope}
           >
@@ -62,7 +62,15 @@ export function ProjectScopeField({
             <span className={styles.iconSlot}>
               <ProjectScopeIcon scope={scope} />
             </span>
-            <span className={styles.chipLabel}>{optionLabels[scope]}</span>
+            <span
+              className={
+                scope === selectedScope
+                  ? styles.selectedLabel
+                  : styles.chipLabel
+              }
+            >
+              {optionLabels[scope]}
+            </span>
           </label>
         ))}
       </div>

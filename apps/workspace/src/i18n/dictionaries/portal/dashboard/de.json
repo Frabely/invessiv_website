@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Übersicht | Invessiv",
+    "title": "Übersicht",
     "description": "Dein Projektstand, offene Punkte und dein Ansprechpartner auf einen Blick."
   },
   "page": {
@@ -93,7 +93,7 @@
       "more": "Mehr anzeigen",
       "less": "Weniger anzeigen",
       "empty": "Gerade steht bei uns für dieses Projekt nichts Sichtbares an. Wir melden uns, sobald es weitergeht.",
-      "create": "Aufgabe für uns anlegen",
+      "create": "Aufgabe anlegen",
       "fromYou": "von dir",
       "status": {
         "open": "Offen",

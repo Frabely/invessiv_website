@@ -75,27 +75,12 @@
   letter-spacing: -0.01em;
   text-wrap: balance;
   position: relative;
-  text-shadow: 0 8px 26px rgba(8, 12, 24, 0.36);
 }
 
-.titleGradient {
+.titleText {
   display: block;
   padding-bottom: 0.22em;
-  background: linear-gradient(
-      118deg,
-      #ffd8ab 0%,
-      #f0aa53 26%,
-      #d6e4ff 56%,
-      #7fa8ea 100%
-    )
-    0 45% / 180% 180%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
   white-space: pre-line;
-  filter: drop-shadow(0 5px 16px rgba(8, 12, 24, 0.22));
-  animation: titleFlow 5s ease-in-out infinite alternate;
 }
 
 .description {
@@ -127,27 +112,9 @@
   text-align: center;
 }
 
-.trustLine {
-  margin: 0;
-  max-width: 58ch;
-  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
-  font-size: var(--font-size-body-sm);
-  line-height: 1.58;
-  text-wrap: pretty;
-}
-
-.primaryCta {
-  box-shadow:
-    0 14px 32px rgba(31, 70, 137, 0.34),
-    0 0 0 1px color-mix(in srgb, var(--color-cta) 42%, transparent);
-}
-
 .primaryCta:hover,
 .primaryCta:focus-visible {
   transform: translateY(-1px);
-  box-shadow:
-    0 16px 34px rgba(31, 70, 137, 0.4),
-    0 0 0 1px color-mix(in srgb, var(--color-cta) 48%, transparent);
 }
 
 .secondaryCta {
@@ -162,23 +129,6 @@
 
 .visualBleed .grid {
   align-items: stretch;
-}
-
-[data-theme="light"] .title {
-  text-shadow: none;
-}
-
-[data-theme="light"] .titleGradient {
-  display: inline-block;
-  background: no-repeat
-    linear-gradient(118deg, #8b4b17 0%, #a95b1f 24%, #1d4897 58%, #3464bb 100%)
-    0 45% / 180% 180%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  filter: none;
-  animation: titleFlow 5s ease-in-out infinite alternate;
 }
 
 [data-theme="light"] .fullscreenVisual::after {
@@ -196,15 +146,6 @@
       color-mix(in srgb, var(--color-bg) 10%, transparent) 48%,
       color-mix(in srgb, var(--color-bg) 48%, transparent) 100%
     );
-}
-
-@keyframes titleFlow {
-  0% {
-    background-position: 0 45%;
-  }
-  100% {
-    background-position: 100% 55%;
-  }
 }
 
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
@@ -330,7 +271,7 @@
     line-height: 1.01;
   }
 
-  .compactMobile .titleGradient {
+  .compactMobile .titleText {
     white-space: normal;
   }
 
@@ -380,10 +321,6 @@
   .visualBleed .ctaButton {
     min-height: 40px;
   }
-
-  .visualBleed .trustLine {
-    font-size: 0.8rem;
-  }
 }
 
 @media (max-width: 900px) and (max-height: 700px) {
@@ -413,10 +350,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .titleGradient {
-    animation: none;
-  }
-
   .primaryCta,
   .primaryCta:hover,
   .primaryCta:focus-visible {

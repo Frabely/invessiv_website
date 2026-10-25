@@ -83,8 +83,8 @@ describe("useQnaStage", () => {
     expect(section.dataset.qnaAnimated).toBe("true");
     expect(section.dataset.qnaPhase).toBe("question");
 
-    // Travel range is 1200px, so the opening question holds well past a third.
-    sectionTop = -400;
+    // Travel range is 1200px; the opening question holds for about a quarter.
+    sectionTop = -300;
     fireEvent.scroll(window);
     expect(section.dataset.qnaPhase).toBe("question");
 

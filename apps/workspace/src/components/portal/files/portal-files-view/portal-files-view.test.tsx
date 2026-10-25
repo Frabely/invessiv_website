@@ -524,7 +524,7 @@ describe("PortalFilesView", () => {
       "project-2",
     );
     expect(
-      screen.getByRole("link", { name: content.page.back }),
+      screen.getByRole("link", { name: content.page.backShort }),
     ).toHaveAttribute("href", "/en/portal/customer-1?project=project-2");
     expect(mocks.replace).not.toHaveBeenCalled();
   });

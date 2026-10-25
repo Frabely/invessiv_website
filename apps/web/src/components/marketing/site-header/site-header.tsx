@@ -2,7 +2,6 @@
 
 import { faCommentDots } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import { AnalyticsArea } from "@/common/constants/analytics/analytics-area";
 import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
@@ -13,10 +12,13 @@ import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
+import {
+  BrandLockup,
+  LocaleSwitch,
+  PrimaryCtaLink,
+  ThemeSwitch,
+} from "@invessiv/ui";
 import { ReadingProgress } from "@/components/marketing/shared/reading-progress/reading-progress";
-import { PrimaryCtaLink } from "@/components/shared/button/button";
-import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
-import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
 import type { NavigationItem } from "@/config/navigation/home";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import {
@@ -144,14 +146,11 @@ export function SiteHeader({
       {isMinimalHeader ? null : <ReadingProgress />}
       <div className={`${styles.inner} site-header__inner`}>
         <a className={`${styles.brand} site-header__brand`} href={brandHref}>
-          <Image
-            src="/brand/icon.png"
-            alt={ui.brandLogoAlt}
-            width={26}
-            height={26}
+          <BrandLockup
+            label={ui.brandLabel}
+            logoAlt={ui.brandLogoAlt}
             priority
           />
-          <span>{ui.brandLabel}</span>
         </a>
 
         {isMinimalHeader ? null : (

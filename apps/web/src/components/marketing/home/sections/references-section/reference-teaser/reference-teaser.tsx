@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { TertiaryCta } from "@invessiv/ui";
 import Link from "next/link";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
@@ -96,13 +97,14 @@ export function ReferenceTeaser({
           </div>
         ) : null}
 
-        <Link
+        <TertiaryCta
           className={styles.link}
           href={projectHref}
+          linkComponent={Link}
           {...referenceOpenedAttributes}
         >
           {linkLabel}
-        </Link>
+        </TertiaryCta>
       </div>
     </article>
   );

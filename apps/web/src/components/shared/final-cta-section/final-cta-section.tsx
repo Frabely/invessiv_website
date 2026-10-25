@@ -92,7 +92,6 @@ export function FinalCtaSection({
       id={id}
       ref={sectionRef}
     >
-      <span aria-hidden="true" className={styles.spotlight} />
       <div className={styles.intro} data-reveal-item="true">
         <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
         <h2 className={styles.title} id={`${id}-title`}>

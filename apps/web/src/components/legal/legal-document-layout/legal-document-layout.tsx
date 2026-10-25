@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Breadcrumbs } from "@/components/legal/breadcrumbs/breadcrumbs";
+import { Breadcrumbs } from "@invessiv/ui";
+import Link from "next/link";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
@@ -49,10 +50,8 @@ export function LegalDocumentLayout({
         <div className={styles.inner}>
           <div className={styles.breadcrumbsWrap}>
             <Breadcrumbs
-              items={[
-                { href: homeHref, isLink: true, label: homeLabel },
-                { isLink: false, label: title },
-              ]}
+              items={[{ href: homeHref, label: homeLabel }, { label: title }]}
+              linkComponent={Link}
               navLabel={breadcrumbAriaLabel}
             />
           </div>

@@ -48,14 +48,29 @@
   display: none;
 }
 
-.menuTrigger:hover,
+/* A faint action-gradient wash; the icon takes the gradient start like icons in secondary buttons. */
 .menuTrigger:focus-visible,
-.group > a:hover,
 .group > a:focus-visible,
-.group > button:hover,
 .group > button:focus-visible {
-  color: var(--color-text);
-  background: color-mix(in srgb, var(--color-cta) 14%, transparent);
+  color: var(--color-action-accent);
+  background: linear-gradient(
+    118deg,
+    color-mix(in srgb, var(--color-action-accent) 14%, transparent),
+    color-mix(in srgb, var(--color-cta) 14%, transparent)
+  );
+}
+
+@media (hover: hover) {
+  .menuTrigger:hover,
+  .group > a:hover,
+  .group > button:hover {
+    color: var(--color-action-accent);
+    background: linear-gradient(
+      118deg,
+      color-mix(in srgb, var(--color-action-accent) 14%, transparent),
+      color-mix(in srgb, var(--color-cta) 14%, transparent)
+    );
+  }
 }
 
 .menuTrigger:focus-visible,
@@ -65,10 +80,16 @@
   outline-offset: 2px;
 }
 
-.group > [data-tone="danger"]:hover,
 .group > [data-tone="danger"]:focus-visible {
   color: var(--color-danger);
   background: color-mix(in srgb, var(--color-danger) 14%, transparent);
+}
+
+@media (hover: hover) {
+  .group > [data-tone="danger"]:hover {
+    color: var(--color-danger);
+    background: color-mix(in srgb, var(--color-danger) 14%, transparent);
+  }
 }
 
 @media (max-width: 720px) {

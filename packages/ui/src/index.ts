@@ -1,4 +1,6 @@
 export * from "./components/button/button";
+export * from "./components/text-cta/text-cta";
+export * from "./components/breadcrumbs/breadcrumbs";
 export * from "./components/checkbox-control/checkbox-control";
 export * from "./components/duration-input/duration-input";
 export * from "./components/radio-control/radio-control";
@@ -18,6 +20,7 @@ export * from "./components/empty-state/empty-state";
 export * from "./components/linked-text/linked-text";
 export * from "./components/file-drop-zone/file-drop-zone";
 export * from "./components/badge/badge";
+export * from "./components/brand-lockup/brand-lockup";
 export * from "./components/data-table/data-table";
 export * from "./components/data-table/data-table-loading-overlay";
 export * from "./components/detail/definition-list/definition-list";
@@ -26,7 +29,6 @@ export * from "./components/side-panel/side-panel";
 export * from "./components/skeleton/skeleton";
 export * from "./components/table-row-actions/table-row-actions";
 export * from "./components/tab-list/tab-list";
-export * from "./components/segmented-control/segmented-control";
 export * from "./components/selection-action-bar/selection-action-bar";
 export * from "./components/tree-view/tree-view";
 export * from "./components/widget-grid/widget-grid";
@@ -54,3 +56,11 @@ export * from "./components/files/file-project-select/file-project-select";
 export * from "./components/dialog/form-dialog/form-dialog";
 export * from "./components/form/form-notice/form-notice";
 export * from "./components/hours-meter/hours-meter";
+export * from "./components/action-icon/action-icon";
+export * from "./components/locale-switch/locale-switch";
+export * from "./components/theme-switch/theme-switch";
+export * from "./hooks/use-dismissible-details";
+
+export * from "./components/scale-control/scale-control";
+
+export { DialogCloseButton } from "./components/dialog/dialog-close-button/dialog-close-button";

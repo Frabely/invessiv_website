@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "Files | Invessiv",
+    "title": "Files",
     "description": "Everything we shared with you and everything you sent us, in one place."
   },
   "page": {
-    "back": "Back to overview",
+    "breadcrumb": "Breadcrumb",
     "backShort": "Overview",
     "heading": "Files"
   },

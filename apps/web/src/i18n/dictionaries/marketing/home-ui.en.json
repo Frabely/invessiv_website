@@ -3,8 +3,14 @@
   "heroSecondaryCta": "Explore services",
   "heroTag": "WEB DESIGN · CHEMNITZ & REGION",
   "heroTrustChips": [
-    "Direct point of contact",
-    "Software development background"
+    {
+      "iconKey": "directContact",
+      "label": "Direct point of contact"
+    },
+    {
+      "iconKey": "softwareBackground",
+      "label": "Software development background"
+    }
   ],
   "heroVisualAriaLabel": "Moritz Hecht, your personal web design contact in Chemnitz",
   "mappingWarning": "Navigation/section mapping is incomplete.",

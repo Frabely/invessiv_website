@@ -2,32 +2,29 @@ import type { FieldErrors, Path, UseFormRegister } from "react-hook-form";
 import type { BaseContactFieldsValues } from "@invessiv/common/contracts/contact/fields/base-contact-fields-values";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { ContactMessageFieldCopy } from "@invessiv/common/contracts/contact/copy/contact-message-field-copy";
-import { FormField } from "@/components/shared/form/form-field/form-field";
+import { FormField } from "@invessiv/ui";
 
 type ContactMessageFieldProps<TValues extends BaseContactFieldsValues> = {
-  className?: string;
   copy: ContactMessageFieldCopy;
   errors: FieldErrors<TValues>;
   getErrorMessage: (fieldName: "message") => string;
   register: UseFormRegister<TValues>;
   required?: boolean;
-  rows?: number;
 };
 
 export function ContactMessageField<TValues extends BaseContactFieldsValues>({
-  className,
   copy,
   errors,
   getErrorMessage,
   register,
   required = true,
-  rows = 5,
 }: ContactMessageFieldProps<TValues>) {
   const messageField = "message" as Path<TValues>;
 
   return (
     <FormField
-      className={className}
+      // Opens one line high so an optional message does not outweigh the required fields.
+      autoGrow
       errorMessage={errors.message ? getErrorMessage("message") : undefined}
       kind={FormFieldKind.Textarea}
       label={copy.messageLabel}
@@ -40,7 +37,6 @@ export function ContactMessageField<TValues extends BaseContactFieldsValues>({
         }),
         "aria-invalid": errors.message ? "true" : undefined,
         placeholder: copy.messagePlaceholder,
-        rows,
       }}
     />
   );

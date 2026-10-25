@@ -1,6 +1,7 @@
 import { type ReactNode, useState } from "react";
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import type { PortalFileProjectOptionDto } from "@invessiv/common/contracts/portal/portal-file-project-option.dto";
+import type { TabPanelBinding } from "@invessiv/common/contracts/ui/tab-panel-binding";
 import { FileLinkDialogFrame } from "@invessiv/ui";
 import { portalFilesApiService } from "@/client/portal/portal-files-api-service";
 import type { PortalFilesDictionary } from "@/i18n/dictionaries/portal";
@@ -11,6 +12,8 @@ export type PortalFileLinkDialogProps = {
   customerId: string;
   projects: readonly PortalFileProjectOptionDto[];
   initialProjectId?: string | null;
+  /** Makes the content the panel of the tab list rendered as navigation. */
+  navigationPanel?: TabPanelBinding;
   renderNavigation?: (busy: boolean, hasDraft: boolean) => ReactNode;
   onCloseAction: () => void;
   onCreatedAction: (file: PortalFileDto) => void;
@@ -21,6 +24,7 @@ export function PortalFileLinkDialog({
   customerId,
   projects,
   initialProjectId = null,
+  navigationPanel,
   renderNavigation,
   onCloseAction,
   onCreatedAction,
@@ -43,6 +47,7 @@ export function PortalFileLinkDialog({
         />
       }
       labels={{ ...content.link, title: content.add.title }}
+      navigationPanel={navigationPanel}
       renderNavigation={
         renderNavigation
           ? (busy, hasDraft) =>

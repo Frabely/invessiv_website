@@ -12,3 +12,4 @@ export * from "./reference-shot";
 export * from "./reference-testimonial";
 export * from "./references-hero-question";
 export * from "./service-option";
+export * from "./trust-point";
