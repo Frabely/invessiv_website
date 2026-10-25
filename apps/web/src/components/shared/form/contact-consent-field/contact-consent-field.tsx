@@ -1,9 +1,9 @@
 "use client";
 
 import type { FieldValues, Path, UseFormRegister } from "react-hook-form";
+import { CheckboxControl, FormRequiredMarker } from "@invessiv/ui";
 import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
 import { CONTACT_FORM_FIELD_NAME } from "@invessiv/common/constants/contact/contact-form-field-names";
-import { FormRequiredMarker } from "@/components/shared/form/form-required-marker/form-required-marker";
 import styles from "./contact-consent-field.module.css";
 import { TextCta } from "@/components/shared/text-cta/text-cta";
 
@@ -36,7 +36,7 @@ export function ContactConsentField<TValues extends FieldValues>({
 
   return (
     <label className={className}>
-      <input
+      <CheckboxControl
         {...registerAction(consentField, {
           validate: (value) =>
             value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
@@ -44,17 +44,11 @@ export function ContactConsentField<TValues extends FieldValues>({
         aria-describedby={errorId}
         aria-invalid={errorMessage ? "true" : undefined}
         className={checkboxClassName}
-        type="checkbox"
       />
       <span className={styles.text}>
         {consentLabel}{" "}
         <span className={styles.privacyGroup}>
-          <TextCta
-            variant="quaternary"
-            className={styles.link}
-            href={privacyHref}
-            target="_self"
-          >
+          <TextCta href={privacyHref} target="_self">
             {privacyLabel}
           </TextCta>
           {privacySuffix}

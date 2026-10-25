@@ -16,7 +16,6 @@ export function QnaContactCta({ hint, href, label }: QnaContactCtaProps) {
     <p className={styles.cta}>
       <span className={styles.hint}>{hint}</span>
       <TextCta
-        variant="quaternary"
         className={styles.link}
         href={href}
         {...analyticsAttributes(AnalyticsEventName.CtaClicked, {

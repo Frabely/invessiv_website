@@ -6,22 +6,7 @@
   visibility: hidden;
 }
 
-.link {
-  text-decoration: none;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.16em;
-}
-
-.link:hover,
-.link:focus-visible {
-  text-decoration-color: var(--color-cta-hover);
-}
-
-.link:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 3px;
-}
-
+/* The marker follows the suffix directly inside the nowrap group, without its own gap. */
 .requiredMarker {
   margin: 0;
 }

@@ -54,7 +54,7 @@ typography:
     letterSpacing: "0.04em"
 rounded:
   control: "12px"
-  field: "15px"
+  field: "10px"
   card: "16px"
   card-comfort: "24px"
   card-large: "28px"
@@ -86,8 +86,8 @@ components:
     textColor: "{colors.dark-text}"
     typography: "{typography.body}"
     rounded: "{rounded.field}"
-    padding: "0.9rem 1rem"
-    height: "50px"
+    padding: "0.45rem 0.5rem"
+    height: "44px"
   card:
     backgroundColor: "{colors.dark-surface}"
     textColor: "{colors.dark-text}"
@@ -255,8 +255,11 @@ Komponenten wirken präzise und souverän: klare Zustände, leicht taktiles Feed
 
 ### Inputs / Fields
 
-- **Style:** Tonal gefüllte Felder, klare Labels, großzügige Höhe und lesbarer Hilfetext.
-- **Focus:** Sichtbarer Fokusring plus leichte Akzentkontur.
+- **Style:** Tonal gefüllte Felder, klare Labels und lesbarer Hilfetext. Höhe, Radius und Kontur kommen aus den
+  gemeinsamen Control-Tokens (44px, 10px) und sind in Website und Workspace gleich.
+- **Focus:** Zwei-Pixel-Ring im Orange→Blau-Aktionsverlauf mit Abstand. Einfarbige Fokuskonturen nutzen
+  `--color-focus` (orangefarbener Verlaufsstart).
+- **Pflicht:** Stern und Pflichtfeld-Hinweis stehen im Aktionsverlauf; der Checked-Zustand der Checkbox ebenso.
 - **Error / Disabled:** Fehler werden textlich und farblich erklärt; deaktivierte Elemente verlieren Kontrast und Bewegung, bleiben aber erkennbar.
 
 ### Navigation

@@ -3,22 +3,16 @@
 }
 
 .trigger {
-  composes: palette from "../action-color/action-color.module.css";
-  position: relative;
+  composes: focusRing from "../action-color/action-color.module.css";
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 0.55rem;
   width: 100%;
-  /* Opt into uniform controls through tokens; existing consumers keep their original dimensions. */
-  min-height: var(--control-height, 44px);
+  min-height: var(--control-height);
   padding: 0.45rem 2rem 0.45rem 0.65rem;
-  border: 1px solid
-    var(
-      --control-border-color,
-      color-mix(in srgb, var(--color-border-strong) 56%, transparent)
-    );
-  border-radius: var(--control-radius, 10px);
+  border: 1px solid var(--control-border-color);
+  border-radius: var(--control-radius);
   background: color-mix(
     in srgb,
     var(--color-surface-2) 64%,
@@ -39,12 +33,6 @@
 
 .trigger[data-clearable] {
   padding-right: 3.4rem;
-}
-
-.trigger:focus-visible {
-  outline: none;
-  border-color: color-mix(in srgb, var(--color-cta) 70%, transparent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-cta) 24%, transparent);
 }
 
 .trigger[data-invalid] {
@@ -193,7 +181,7 @@
 }
 
 .clearButton:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-cta) 55%, transparent);
+  outline: 2px solid var(--color-focus);
   outline-offset: 1px;
 }
 

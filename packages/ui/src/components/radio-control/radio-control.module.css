@@ -1,5 +1,7 @@
 .root {
-  position: relative;
+  composes: focusRing from "../action-color/action-color.module.css";
+  --focus-ring-radius: 50%;
+  --focus-ring-offset: 2px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -52,11 +54,6 @@
     var(--color-cta) 36% 100%
   );
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-cta) 16%, transparent);
-}
-
-.input:focus-visible + .dot {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
 }
 
 .root[data-disabled="true"] .dot {

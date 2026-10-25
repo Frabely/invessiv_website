@@ -3,10 +3,25 @@
   gap: 0.48rem;
 }
 
+.labelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
 .label {
   color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
   font-size: var(--form-label-size, var(--font-size-label-md));
   font-weight: 700;
+  line-height: 1.4;
+}
+
+.labelSuffix {
+  flex: none;
+  color: color-mix(in srgb, var(--color-text) 52%, var(--color-text-muted) 48%);
+  font-size: var(--font-size-caption);
+  font-variant-numeric: tabular-nums;
   line-height: 1.4;
 }
 
@@ -15,7 +30,7 @@
 }
 
 .inputShell {
-  position: relative;
+  composes: focusRing from "../../action-color/action-color.module.css";
   display: block;
 }
 
@@ -115,13 +130,6 @@
 .control :global(input::placeholder),
 .control :global(textarea::placeholder) {
   color: color-mix(in srgb, var(--color-text) 48%, var(--color-text-muted) 52%);
-}
-
-.control :global(input:where(:not([type="color"])):focus-visible),
-.control :global(textarea:focus-visible) {
-  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
-  outline-offset: 2px;
-  border-color: color-mix(in srgb, var(--color-cta) 50%, transparent);
 }
 
 @media (min-width: 1100px) {

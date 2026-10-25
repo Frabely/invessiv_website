@@ -429,7 +429,7 @@
 
 .reply:focus-visible {
   border-color: var(--color-cta);
-  outline: 2px solid var(--color-cta);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 

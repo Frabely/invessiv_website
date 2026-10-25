@@ -119,8 +119,6 @@ describe("LandingPage", () => {
     const scoped = within(footer as HTMLElement);
     expect(scoped.getByRole("link", { name: "E-Mail schreiben" })).toBeTruthy();
     expect(scoped.getByRole("link", { name: "Anrufen" })).toBeTruthy();
-    expect(
-      footer?.querySelector('a[href="/de/imprint#company-details"]'),
-    ).toBeTruthy();
+    expect(scoped.queryByRole("link", { name: "Invessiv" })).toBeNull();
   });
 });

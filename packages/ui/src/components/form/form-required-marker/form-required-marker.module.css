@@ -1,5 +1,5 @@
 .marker {
+  composes: palette text from "../../action-color/action-color.module.css";
   margin-left: 4px;
-  color: var(--color-cta);
   font-weight: 800;
 }

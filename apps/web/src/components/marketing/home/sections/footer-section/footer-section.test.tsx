@@ -37,9 +37,10 @@ describe("FooterSection", () => {
     expect(
       screen.getByRole("link", { name: "Referenzen" }).getAttribute("href"),
     ).toBe("/de/references");
+    expect(screen.queryByRole("link", { name: "Invessiv" })).toBeNull();
     expect(
-      screen.getByRole("link", { name: "Invessiv" }).getAttribute("href"),
-    ).toBe("/de/imprint#company-details");
+      screen.getByText("Invessiv", { selector: "p" }).closest("a"),
+    ).toBeNull();
     expect(screen.getByText("Moritz Hecht")).toBeTruthy();
   });
 

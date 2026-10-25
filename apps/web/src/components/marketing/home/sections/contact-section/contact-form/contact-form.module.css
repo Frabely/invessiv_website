@@ -80,41 +80,9 @@
   box-shadow: none;
 }
 
-/* The message is optional, so it must not outweigh the required fields. */
-.messageField textarea {
-  width: 100%;
-  min-height: 128px;
-  resize: vertical;
-  border-radius: 15px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 64%,
-    var(--color-surface-1) 36%
-  );
-  color: var(--color-text);
-  font-size: var(--font-size-body-md);
-  line-height: 1.45;
-  padding: 0.76rem 0.92rem;
-}
-
-.messageField textarea::placeholder {
-  color: color-mix(in srgb, var(--color-text) 48%, var(--color-text-muted) 52%);
-}
-
-.messageField textarea:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
-  outline-offset: 2px;
-  border-color: color-mix(in srgb, var(--color-cta) 50%, transparent);
-}
-
 @media (max-width: 599px) {
   .panel {
     padding-inline: 0.625rem;
-  }
-
-  .messageField textarea {
-    min-height: 112px;
   }
 }
 

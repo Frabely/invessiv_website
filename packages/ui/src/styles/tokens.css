@@ -79,7 +79,8 @@
   );
   --color-cta: var(--color-action-base);
   --color-cta-hover: color-mix(in srgb, var(--color-action-base) 82%, #ffffff);
-  --color-focus: var(--color-action-base);
+  /* The start of the action gradient, so single-colour focus outlines match the gradient focus ring. */
+  --color-focus: var(--color-action-accent);
   --color-cta-active: color-mix(in srgb, var(--color-action-base) 88%, #000000);
   --color-danger: #d92d20;
   --color-on-cta: #18212f;
@@ -139,6 +140,16 @@
   --mobile-safe-top: env(safe-area-inset-top, 0px);
   --mobile-safe-bottom: env(safe-area-inset-bottom, 0px);
   --shadow-action: 0 3px 8px rgba(0, 0, 0, 0.16);
+  /* One height for text inputs, option tiles and form buttons; 44px is the smallest touch target. */
+  --control-height: 44px;
+  /* Corner radius of the same controls. */
+  --control-radius: 10px;
+  /* Frame of those controls at rest. */
+  --control-border-color: color-mix(
+    in srgb,
+    var(--color-border) 76%,
+    transparent
+  );
 }
 
 [data-theme="light"] {

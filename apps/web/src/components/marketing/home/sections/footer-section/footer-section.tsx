@@ -121,7 +121,6 @@ export function FooterSection({
               <section className={styles.column} role="listitem">
                 <h3 className={styles.heading}>{copy.contactTitle}</h3>
                 <ContactIdentity
-                  animateBrandLink
                   analyticsArea={AnalyticsArea.Footer}
                   centerOnMobile
                   channels={CONTACT_CHANNEL_KEYS}

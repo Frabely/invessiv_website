@@ -5,7 +5,7 @@ import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
-import { ButtonLink, PrimaryCtaLink } from "@/components/shared/button/button";
+import { ButtonLink, PrimaryCtaLink } from "@invessiv/ui";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { GradientText } from "@/components/shared/gradient-text/gradient-text";
 import { TrustPoints } from "@/components/marketing/shared/trust-points/trust-points";

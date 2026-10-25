@@ -83,10 +83,53 @@
   background-clip: padding-box, border-box;
 }
 
+/*
+ * Gradient focus ring. An outline cannot carry a gradient, so a masked pseudo element draws it.
+ * It goes on the element itself or on a wrapper of a control that cannot hold pseudo elements
+ * (input, textarea); the wrapped control drops its own outline.
+ */
+.focusRing {
+  composes: palette;
+  --focus-ring-width: 2px;
+  position: relative;
+}
+
+.focusRing::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * (var(--focus-ring-offset, 3px) + var(--focus-ring-width)));
+  border: var(--focus-ring-width) solid transparent;
+  border-radius: calc(
+    var(--focus-ring-radius, var(--control-radius)) +
+      var(--focus-ring-offset, 3px) + var(--focus-ring-width)
+  );
+  background: var(--action-gradient) border-box;
+  mask:
+    linear-gradient(#000 0 0) padding-box,
+    linear-gradient(#000 0 0) border-box;
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.focusRing:is(:focus-visible, :has(:focus-visible))::after {
+  opacity: 1;
+}
+
+.focusRing:is(:focus-visible, :has(:focus-visible)),
+.focusRing :focus-visible {
+  outline: none;
+}
+
 @media (forced-colors: active) {
   .text,
   .palette:is(:hover, :focus-within) .hoverText {
     background-image: none;
     -webkit-text-fill-color: currentColor;
+  }
+
+  .focusRing::after {
+    forced-color-adjust: none;
+    background: Highlight;
   }
 }

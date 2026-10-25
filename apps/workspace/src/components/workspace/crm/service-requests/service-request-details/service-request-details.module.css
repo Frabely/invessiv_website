@@ -66,7 +66,7 @@
 }
 
 .link:focus-visible {
-  outline: 2px solid var(--color-cta);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 /* What went out and when; internal, the customer never sees the amount. */

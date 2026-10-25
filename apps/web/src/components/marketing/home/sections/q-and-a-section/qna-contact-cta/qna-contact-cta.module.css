@@ -13,16 +13,9 @@
 }
 
 .link {
-  color: var(--color-cta);
   font-size: var(--font-size-body-md);
   font-weight: 600;
   line-height: 1.4;
-}
-
-.link:focus-visible {
-  border-radius: 8px;
-  outline: 2px solid var(--color-focus);
-  outline-offset: 4px;
 }
 
 :global([data-theme="light"]) .hint {

@@ -6,23 +6,13 @@
  * Global CSS contract:
  * - Tailwind base import
  * - shared palette, typography, layout tokens and base reset from @invessiv/ui/styles
- * - workspace-only tokens (form controls, status colors, widget accents)
+ * - workspace-only tokens (status colors, widget accents)
  *
  * Component, section, and route-specific styles must not be added here.
  */
 
 /* Workspace tokens */
 :root {
-  /* One height for text inputs, option tiles and form buttons; 44px is the smallest touch target. */
-  --control-height: 44px;
-  /* Corner radius of the same controls. */
-  --control-radius: 10px;
-  /* Frame of those controls at rest. */
-  --control-border-color: color-mix(
-    in srgb,
-    var(--color-border) 76%,
-    transparent
-  );
   --color-success: #36b37e;
   /* Widget colors stay app-owned and are not part of the shared palette. */
   --widget-accent-blue: oklch(0.76 0.12 258);

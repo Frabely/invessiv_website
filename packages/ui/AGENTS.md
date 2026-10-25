@@ -65,8 +65,7 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 ## Formular-Bausteine sehen gleich aus (verbindlich)
 
 - **Eine Höhe und ein Eckenradius für alle Controls:** `--control-height`, `--control-radius` und
-  `--control-border-color` (in der
-  `globals.css` der App definiert). Texteingaben
+  `--control-border-color` (zentral in `src/styles/tokens.css`, gleich für alle Apps). Texteingaben
   (`FormField`), Options-Kacheln (`OptionTile`) und Buttons in Formularen (`ButtonControl` mit `size="control"`)
   richten sich danach. Kein Control setzt eine eigene feste Höhe.
 - **Gleiches Gerüst:** Label, Abstand Label → Control, Hinweis (`FormHint`) und Fehler sehen in `FormField` und
@@ -90,9 +89,14 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - **Das Token muss ankommen:** Fehlt `--control-height` zur Laufzeit, fallen alle Controls still auf ihre Inhaltshöhe
   zurück und sind dann unterschiedlich hoch. Sieht ein Formular so aus, zuerst prüfen, ob das ausgelieferte globale
   Stylesheet das Token enthält (Dev-Server neu starten), bevor an den Komponenten gedreht wird.
-  **Kompatibilitätsausnahme:** `CustomSelect` bewahrt ohne diese Tokens seine bisherigen Werte (44 px Mindesthöhe,
-  10 px Radius und bisherige Rahmenfarbe), damit die Web-App unverändert bleibt. Die vereinheitlichten Tokens
-  werden aktuell nur im Workspace gesetzt; dafür keine Änderungen an `apps/web/src/app/globals.css` vornehmen.
+- **Fokus im Aktionsverlauf:** Form-Controls (`FormField`, `CheckboxControl`, `RadioControl`, `OptionTile`,
+  `CustomSelect`) zeigen den Fokus als Orange→Blau-Verlaufsring über `focusRing` aus
+  `components/action-color/action-color.module.css`. Inputs und Textareas tragen keine Pseudo-Elemente, daher sitzt
+  der Ring auf ihrer Hülle. Einfarbige Fokus-Outlines nutzen immer `--color-focus` (Verlaufsstart), nie `--color-cta`.
+- **Pflicht-Kennzeichnung und Checked im Aktionsverlauf:** `FormRequiredMarker`, der Pflicht-Hinweis in `FormActions`
+  und der Checked-Zustand von `CheckboxControl` nutzen den Aktionsverlauf statt Blau.
+- **Web nutzt dieselben Bausteine:** Die Web-App hat keine eigenen Kopien von `FormField`, `FormActions`,
+  `FormStatus`, `FormRequiredMarker` oder Buttons mehr. Next-Links laufen über `linkComponent={Link}`.
 
 ## Widgets (verbindlich)
 

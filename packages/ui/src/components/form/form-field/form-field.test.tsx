@@ -8,6 +8,20 @@ import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds"
 import { FormField } from "@invessiv/ui";
 
 describe("FormField", () => {
+  it("shows a label suffix next to the label without changing the accessible name", () => {
+    render(
+      <FormField
+        kind={FormFieldKind.Text}
+        label="Topic"
+        labelSuffix="3/280"
+        inputProps={{ name: "topic" }}
+      />,
+    );
+
+    expect(screen.getByText("3/280")).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByRole("textbox", { name: "Topic" })).toBeInTheDocument();
+  });
+
   it("renders input, number, and textarea controls with shared accessibility wiring", () => {
     render(
       <div>

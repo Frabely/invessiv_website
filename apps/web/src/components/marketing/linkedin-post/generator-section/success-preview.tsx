@@ -1,4 +1,4 @@
-import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { PrimaryCtaLink } from "@invessiv/ui";
 import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import { AnalyticsTarget } from "@/common/constants/analytics/analytics-target";

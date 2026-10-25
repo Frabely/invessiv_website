@@ -9,7 +9,7 @@ import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import { AnalyticsCalendarSource } from "@/common/constants/analytics/analytics-form";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
-import { ButtonLink, PrimaryCtaLink } from "@/components/shared/button/button";
+import { ButtonLink, PrimaryCtaLink } from "@invessiv/ui";
 import type { SuccessPageContent } from "@/i18n/dictionaries/shared/success-page";
 import styles from "./success-page.module.css";
 

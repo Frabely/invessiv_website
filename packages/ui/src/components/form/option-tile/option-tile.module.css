@@ -1,5 +1,6 @@
 /* Frame, surface and height of a text input, so options and inputs read as one family. */
 .tile {
+  composes: focusRing from "../../action-color/action-color.module.css";
   display: flex;
   align-items: center;
   gap: 0.7rem;
@@ -34,12 +35,7 @@
   cursor: default;
 }
 
-.tile:has(input:focus-visible) {
-  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
-  outline-offset: 2px;
-}
-
 /* The tile shows the focus; a second ring around the small control would only double it. */
-.tile.tile :global(input:focus-visible) + * {
-  outline: none;
+.tile.tile :global(:has(> input:focus-visible))::after {
+  opacity: 0;
 }

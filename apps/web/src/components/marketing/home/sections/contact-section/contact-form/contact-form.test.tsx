@@ -92,10 +92,10 @@ describe("ContactForm", () => {
           privacyHref="/privacy"
         />,
       );
-      fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      fireEvent.change(screen.getByRole("textbox", { name: /^Name/ }), {
         target: { value: "Example" },
       });
-      fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+      fireEvent.change(screen.getByRole("textbox", { name: /^E-Mail/ }), {
         target: { value: "example@example.com" },
       });
       fireEvent.click(screen.getByRole("checkbox"));
@@ -136,10 +136,10 @@ describe("ContactForm", () => {
         privacyHref="/privacy"
       />,
     );
-    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^Name/ }), {
       target: { value: "Example" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^E-Mail/ }), {
       target: { value: "example@example.com" },
     });
     fireEvent.click(screen.getByRole("checkbox"));
@@ -168,10 +168,10 @@ describe("ContactForm", () => {
         />,
       );
 
-      const nameInput = screen.getByRole("textbox", { name: "Name" });
+      const nameInput = screen.getByRole("textbox", { name: /^Name/ });
       fireEvent.input(nameInput, { target: { value: "Mara Kern" } });
       fireEvent.input(nameInput, { target: { value: "Mara Kerner" } });
-      fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+      fireEvent.change(screen.getByRole("textbox", { name: /^E-Mail/ }), {
         target: { value: "mara@example.com" },
       });
       fireEvent.click(screen.getByRole("checkbox"));
@@ -232,10 +232,10 @@ describe("ContactForm", () => {
       />,
     );
     expect(screen.queryByRole("group", { name: /Leistungsmodell/ })).toBeNull();
-    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^Name/ }), {
       target: { value: "Mara Kern" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^E-Mail/ }), {
       target: { value: "mara@example.com" },
     });
     fireEvent.click(screen.getByRole("checkbox"));
@@ -281,10 +281,10 @@ describe("ContactForm", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^Name/ }), {
       target: { value: "Mara Kern" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^E-Mail/ }), {
       target: { value: "mara@example.com" },
     });
     fireEvent.click(screen.getByRole("radio", { name: "Kompakte Website" }));
@@ -323,10 +323,10 @@ describe("ContactForm", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^Name/ }), {
       target: { value: "Mara Kern" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^E-Mail/ }), {
       target: { value: "mara@example.com" },
     });
     fireEvent.click(screen.getByRole("checkbox"));
@@ -391,10 +391,10 @@ describe("ContactForm", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^Name/ }), {
       target: { value: "Bot" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^E-Mail/ }), {
       target: { value: "bot@example.com" },
     });
     fireEvent.click(screen.getByRole("checkbox"));
@@ -420,10 +420,10 @@ describe("ContactForm", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^Name/ }), {
       target: { value: "Bot" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^E-Mail/ }), {
       target: { value: "bot@example.com" },
     });
     fireEvent.click(screen.getByRole("checkbox"));
@@ -449,10 +449,10 @@ describe("ContactForm", () => {
         privacyHref="/privacy"
       />,
     );
-    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^Name/ }), {
       target: { value: "Mara Kern" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /^E-Mail/ }), {
       target: { value: "mara@example.com" },
     });
     fireEvent.click(screen.getByRole("checkbox"));
@@ -492,10 +492,10 @@ it("falls back from a booking tab closed while the request was pending", async (
       privacyHref="/privacy"
     />,
   );
-  fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+  fireEvent.change(screen.getByRole("textbox", { name: /^Name/ }), {
     target: { value: "Example" },
   });
-  fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+  fireEvent.change(screen.getByRole("textbox", { name: /^E-Mail/ }), {
     target: { value: "example@example.com" },
   });
   fireEvent.click(screen.getByRole("checkbox"));
