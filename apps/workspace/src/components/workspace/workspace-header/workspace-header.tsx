@@ -100,8 +100,6 @@ export function WorkspaceHeader({
               collapseLabelOnMobile
               label={headerContent.brandLabel}
               logoAlt={headerContent.brandLogoAlt}
-              logoWidth={1562}
-              logoHeight={1333}
               priority
             />
           </a>

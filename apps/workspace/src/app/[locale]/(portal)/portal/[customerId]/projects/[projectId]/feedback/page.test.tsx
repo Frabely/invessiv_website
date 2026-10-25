@@ -207,7 +207,7 @@ describe("PortalFeedbackPage", () => {
       }),
     });
 
-    expect(metadata.title).toBe("Feedback | Invessiv");
+    expect(metadata.title).toBe("Feedback");
     expect(metadata.robots).toMatchObject({ index: false, follow: false });
   });
 });

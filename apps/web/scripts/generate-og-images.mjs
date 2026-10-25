@@ -73,7 +73,9 @@ async function renderImage(page, assets, content, fileName, options = {}) {
 }
 
 await mkdir(outputDirectory, { recursive: true });
-const { logo } = await readJson("common/constants/brand/brand-assets.json");
+const { logo } = await readJson(
+  "../../packages/common/src/constants/brand/brand-assets.json",
+);
 const [home, references, logoImage, css] = await Promise.all([
   imageData("assets/home/hero_cutted.jpg", "image/jpeg"),
   imageData("assets/reference-allmacher.png", "image/png"),

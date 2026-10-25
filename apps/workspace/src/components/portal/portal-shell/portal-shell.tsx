@@ -5,6 +5,7 @@ import Image from "next/image";
 import { type ReactNode, useState } from "react";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { BrandLogo } from "@invessiv/common/constants/brand/brand-logo";
 import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
 import {
   ButtonControl,
@@ -94,13 +95,7 @@ export function PortalShell({
             className={styles.brand}
             href={homeHref}
           >
-            <Image
-              alt=""
-              height={28}
-              priority
-              src="/brand/invessiv-logo.svg"
-              width={33}
-            />
+            <Image alt="" height={28} priority src={BrandLogo.src} width={33} />
           </a>
           <div className={styles.switcherSlot}>{switcher}</div>
           {notice ? <div className={styles.noticeSlot}>{notice}</div> : null}

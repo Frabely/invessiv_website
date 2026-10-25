@@ -237,7 +237,7 @@ describe("PortalFilesPage", () => {
       searchParams: Promise.resolve({}),
     });
 
-    expect(metadata.title).toBe("Files | Invessiv");
+    expect(metadata.title).toBe("Files");
     expect(metadata.robots).toMatchObject({ index: false, follow: false });
   });
 });

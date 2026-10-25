@@ -1,6 +1,5 @@
+import { BrandLogo } from "@invessiv/common/constants/brand/brand-logo";
 import styles from "./brand-lockup.module.css";
-
-const BRAND_LOGO_SRC = "/brand/invessiv-logo.svg";
 
 export type BrandLockupProps = {
   collapseLabelOnMobile?: boolean;
@@ -21,9 +20,9 @@ export function BrandLockup({
   collapseLabelOnMobile,
   label,
   logoAlt,
-  logoSrc = BRAND_LOGO_SRC,
-  logoWidth = 1338,
-  logoHeight = 1341,
+  logoSrc = BrandLogo.src,
+  logoWidth = BrandLogo.width,
+  logoHeight = BrandLogo.height,
   priority,
 }: BrandLockupProps) {
   return (

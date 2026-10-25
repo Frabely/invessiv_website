@@ -15,7 +15,10 @@ describe("BrandLockup", () => {
     render(<BrandLockup label="Invessiv" logoAlt="Invessiv Logo" priority />);
 
     const logo = screen.getByRole("img", { name: "Invessiv Logo" });
-    expect(logo).toHaveAttribute("src", "/brand/invessiv-logo.svg");
+    expect(logo).toHaveAttribute(
+      "src",
+      "/brand/invessiv-logo-mehr-abstand.svg",
+    );
     expect(logo).toHaveAttribute("fetchpriority", "high");
     expect(screen.getByText("Invessiv")).toBeInTheDocument();
   });
@@ -60,15 +63,15 @@ describe("BrandLockup", () => {
     rerender(<BrandLockup label="Invessiv" logoAlt="Brand" />);
     expect(screen.getByRole("img", { name: "Brand" })).toHaveAttribute(
       "src",
-      "/brand/invessiv-logo.svg",
+      "/brand/invessiv-logo-mehr-abstand.svg",
     );
     expect(screen.getByRole("img", { name: "Brand" })).toHaveAttribute(
       "width",
-      "1338",
+      "1562",
     );
     expect(screen.getByRole("img", { name: "Brand" })).toHaveAttribute(
       "height",
-      "1341",
+      "1333",
     );
   });
 });

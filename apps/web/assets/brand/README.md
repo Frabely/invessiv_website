@@ -1,6 +1,6 @@
 # Markenbilder erzeugen
 
-Die gemeinsame Logo-Quelle steht in `common/constants/brand/brand-assets.json` und wird von Website und Export-Skripten gelesen. Die SVG wird vollständig eingepasst, einschließlich des abgesetzten Punkts. `favicon-background.png` ist der von Moritz bereitgestellte Hintergrund.
+Die gemeinsame Logo-Quelle steht in `packages/common/src/constants/brand/brand-assets.json` und wird von Website, Workspace (über `BrandLogo` in `@invessiv/common` bzw. `BrandLockup` in `@invessiv/ui`) und den Export-Skripten gelesen. Die SVG wird vollständig eingepasst, einschließlich des abgesetzten Punkts. `favicon-background.png` ist der von Moritz bereitgestellte Hintergrund.
 
 Aus dem Repository-Root:
 

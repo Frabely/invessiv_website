@@ -81,8 +81,6 @@ export function AuthFrame({ children, content, locale }: AuthFrameProps) {
           <BrandLockup
             label={content.brandLabel}
             logoAlt={content.brandLogoAlt}
-            logoWidth={1562}
-            logoHeight={1333}
             priority
           />
         </a>

@@ -10,7 +10,10 @@ const webRoot = path.resolve(
 const publicRoot = path.join(webRoot, "public");
 const { logo } = JSON.parse(
   await readFile(
-    path.join(webRoot, "common/constants/brand/brand-assets.json"),
+    path.join(
+      webRoot,
+      "../../packages/common/src/constants/brand/brand-assets.json",
+    ),
     "utf8",
   ),
 );

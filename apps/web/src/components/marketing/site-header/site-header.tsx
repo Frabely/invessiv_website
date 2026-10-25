@@ -18,7 +18,6 @@ import {
   PrimaryCtaLink,
   ThemeSwitch,
 } from "@invessiv/ui";
-import { BRAND_ASSETS } from "@/common/constants/brand/brand-assets";
 import { ReadingProgress } from "@/components/marketing/shared/reading-progress/reading-progress";
 import type { NavigationItem } from "@/config/navigation/home";
 import { SECTION_HREFS } from "@/config/navigation/home";
@@ -150,9 +149,6 @@ export function SiteHeader({
           <BrandLockup
             label={ui.brandLabel}
             logoAlt={ui.brandLogoAlt}
-            logoSrc={BRAND_ASSETS.logo.src}
-            logoWidth={BRAND_ASSETS.logo.width}
-            logoHeight={BRAND_ASSETS.logo.height}
             priority
           />
         </a>
