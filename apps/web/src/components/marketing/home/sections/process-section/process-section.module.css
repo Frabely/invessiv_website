@@ -117,11 +117,11 @@
 }
 
 .journeyGradientStart {
-  stop-color: var(--color-accent-warm);
+  stop-color: var(--color-action-accent);
 }
 
 .journeyGradientEnd {
-  stop-color: var(--color-brand-secondary);
+  stop-color: var(--color-cta);
 }
 
 .journeyProgress {
@@ -129,9 +129,13 @@
   stroke: url(#processJourneyGradient);
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 3;
+  stroke-width: 5;
   vector-effect: non-scaling-stroke;
-  filter: none;
+  filter: drop-shadow(
+      0 0 6px color-mix(in srgb, var(--color-action-accent) 70%, transparent)
+    )
+    drop-shadow(0 0 16px color-mix(in srgb, var(--color-cta) 60%, transparent))
+    drop-shadow(0 0 32px color-mix(in srgb, var(--color-cta) 36%, transparent));
   visibility: hidden;
 }
 
@@ -158,11 +162,21 @@
 }
 
 .pathPointLeader {
+  --process-leader-glow:
+    0 0 0 8px color-mix(in srgb, var(--color-cta) 26%, transparent),
+    0 0 28px color-mix(in srgb, var(--color-cta) 62%, transparent);
+  --process-leader-glow-peak:
+    0 0 0 18px color-mix(in srgb, var(--color-cta) 20%, transparent),
+    0 0 48px color-mix(in srgb, var(--color-cta-hover) 82%, transparent);
   width: 18px;
   height: 18px;
   border-width: 2px;
-  background: var(--color-cta);
-  box-shadow: none;
+  background: linear-gradient(
+    135deg,
+    var(--color-action-accent),
+    var(--color-cta)
+  );
+  box-shadow: var(--process-leader-glow);
   transform: translate(
     calc(var(--process-leader-x) - 9px),
     calc(var(--process-leader-y) - 9px)
@@ -179,7 +193,7 @@
 }
 
 .pathPointLeader[data-finished="true"] {
-  animation: none;
+  animation: processLeaderPulse 0.72s ease-out 1 both;
 }
 
 .endCta {
@@ -228,6 +242,7 @@
     var(--color-cta) 12%,
     var(--color-surface-1)
   );
+  --process-active-glow-opacity: 0.72;
   position: relative;
   width: min(100%, 29rem);
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
@@ -269,6 +284,7 @@
 
 .step[data-journey-state="active"],
 :global([data-theme="light"]) .step[data-journey-state="active"] {
+  border-width: 2px;
   border-color: transparent;
   background:
     linear-gradient(
@@ -279,6 +295,28 @@
     var(--action-gradient) border-box;
   background-color: var(--process-active-surface);
   box-shadow: none;
+}
+
+/* A box-shadow cannot carry a gradient, so a blurred layer behind the card mirrors the border. */
+.stepGlow {
+  position: absolute;
+  inset: -6px;
+  z-index: -1;
+  border-radius: 22px;
+  background: var(--action-gradient);
+  filter: blur(18px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 320ms ease;
+}
+
+.step[data-journey-state="active"] .stepGlow {
+  opacity: var(--process-active-glow-opacity);
+}
+
+/* The 2px border takes one pixel from the padding, so the content does not shift. */
+.step[data-journey-state="active"] .stepInner {
+  padding: 23px;
 }
 
 .step[data-journey-state="active"] .stepResult {
@@ -369,39 +407,10 @@
 
 .step[data-journey-state="active"] .stepNumber,
 :global([data-theme="light"]) .step[data-journey-state="active"] .stepNumber {
-  border-color: var(--color-cta);
-  background: transparent;
-  color: var(--color-cta);
-}
-
-@supports ((background-clip: text) or (-webkit-background-clip: text)) and
-  (mask-composite: exclude) {
-  .step[data-journey-state="active"] .stepNumber,
-  :global([data-theme="light"]) .step[data-journey-state="active"] .stepNumber {
-    border-color: transparent;
-    background-image: var(--action-gradient);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .step[data-journey-state="active"] .stepNumber::after {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    padding: 1px;
-    border-radius: inherit;
-    background-image: var(--action-gradient);
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    pointer-events: none;
-  }
+  border-color: transparent;
+  background: var(--action-gradient);
+  color: var(--color-on-cta);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--color-cta) 70%, transparent);
 }
 
 .stepTitle {
@@ -477,6 +486,7 @@
     var(--color-cta) 8%,
     var(--color-surface-1)
   );
+  --process-active-glow-opacity: 0.42;
 }
 
 :global([data-theme="light"]) .stepNumber {
@@ -486,7 +496,11 @@
 }
 
 :global([data-theme="light"]) .journeyProgress {
-  filter: none;
+  filter: drop-shadow(
+      0 0 6px color-mix(in srgb, var(--color-action-accent) 55%, transparent)
+    )
+    drop-shadow(0 0 16px color-mix(in srgb, var(--color-cta) 48%, transparent))
+    drop-shadow(0 0 28px color-mix(in srgb, var(--color-cta) 26%, transparent));
 }
 
 :global([data-theme="light"]) .pathPoint {
@@ -500,8 +514,33 @@
 }
 
 :global([data-theme="light"]) .pathPointLeader {
-  background: var(--color-cta);
-  box-shadow: none;
+  --process-leader-glow:
+    0 0 0 8px color-mix(in srgb, var(--color-cta) 16%, transparent),
+    0 0 28px color-mix(in srgb, var(--color-cta) 28%, transparent);
+  --process-leader-glow-peak:
+    0 0 0 16px color-mix(in srgb, var(--color-cta) 14%, transparent),
+    0 0 40px color-mix(in srgb, var(--color-cta) 44%, transparent);
+}
+
+@keyframes processLeaderPulse {
+  0%,
+  100% {
+    transform: translate(
+        calc(var(--process-leader-x) - 9px),
+        calc(var(--process-leader-y) - 9px)
+      )
+      scale(1);
+    box-shadow: var(--process-leader-glow);
+  }
+
+  55% {
+    transform: translate(
+        calc(var(--process-leader-x) - 9px),
+        calc(var(--process-leader-y) - 9px)
+      )
+      scale(1.18);
+    box-shadow: var(--process-leader-glow-peak);
+  }
 }
 
 @keyframes processEndCtaPulseMobile {
@@ -648,16 +687,23 @@
     transition: background-color 280ms ease;
   }
 
+  /* One pixel less on top and left: the active card has a 2px border. */
   .step[data-journey-state="active"]::before {
-    top: 25px;
+    top: 24px;
     left: calc(
-      (var(--process-rail-gutter) + var(--page-inline-gutter)) / -2 - 9px
+      (var(--process-rail-gutter) + var(--page-inline-gutter)) / -2 - 10px
     );
     width: 18px;
     height: 18px;
     border-color: rgba(255, 255, 255, 0.9);
-    background: var(--color-cta);
-    box-shadow: none;
+    background: linear-gradient(
+      135deg,
+      var(--color-action-accent),
+      var(--color-cta)
+    );
+    box-shadow:
+      0 0 0 6px color-mix(in srgb, var(--color-cta) 24%, transparent),
+      0 0 24px color-mix(in srgb, var(--color-cta) 58%, transparent);
   }
 
   .step[data-journey-state="passed"]::before {
@@ -672,8 +718,9 @@
 
   :global([data-theme="light"]) .step[data-journey-state="active"]::before {
     border-color: rgba(255, 255, 255, 0.96);
-    background: var(--color-cta);
-    box-shadow: none;
+    box-shadow:
+      0 0 0 6px color-mix(in srgb, var(--color-cta) 16%, transparent),
+      0 0 22px color-mix(in srgb, var(--color-cta) 28%, transparent);
   }
 
   .step[data-journey-state="passed"]::after {
@@ -712,6 +759,10 @@
   .stepInner {
     gap: 11px;
     padding: 19px 20px 18px;
+  }
+
+  .step[data-journey-state="active"] .stepInner {
+    padding: 18px 19px 17px;
   }
 
   .stepTitleRow {
@@ -753,6 +804,7 @@
   .step,
   .step::before,
   .step::after,
+  .stepGlow,
   .stepInner,
   .stepNumber,
   .endCta {

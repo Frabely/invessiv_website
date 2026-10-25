@@ -19,6 +19,8 @@ type UseProcessJourneyParams = {
 };
 
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+// Room around the layout so the drop-shadow glow of the path is not cut off by the mask edge.
+const MASK_GLOW_BLEED = 64;
 
 type CardAnchor = {
   card: HTMLElement;
@@ -123,15 +125,15 @@ export function useProcessJourney({
         while (mask.firstChild) {
           mask.removeChild(mask.firstChild);
         }
-        mask.setAttribute("x", "0");
-        mask.setAttribute("y", "0");
-        mask.setAttribute("width", `${Math.ceil(layoutRect.width)}`);
-        mask.setAttribute("height", `${layout.offsetHeight}`);
+        const maskWidth = `${Math.ceil(layoutRect.width) + 2 * MASK_GLOW_BLEED}`;
+        const maskHeight = `${layout.offsetHeight + 2 * MASK_GLOW_BLEED}`;
         const baseRect = document.createElementNS(SVG_NAMESPACE, "rect");
-        baseRect.setAttribute("x", "0");
-        baseRect.setAttribute("y", "0");
-        baseRect.setAttribute("width", `${Math.ceil(layoutRect.width)}`);
-        baseRect.setAttribute("height", `${layout.offsetHeight}`);
+        for (const element of [mask, baseRect]) {
+          element.setAttribute("x", `${-MASK_GLOW_BLEED}`);
+          element.setAttribute("y", `${-MASK_GLOW_BLEED}`);
+          element.setAttribute("width", maskWidth);
+          element.setAttribute("height", maskHeight);
+        }
         baseRect.setAttribute("fill", "#ffffff");
         mask.appendChild(baseRect);
         metrics.forEach((metric) => {
