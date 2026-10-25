@@ -4,16 +4,7 @@
 }
 
 .summary {
-  width: fit-content;
-  cursor: pointer;
   font-size: var(--font-size-ui-sm);
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  list-style: none;
-}
-
-.summary::-webkit-details-marker {
-  display: none;
 }
 
 .details[open] .expandLabel,

@@ -1,4 +1,5 @@
 export * from "./components/button/button";
+export * from "./components/text-cta/text-cta";
 export * from "./components/checkbox-control/checkbox-control";
 export * from "./components/duration-input/duration-input";
 export * from "./components/radio-control/radio-control";

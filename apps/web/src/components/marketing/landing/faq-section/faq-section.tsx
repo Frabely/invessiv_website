@@ -15,9 +15,8 @@ import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { LandingFaqContent } from "@/i18n/dictionaries/landing/faq";
 import styles from "./faq-section.module.css";
-import { TextCta } from "@/components/shared/text-cta/text-cta";
 import { DisclosureButton } from "@/components/shared/disclosure-button/disclosure-button";
-import { ActionIcon } from "@invessiv/ui";
+import { ActionIcon, QuaternaryCta, TertiaryCta } from "@invessiv/ui";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const INITIAL_VISIBLE_ITEMS = 5;
@@ -103,8 +102,7 @@ export function FaqSection({
                 <div className={styles.answerInner}>
                   <p className={styles.answer}>{item.answer}</p>
                   {item.link ? (
-                    <TextCta
-                      variant="quaternary"
+                    <QuaternaryCta
                       className={styles.answerLink}
                       {...analyticsAttributes(AnalyticsEventName.NavClicked, {
                         item: getNavigationItem(item.link.href),
@@ -113,7 +111,7 @@ export function FaqSection({
                       href={item.link.href}
                     >
                       {item.link.label}
-                    </TextCta>
+                    </QuaternaryCta>
                   ) : null}
                 </div>
               </div>
@@ -128,8 +126,7 @@ export function FaqSection({
           data-reveal-item="true"
           data-visible="true"
         >
-          <TextCta
-            variant="quaternary"
+          <TertiaryCta
             className={styles.ctaLink}
             {...analyticsAttributes(AnalyticsEventName.CtaClicked, {
               cta: AnalyticsCtaId.LandingFaqContact,
@@ -138,7 +135,7 @@ export function FaqSection({
             href={cta.href}
           >
             {cta.label}
-          </TextCta>
+          </TertiaryCta>
         </p>
       ) : null}
 

@@ -98,6 +98,31 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - **Web nutzt dieselben Bausteine:** Die Web-App hat keine eigenen Kopien von `FormField`, `FormActions`,
   `FormStatus`, `FormRequiredMarker` oder Buttons mehr. Next-Links laufen über `linkComponent={Link}`.
 
+## CTA-Hierarchie (verbindlich)
+
+Aktionen haben vier Stufen. Jede Stufe hat eine benannte Komponente; Apps bauen keine eigenen Varianten.
+
+| Stufe        | Aussehen                                                                       | Komponenten                              |
+| ------------ | ------------------------------------------------------------------------------ | ---------------------------------------- |
+| 1 Primary    | Fläche im Orange→Blau-Verlauf                                                  | `PrimaryCtaButton`, `PrimaryCtaLink`     |
+| 2 Secondary  | ruhige Fläche mit Rahmen, beim Hover Verlaufsrahmen und -text                  | `SecondaryCtaButton`, `SecondaryCtaLink` |
+| 3 Tertiary   | Textlink, Text und Unterstreichung im Verlauf                                  | `TertiaryCta`                            |
+| 4 Quaternary | Textlink in `--color-cta`, Unterstreichung im Verlauf; beim Hover Verlaufstext | `QuaternaryCta`                          |
+
+- `TertiaryCta` und `QuaternaryCta` bauen auf `TextCta` auf (`variant` aus `TextCtaVariant`) und rendern als Link,
+  Button (`as="button"`) oder `summary` (`as="summary"`). Framework-Links laufen über `linkComponent`, wie bei
+  `ButtonLink`; `arrow` hängt einen dekorativen Pfeil an.
+- **Hover nur mit Maus:** Hover-Effekte aller Stufen gelten nur bei `hover: hover` (Textlinks zusätzlich
+  `pointer: fine`). Auf Touch-Geräten gibt es keinen Hover-Zustand.
+- **Hervorhebung nur bei Tastaturfokus:** Die Verlaufszustände in `action-color` (`palette`, `hoverText`,
+  `outlineOnHover`) reagieren auf `:focus-visible` bzw. `:has(:focus-visible)`, nie auf `:focus-within`. Sonst bliebe
+  ein angetipptes Element nach dem Tippen hervorgehoben.
+- **Größe ist Kontext, alles andere gehört der Komponente:** Textlinks haben ein festes Gewicht (600) und erben die
+  Schriftgröße. Aufrufer dürfen Schriftgröße, Zeilenhöhe und Layout (Abstand, Breite, Ausrichtung, Mindesthöhe)
+  setzen. Farbe, Gewicht, Unterstreichung, Hover und Fokus setzen sie nie.
+- Werte, Hover und Fokus der Stufen folgen dem Website-Standard (`apps/web/DESIGN.md`). Eine Abweichung davon wird
+  vorher mit dem Nutzer abgestimmt.
+
 ## Widgets (verbindlich)
 
 - **Reiter statt Kopf-Icon:** Das Icon eines `Widget` sitzt auf einem farbigen Reiter, der über die obere Kartenkante
@@ -146,5 +171,6 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 ## Bekannte Altlasten
 
 - `ProcessTrack` setzt die Stile seiner Schritt-Buttons zurück, statt eine eigene Schaltfläche zu nutzen.
-- Im Portal-Bogen macht der Prüfschritt aus `ButtonControl` optisch einen Textlink (`onboarding-submit-step`); dafür
-  fehlt ein Text-Button-Baustein.
+- Im Portal-Bogen macht der Prüfschritt aus `ButtonControl` optisch einen Textlink (`onboarding-submit-step`), ebenso
+  `feedback-item-text`. Weitere Workspace-Module bauen eigene blaue Textlinks. Ziel der späteren Migration sind
+  `TertiaryCta` und `QuaternaryCta` (`as="button"` für Aktionen); der Workspace ist bewusst noch nicht umgestellt.

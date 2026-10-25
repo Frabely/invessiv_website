@@ -126,6 +126,14 @@ export const PrimaryCtaButton = forwardRef<
   return <ButtonControl {...props} ref={ref} variant="primary" />;
 });
 
+/** Link form of the second action level. */
+export const SecondaryCtaLink = forwardRef<
+  HTMLAnchorElement,
+  Omit<ButtonLinkProps, "variant">
+>(function SecondaryCtaLink(props, ref) {
+  return <ButtonLink {...props} ref={ref} variant="ghost" />;
+});
+
 /** The second action next to a primary one, or a lone action that must not compete with it. */
 export const SecondaryCtaButton = forwardRef<
   HTMLButtonElement,

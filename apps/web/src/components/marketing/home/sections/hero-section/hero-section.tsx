@@ -4,7 +4,7 @@ import type { TrustPoint } from "@/common/contracts/marketing/trust-point";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 import { TrustPoints } from "@/components/marketing/shared/trust-points/trust-points";
-import { ButtonLink, PrimaryCtaLink } from "@invessiv/ui";
+import { PrimaryCtaLink, SecondaryCtaLink } from "@invessiv/ui";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { GradientText } from "@/components/shared/gradient-text/gradient-text";
 import { HERO_SECTION_ID } from "@/config/navigation/home";
@@ -92,8 +92,7 @@ export function HeroSection(props: HeroSectionProps) {
             >
               {heroPrimaryCta}
             </PrimaryCtaLink>
-            <ButtonLink
-              variant="ghost"
+            <SecondaryCtaLink
               className={`${styles.ctaButton} ${styles.secondaryCta}`}
               href={secondaryCtaHref}
               {...analyticsAttributes(
@@ -102,7 +101,7 @@ export function HeroSection(props: HeroSectionProps) {
               )}
             >
               {heroSecondaryCta}
-            </ButtonLink>
+            </SecondaryCtaLink>
           </div>
 
           {heroTrustChips ? (

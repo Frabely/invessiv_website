@@ -231,29 +231,8 @@
 }
 
 .answerLink {
-  display: inline-block;
   margin-top: 0.7rem;
-  color: var(--color-cta);
   font-size: clamp(0.95rem, 0.92rem + 0.18vw, 1.02rem);
-  font-weight: 500;
-  text-decoration: none;
-  text-underline-offset: 4px;
-  text-decoration-thickness: 1px;
-  transition:
-    color 200ms ease,
-    text-decoration-thickness 200ms ease;
-}
-
-.answerLink:hover,
-.answerLink:focus-visible {
-  color: var(--color-cta);
-  text-decoration-thickness: 2px;
-}
-
-.answerLink:focus-visible {
-  outline: 2px solid var(--color-highlight);
-  outline-offset: 4px;
-  border-radius: 2px;
 }
 
 .ctaLine {
@@ -263,35 +242,8 @@
 }
 
 .ctaLink {
-  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
   font-size: clamp(0.98rem, 0.94rem + 0.18vw, 1.04rem);
-  font-weight: 600;
   line-height: 1.5;
-  text-decoration: underline;
-  text-decoration-color: color-mix(
-    in srgb,
-    var(--color-highlight) 44%,
-    transparent
-  );
-  text-decoration-thickness: 1px;
-  text-underline-offset: 5px;
-  transition:
-    color 200ms ease,
-    text-decoration-color 200ms ease,
-    text-decoration-thickness 200ms ease;
-}
-
-.ctaLink:hover,
-.ctaLink:focus-visible {
-  color: var(--color-highlight);
-  text-decoration-color: currentColor;
-  text-decoration-thickness: 2px;
-}
-
-.ctaLink:focus-visible {
-  outline: 2px solid var(--color-highlight);
-  outline-offset: 5px;
-  border-radius: 2px;
 }
 
 @media (max-width: 960px) {

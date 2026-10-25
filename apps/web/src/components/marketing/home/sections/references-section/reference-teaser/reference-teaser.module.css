@@ -115,9 +115,7 @@
 }
 
 .link {
-  color: var(--color-cta);
   font-size: var(--font-size-body-sm);
-  font-weight: 700;
 }
 
 :global([data-theme="light"]) .name {

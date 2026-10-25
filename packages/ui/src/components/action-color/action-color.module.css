@@ -14,13 +14,23 @@
   );
 }
 
+/*
+ * Highlight states answer only to keyboard focus and to a real pointer hover. Plain :focus-within
+ * or an ungated :hover would keep the highlight after a tap on touch devices.
+ */
 .palette:where(:not([aria-pressed="true"], [data-selected="true"])):is(
-    :hover,
     :focus-visible,
-    :focus-within
+    :has(:focus-visible)
   ) {
   --action-gradient-start: var(--color-action-accent-hover);
   --action-gradient-end: var(--color-cta-hover);
+}
+
+@media (hover: hover) {
+  .palette:where(:not([aria-pressed="true"], [data-selected="true"])):hover {
+    --action-gradient-start: var(--color-action-accent-hover);
+    --action-gradient-end: var(--color-cta-hover);
+  }
 }
 
 .palette:where(:not([aria-pressed="true"], [data-selected="true"])):active {
@@ -38,8 +48,8 @@
   (color: color-mix(in srgb, red, blue)) {
   .text,
   .palette:where(:not([aria-pressed="true"], [data-selected="true"])):is(
-      :hover,
-      :focus-within
+      :focus-visible,
+      :has(:focus-visible)
     )
     .hoverText {
     background-image: var(--action-gradient);
@@ -48,6 +58,18 @@
     -webkit-text-fill-color: transparent;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
+  }
+
+  @media (hover: hover) {
+    .palette:where(:not([aria-pressed="true"], [data-selected="true"])):hover
+      .hoverText {
+      background-image: var(--action-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
   }
 }
 
@@ -71,7 +93,7 @@
 
 .palette.outlineOnHover:where(
     :not([aria-pressed="true"], [data-selected="true"])
-  ):is(:hover, :focus-within) {
+  ):is(:focus-visible, :has(:focus-visible)) {
   border-color: transparent;
   background-image:
     linear-gradient(
@@ -81,6 +103,22 @@
     var(--action-gradient);
   background-origin: padding-box, border-box;
   background-clip: padding-box, border-box;
+}
+
+@media (hover: hover) {
+  .palette.outlineOnHover:where(
+      :not([aria-pressed="true"], [data-selected="true"])
+    ):hover {
+    border-color: transparent;
+    background-image:
+      linear-gradient(
+        var(--action-surface, var(--color-surface-1)),
+        var(--action-surface, var(--color-surface-1))
+      ),
+      var(--action-gradient);
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+  }
 }
 
 /*
@@ -123,7 +161,7 @@
 
 @media (forced-colors: active) {
   .text,
-  .palette:is(:hover, :focus-within) .hoverText {
+  .palette:is(:hover, :focus-visible, :has(:focus-visible)) .hoverText {
     background-image: none;
     -webkit-text-fill-color: currentColor;
   }

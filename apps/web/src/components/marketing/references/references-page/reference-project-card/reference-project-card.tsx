@@ -10,7 +10,7 @@ import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { ReferenceCaseStory } from "./reference-case-story/reference-case-story";
 import { ReferenceResultGallery } from "./reference-result-gallery/reference-result-gallery";
 import styles from "./reference-project-card.module.css";
-import { TextCta } from "@/components/shared/text-cta/text-cta";
+import { QuaternaryCta } from "@invessiv/ui";
 
 type ReferenceProjectCardProps = {
   isReversed: boolean;
@@ -63,8 +63,7 @@ export function ReferenceProjectCard({
       </div>
 
       <div className={styles.projectActions}>
-        <TextCta
-          variant="quaternary"
+        <QuaternaryCta
           className={styles.projectLink}
           href={project.href}
           rel="noreferrer"
@@ -75,7 +74,7 @@ export function ReferenceProjectCard({
           })}
         >
           {project.linkLabel}
-        </TextCta>
+        </QuaternaryCta>
       </div>
 
       {project.testimonial ? (

@@ -239,6 +239,9 @@ Komponenten wirken präzise und souverän: klare Zustände, leicht taktiles Feed
 - **Primary:** Schräger Orange-Blau-Verlauf nach dem farbigen Logo, kräftige Labeltypografie und kleiner neutraler Action-Lift. Die gemeinsame Button-Komponente definiert den Verlauf einmalig; Hover und Active leiten beide Verlaufsenden aus ihren Basisfarben ab.
 - **Hover / Focus:** Höchstens ein Pixel Anhebung; sichtbarer Zwei-Pixel-Fokusring mit Abstand.
 - **Ghost:** Tonale Oberfläche und feine Kontur; der Hover erhält nur einen leichten Blauanteil.
+- **Hierarchie:** 1 Primary (Verlaufsfläche), 2 Secondary (Ghost), 3 Tertiary (Textlink, Text und Linie im
+  Verlauf), 4 Quaternary (blauer Textlink mit Verlaufslinie, beim Hover Verlaufstext). Textlinks tragen Gewicht 600
+  und übernehmen die Schriftgröße ihres Kontexts. Hover nur auf Geräten mit Maus.
 
 ### Chips
 

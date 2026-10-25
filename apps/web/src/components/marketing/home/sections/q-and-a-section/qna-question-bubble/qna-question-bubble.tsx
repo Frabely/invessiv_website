@@ -1,5 +1,4 @@
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { MouseEvent } from "react";
 
 import { AnalyticsArea } from "@/common/constants/analytics/analytics-area";
@@ -9,7 +8,7 @@ import type { QnaItemCopy } from "@/common/contracts/marketing/qna-copy";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
 import { getNavigationItem } from "@/lib/analytics/get-navigation-item";
 import styles from "./qna-question-bubble.module.css";
-import { TextCta } from "@/components/shared/text-cta/text-cta";
+import { ActionIcon, QuaternaryCta } from "@invessiv/ui";
 
 type QnaQuestionBubbleProps = {
   answerId: string;
@@ -55,11 +54,9 @@ export function QnaQuestionBubble({
         <span className={styles.question} id={questionId}>
           {item.question}
         </span>
-        <FontAwesomeIcon
-          aria-hidden="true"
-          className={styles.marker}
-          icon={isOpen ? faMinus : faPlus}
-        />
+        <span aria-hidden="true" className={styles.marker}>
+          <ActionIcon icon={isOpen ? faMinus : faPlus} />
+        </span>
       </button>
       <div
         aria-hidden={isOpen ? undefined : true}
@@ -71,8 +68,7 @@ export function QnaQuestionBubble({
         <div className={styles.answerContent}>
           <p className={styles.answer}>{item.answer}</p>
           {item.link && isOpen ? (
-            <TextCta
-              variant="quaternary"
+            <QuaternaryCta
               className={styles.answerLink}
               href={item.link.href}
               {...analyticsAttributes(AnalyticsEventName.NavClicked, {
@@ -81,7 +77,7 @@ export function QnaQuestionBubble({
               })}
             >
               {item.link.label}
-            </TextCta>
+            </QuaternaryCta>
           ) : null}
         </div>
       </div>

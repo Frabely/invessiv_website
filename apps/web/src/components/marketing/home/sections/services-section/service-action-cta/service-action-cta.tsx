@@ -6,7 +6,7 @@ import type {
 } from "react";
 
 import styles from "./service-action-cta.module.css";
-import { TextCta } from "@/components/shared/text-cta/text-cta";
+import { TertiaryCta } from "@invessiv/ui";
 
 type BaseServiceActionCtaProps = {
   children: ReactNode;
@@ -45,7 +45,7 @@ export function ServiceActionCta({
 }: ServiceActionCtaProps) {
   if (href !== undefined) {
     return (
-      <TextCta
+      <TertiaryCta
         arrow
         className={actionClassName(className)}
         href={href}
@@ -55,12 +55,12 @@ export function ServiceActionCta({
         >)}
       >
         {children}
-      </TextCta>
+      </TertiaryCta>
     );
   }
 
   return (
-    <TextCta
+    <TertiaryCta
       as="button"
       arrow
       className={actionClassName(className)}
@@ -72,6 +72,6 @@ export function ServiceActionCta({
       >)}
     >
       {children}
-    </TextCta>
+    </TertiaryCta>
   );
 }

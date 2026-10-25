@@ -40,8 +40,15 @@
   outline: 2px solid var(--color-focus);
   outline-offset: 3px;
 }
-.button:is(:hover, :focus-visible) {
+.button:focus-visible {
   --action-icon-gradient-opacity: 1;
+}
+
+/* Pointer devices only: a tap would otherwise leave the chevron in the gradient. */
+@media (hover: hover) {
+  .button:hover {
+    --action-icon-gradient-opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

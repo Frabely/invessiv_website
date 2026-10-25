@@ -1,19 +1,9 @@
+/* Size and layout only: a touch-high row with the label and arrow centred in it. */
 .cta {
-  display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 0.35rem;
-  width: fit-content;
-  max-width: 100%;
   min-height: 2.35rem;
-  padding: 0;
-  border: 0;
-  color: var(--color-cta);
-  font: inherit;
   font-size: var(--font-size-body-sm);
-  font-weight: 600;
   line-height: 1.2;
   text-align: left;
-  text-decoration: none;
-  cursor: pointer;
 }

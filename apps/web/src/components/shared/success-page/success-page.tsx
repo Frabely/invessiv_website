@@ -9,7 +9,7 @@ import { AnalyticsCtaId } from "@/common/constants/analytics/analytics-cta-id";
 import { AnalyticsEventName } from "@/common/constants/analytics/analytics-event-name";
 import { AnalyticsCalendarSource } from "@/common/constants/analytics/analytics-form";
 import { analyticsAttributes } from "@/common/patterns/analytics/analytics-properties";
-import { ButtonLink, PrimaryCtaLink } from "@invessiv/ui";
+import { PrimaryCtaLink, SecondaryCtaLink } from "@invessiv/ui";
 import type { SuccessPageContent } from "@/i18n/dictionaries/shared/success-page";
 import styles from "./success-page.module.css";
 
@@ -74,14 +74,14 @@ export function SuccessPage({
       <div className={styles.contact}>
         <p className={styles.contactLead}>{contactLead}</p>
         <div className={styles.actions}>
-          <ButtonLink className={styles.back} href={backHref} variant="ghost">
+          <SecondaryCtaLink className={styles.back} href={backHref}>
             <FontAwesomeIcon
               aria-hidden="true"
               className={styles.backArrow}
               icon={faArrowLeftLong}
             />
             <span>{backLabel}</span>
-          </ButtonLink>
+          </SecondaryCtaLink>
           <PrimaryCtaLink
             className={styles.contactLink}
             href={contactHref}

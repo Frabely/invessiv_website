@@ -1,5 +1,5 @@
 .root {
-  composes: palette from "@invessiv/ui/components/action-color/action-color.module.css";
+  composes: palette from "../action-color/action-color.module.css";
   display: inline-flex;
   align-items: baseline;
   gap: 0.35em;
@@ -10,9 +10,20 @@
   background: transparent;
   color: var(--color-cta);
   font: inherit;
+  /* Weight is fixed for every level; the size follows the surrounding text. */
+  font-weight: 600;
   text-align: inherit;
   text-decoration: none;
   cursor: pointer;
+}
+
+/* As a disclosure summary it shows no native marker; the label is the affordance. */
+summary.root {
+  list-style: none;
+}
+
+summary.root::-webkit-details-marker {
+  display: none;
 }
 
 .label {
@@ -30,7 +41,7 @@
 }
 
 .arrow {
-  composes: text from "@invessiv/ui/components/action-color/action-color.module.css";
+  composes: text from "../action-color/action-color.module.css";
   flex: 0 0 auto;
   font-size: 1.25em;
   line-height: 1;

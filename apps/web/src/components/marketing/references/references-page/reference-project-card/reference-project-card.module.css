@@ -61,34 +61,8 @@
 }
 
 .projectLink {
-  width: fit-content;
-  color: var(--color-cta);
   font-size: var(--font-size-body-sm);
-  font-weight: 700;
   line-height: 1.4;
-  text-decoration: none;
-  text-decoration-color: color-mix(
-    in srgb,
-    var(--color-accent-orange-text) 54%,
-    transparent
-  );
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.24em;
-  transition:
-    color 180ms ease,
-    text-decoration-color 180ms ease;
-}
-
-.projectLink:hover,
-.projectLink:focus-visible {
-  color: var(--color-cta);
-  text-decoration-color: currentColor;
-}
-
-.projectLink:focus-visible {
-  border-radius: 2px;
-  outline: 2px solid var(--color-focus);
-  outline-offset: 3px;
 }
 
 :global([data-theme="light"]) .projectCard {

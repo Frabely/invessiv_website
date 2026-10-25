@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "./reference-quote.module.css";
-import { TextCta } from "@/components/shared/text-cta/text-cta";
+import { QuaternaryCta } from "@invessiv/ui";
 
 type ReferenceQuoteProps = {
   collapseLabel: string;
@@ -49,16 +49,15 @@ export function ReferenceQuote({
         {quote}
       </p>
       {isClamped ? (
-        <TextCta
+        <QuaternaryCta
           as="button"
-          variant="quaternary"
           aria-expanded={isExpanded}
           className={styles.toggle}
           onClick={() => setIsExpanded((current) => !current)}
           type="button"
         >
           {isExpanded ? collapseLabel : expandLabel}
-        </TextCta>
+        </QuaternaryCta>
       ) : null}
     </blockquote>
   );

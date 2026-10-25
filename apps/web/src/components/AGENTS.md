@@ -69,6 +69,11 @@ interface LeadCardProps {
   `apps/web/src/components/legal/breadcrumbs/breadcrumbs.tsx` umgesetzt. Seiten/Layouts bauen kein eigenes
   Breadcrumb-Markup nach; bei neuem Bedarf wird die zentrale Komponente erweitert, statt lokale Varianten zu erstellen.
 
+- Buttons und Textlinks kommen ausschließlich aus der CTA-Hierarchie in `@invessiv/ui` (`PrimaryCta*`,
+  `SecondaryCta*`, `TertiaryCta`, `QuaternaryCta`, siehe `packages/ui/AGENTS.md`). Next-Links über
+  `linkComponent={Link}`. Aufrufer setzen höchstens Schriftgröße und Layout, nie Farbe, Gewicht, Linie, Hover oder
+  Fokus.
+
 ## Verantwortungs-Schnitt
 
 - Layout-/Carousel-/Reveal-Verantwortung des Container-Elements bleibt bei der
