@@ -131,7 +131,8 @@ Plan: `apps/workspace/plans/crm/14-dateien/55-portal-dateien.md`.
   in der Leiste. Die Kopf-Checkbox wählt alle gezeigten Einträge außer Videos bzw. hebt sie wieder auf.
 - **Fußleiste:** nur „Datei hinzufügen“, immer sichtbar (mit `canUpload`). Die Seite nutzt `FileArchiveToolbar`
   nicht; der Baustein bleibt dem CRM.
-- **Ein Hinzufügen-Dialog:** `portal-file-add-dialog` startet mit Upload und wechselt über `SegmentedControl` zum
+- **Ein Hinzufügen-Dialog:** `portal-file-add-dialog` startet mit Upload und wechselt über `TabList` (dieselben Reiter
+  wie im Cockpit; der Inhalt darunter ist über `navigationPanel` das Tab-Panel) zum
   Link-Formular. Jeweils ein Dialog, gleicher Titel, passende Beschreibung und Aktionen. Beide Modi verwenden die
   bestehenden Upload-/Link-Dialograhmen und Portal-Transporte. Während Upload oder Speichern ist der Wechsel
   gesperrt; ungespeicherte Auswahl und Angaben werden nur nach Bestätigung verworfen. Keine Upload-Fläche auf der

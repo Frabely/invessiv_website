@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import type { PortalFileProjectOptionDto } from "@invessiv/common/contracts/portal/portal-file-project-option.dto";
-import { SegmentedControl } from "@invessiv/ui";
+import { TabList } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { PortalFilesDictionary } from "@/i18n/dictionaries/portal";
 import { PortalFileLinkDialog } from "../portal-file-link-dialog/portal-file-link-dialog";
@@ -34,17 +34,30 @@ export function PortalFileAddDialog({
   onCreatedAction,
 }: PortalFileAddDialogProps) {
   const [mode, setMode] = useState<FileSource>(FileSource.Upload);
+  const baseId = useId();
+  const panelId = `${baseId}-panel`;
+  const tabId = (source: FileSource) => `${baseId}-${source}`;
 
   function renderNavigation(busy: boolean, hasDraft: boolean) {
     return (
       <div className={styles.navigation}>
-        <SegmentedControl
+        <TabList
           activeValue={mode}
           ariaLabel={content.add.modeLabel}
           disabled={busy}
           items={[
-            { value: FileSource.Upload, label: content.add.upload },
-            { value: FileSource.Link, label: content.add.link },
+            {
+              value: FileSource.Upload,
+              id: tabId(FileSource.Upload),
+              panelId,
+              label: content.add.upload,
+            },
+            {
+              value: FileSource.Link,
+              id: tabId(FileSource.Link),
+              panelId,
+              label: content.add.link,
+            },
           ]}
           onSelectAction={(next) => {
             if (busy || next === mode) return;
@@ -61,6 +74,7 @@ export function PortalFileAddDialog({
     customerId,
     projects,
     initialProjectId,
+    navigationPanel: { id: panelId, labelledBy: tabId(mode) },
     onCloseAction,
     renderNavigation,
   };

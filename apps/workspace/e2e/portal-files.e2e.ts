@@ -144,7 +144,7 @@ test.describe.serial("portal files", () => {
 
       const customerLink = `Vom Kunden ${suffix}`;
       await contact.getByRole("button", { name: "Datei hinzufügen" }).click();
-      await contact.getByRole("radio", { name: "Link hinzufügen" }).click();
+      await contact.getByRole("tab", { name: "Link hinzufügen" }).click();
       const contactDialog = contact.getByRole("dialog", {
         name: "Datei hinzufügen",
       });

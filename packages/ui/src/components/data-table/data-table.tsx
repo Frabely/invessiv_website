@@ -161,8 +161,14 @@ export function DataTableBody({ className, ...props }: DataTableBodyProps) {
 }
 
 export type DataTableRowProps = HTMLAttributes<HTMLTableRowElement> & {
+  /** The row is shown elsewhere, e.g. in a preview panel; strongest tint plus a gradient edge. */
+  active?: boolean;
+  /** The row reacts to the pointer and to keyboard focus, e.g. because it opens something. */
+  interactive?: boolean;
   /** Enables the shared mobile card shell; consumers define their cell layout. */
   mobileCard?: boolean;
+  /** The row is part of a multi-selection. */
+  selected?: boolean;
 };
 
 type DataTableMobileCardSlot =
@@ -175,15 +181,21 @@ type DataTableMobileCardSlot =
   | "supportingSecondary";
 
 export function DataTableRow({
+  active = false,
   className,
+  interactive = false,
   mobileCard = false,
+  selected = false,
   ...props
 }: DataTableRowProps) {
   return (
     <tr
       {...props}
       className={getClassName(styles.row, className)}
+      data-active={active || undefined}
+      data-interactive={interactive || undefined}
       data-mobile-card={mobileCard || undefined}
+      data-selected={selected || undefined}
     />
   );
 }

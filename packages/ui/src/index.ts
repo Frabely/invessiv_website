@@ -29,7 +29,6 @@ export * from "./components/side-panel/side-panel";
 export * from "./components/skeleton/skeleton";
 export * from "./components/table-row-actions/table-row-actions";
 export * from "./components/tab-list/tab-list";
-export * from "./components/segmented-control/segmented-control";
 export * from "./components/selection-action-bar/selection-action-bar";
 export * from "./components/tree-view/tree-view";
 export * from "./components/widget-grid/widget-grid";

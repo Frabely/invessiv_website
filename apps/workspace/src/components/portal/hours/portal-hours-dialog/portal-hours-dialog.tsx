@@ -3,9 +3,8 @@
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useId, useRef, useState } from "react";
-import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import type { PortalHoursDto } from "@invessiv/common/contracts/portal/portal-hours.dto";
-import { ButtonControl, Dialog, DialogSize, TabList } from "@invessiv/ui";
+import { Dialog, DialogSize, SecondaryCtaButton, TabList } from "@invessiv/ui";
 import { PortalHoursTab } from "@/common/constants/portal/portal-hours-tabs";
 import { PortalHoursFocusTarget } from "@/common/constants/portal/portal-hours-focus-targets";
 import { portalHoursView } from "@/common/patterns/portal/portal-hours-view";
@@ -96,14 +95,10 @@ export function PortalHoursDialog({
       {project ? (
         <div className={styles.body}>
           <div className={styles.projectHead}>
-            <ButtonControl
-              onClick={showOverview}
-              type="button"
-              variant={ButtonVariant.Quiet}
-            >
+            <SecondaryCtaButton onClick={showOverview} type="button">
               <FontAwesomeIcon aria-hidden="true" icon={faArrowLeft} />
               {content.projects.back}
-            </ButtonControl>
+            </SecondaryCtaButton>
             <h3
               className={styles.projectTitle}
               ref={projectHeadingRef}

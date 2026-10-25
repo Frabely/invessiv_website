@@ -5,6 +5,7 @@ import { UPLOAD_ACCEPT_ATTRIBUTE } from "@invessiv/common/constants/files/upload
 import { UploadQueueItemStatus } from "@invessiv/common/constants/files/upload-queue-item-status";
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import type { UploadQueueItem } from "@invessiv/common/contracts/files/upload-queue-item";
+import type { TabPanelBinding } from "@invessiv/common/contracts/ui/tab-panel-binding";
 import type { UploadQueueRowLabels } from "@invessiv/common/contracts/ui/upload-queue-row-labels";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, PrimaryCtaButton } from "../../button/button";
@@ -18,6 +19,8 @@ export type FileUploadDialogFrameProps = {
   fields?: ReactNode;
   /** Navigation above the content; pending work locks it, drafts may need a discard check. */
   renderNavigation?: (busy: boolean, hasDraft: boolean) => ReactNode;
+  /** When the navigation is a tab list, the content below it becomes its panel. */
+  navigationPanel?: TabPanelBinding;
   /** BCP 47 locale for file sizes. */
   locale: string;
   labels: {
@@ -56,6 +59,7 @@ export type FileUploadDialogFrameProps = {
 /** Shared presentation for the CRM and portal upload queues. */
 export function FileUploadDialogFrame({
   fields,
+  navigationPanel,
   renderNavigation,
   locale,
   labels,
@@ -125,46 +129,53 @@ export function FileUploadDialogFrame({
     >
       <div className={styles.body}>
         {renderNavigation?.(queue.isActive, queue.items.length > 0)}
-        {!queue.hasStarted ? (
-          <>
-            <FileDropZone
-              accept={UPLOAD_ACCEPT_ATTRIBUTE}
-              hint={labels.dropHint}
-              label={labels.dropLabel}
-              multiple
-              onFilesSelected={queue.stage}
-            />
-            <p className={styles.largerHint}>{labels.largerHint}</p>
-          </>
-        ) : null}
-        {queue.items.length > 0 ? (
-          <ul aria-label={labels.queueLabel} className={styles.queue}>
-            {queue.items.map((item) => (
-              <UploadQueueRow
-                item={item}
-                key={item.id}
-                labels={rowLabels}
-                locale={locale}
-                onCancelAction={queue.cancel}
-                onRemoveAction={queue.remove}
-                onRetryAction={queue.retry}
+        <div
+          aria-labelledby={navigationPanel?.labelledBy}
+          className={styles.panel}
+          id={navigationPanel?.id}
+          role={navigationPanel ? "tabpanel" : undefined}
+        >
+          {!queue.hasStarted ? (
+            <>
+              <FileDropZone
+                accept={UPLOAD_ACCEPT_ATTRIBUTE}
+                hint={labels.dropHint}
+                label={labels.dropLabel}
+                multiple
+                onFilesSelected={queue.stage}
               />
-            ))}
-          </ul>
-        ) : null}
-        <p aria-live="polite" className={styles.summary} role="status">
-          {queue.hasStarted
-            ? formatMessage(labels.summary, {
-                done: String(queue.doneCount),
-                total: String(total),
-              })
-            : null}
-        </p>
-        {fields ? (
-          <fieldset className={styles.settings} disabled={queue.hasStarted}>
-            {fields}
-          </fieldset>
-        ) : null}
+              <p className={styles.largerHint}>{labels.largerHint}</p>
+            </>
+          ) : null}
+          {queue.items.length > 0 ? (
+            <ul aria-label={labels.queueLabel} className={styles.queue}>
+              {queue.items.map((item) => (
+                <UploadQueueRow
+                  item={item}
+                  key={item.id}
+                  labels={rowLabels}
+                  locale={locale}
+                  onCancelAction={queue.cancel}
+                  onRemoveAction={queue.remove}
+                  onRetryAction={queue.retry}
+                />
+              ))}
+            </ul>
+          ) : null}
+          <p aria-live="polite" className={styles.summary} role="status">
+            {queue.hasStarted
+              ? formatMessage(labels.summary, {
+                  done: String(queue.doneCount),
+                  total: String(total),
+                })
+              : null}
+          </p>
+          {fields ? (
+            <fieldset className={styles.settings} disabled={queue.hasStarted}>
+              {fields}
+            </fieldset>
+          ) : null}
+        </div>
       </div>
     </Dialog>
   );

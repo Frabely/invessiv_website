@@ -3,6 +3,7 @@
 import { type ReactNode, useState } from "react";
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import type { PortalFileProjectOptionDto } from "@invessiv/common/contracts/portal/portal-file-project-option.dto";
+import type { TabPanelBinding } from "@invessiv/common/contracts/ui/tab-panel-binding";
 import { FileUploadDialogFrame } from "@invessiv/ui";
 import { portalFilesApiService } from "@/client/portal/portal-files-api-service";
 import type { Locale } from "@/config/i18n";
@@ -18,6 +19,8 @@ export type PortalFileUploadDialogProps = {
   locale: Locale;
   projects: readonly PortalFileProjectOptionDto[];
   initialProjectId?: string | null;
+  /** Makes the content the panel of the tab list rendered as navigation. */
+  navigationPanel?: TabPanelBinding;
   renderNavigation?: (busy: boolean, hasDraft: boolean) => ReactNode;
   onCloseAction: () => void;
   onUploadedAction: (file: PortalFileDto) => void;
@@ -31,6 +34,7 @@ export function PortalFileUploadDialog({
   locale,
   projects,
   initialProjectId = null,
+  navigationPanel,
   renderNavigation,
   onCloseAction,
   onUploadedAction,
@@ -61,6 +65,7 @@ export function PortalFileUploadDialog({
       }
       labels={{ ...content.upload, title: content.add.title }}
       locale={locale}
+      navigationPanel={navigationPanel}
       renderNavigation={
         renderNavigation
           ? (busy, hasDraft) =>

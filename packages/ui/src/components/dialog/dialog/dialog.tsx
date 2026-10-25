@@ -13,8 +13,8 @@ import {
   useState,
 } from "react";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
+import { ActionIcon } from "../../action-icon/action-icon";
 import { ButtonControl } from "../../button/button";
 import { DialogPortalRootContext } from "../dialog-portal-root-context";
 import styles from "./dialog.module.css";
@@ -169,7 +169,7 @@ export function Dialog({
               type="button"
               variant="ghost"
             >
-              <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
+              <ActionIcon icon={faXmark} />
             </ButtonControl>
           </header>
           {children ? (

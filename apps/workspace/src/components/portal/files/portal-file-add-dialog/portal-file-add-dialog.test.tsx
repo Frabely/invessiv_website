@@ -70,11 +70,11 @@ describe("PortalFileAddDialog", () => {
     expect(screen.getAllByRole("dialog")).toHaveLength(1);
     expect(screen.getByRole("dialog")).toHaveAccessibleName(content.add.title);
     expect(
-      screen.getByRole("radio", { name: content.add.upload }),
-    ).toHaveAttribute("aria-checked", "true");
+      screen.getByRole("tab", { name: content.add.upload }),
+    ).toHaveAttribute("aria-selected", "true");
     expect(screen.getByText(content.upload.dropLabel)).toBeVisible();
 
-    fireEvent.click(screen.getByRole("radio", { name: content.add.link }));
+    fireEvent.click(screen.getByRole("tab", { name: content.add.link }));
     expect(screen.getAllByRole("dialog")).toHaveLength(1);
     expect(
       screen.getByRole("textbox", { name: new RegExp(content.link.url) }),
@@ -84,13 +84,13 @@ describe("PortalFileAddDialog", () => {
     expect(screen.getByText(content.link.urlInvalid)).toBeVisible();
     expect(api.createLink).not.toHaveBeenCalled();
 
-    fireEvent.click(screen.getByRole("radio", { name: content.add.upload }));
+    fireEvent.click(screen.getByRole("tab", { name: content.add.upload }));
     expect(screen.getByText(content.upload.dropLabel)).toBeVisible();
   });
 
   it("keeps link drafts when discarding them is declined", () => {
     openDialog();
-    fireEvent.click(screen.getByRole("radio", { name: content.add.link }));
+    fireEvent.click(screen.getByRole("tab", { name: content.add.link }));
     fireEvent.change(
       screen.getByRole("textbox", { name: new RegExp(content.link.name) }),
       {
@@ -98,13 +98,13 @@ describe("PortalFileAddDialog", () => {
       },
     );
     const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
-    fireEvent.click(screen.getByRole("radio", { name: content.add.upload }));
+    fireEvent.click(screen.getByRole("tab", { name: content.add.upload }));
     expect(confirm).toHaveBeenCalledWith(content.add.switchWarning);
     expect(
       screen.getByRole("textbox", { name: new RegExp(content.link.name) }),
     ).toHaveValue("Brand assets");
     confirm.mockReturnValue(true);
-    fireEvent.click(screen.getByRole("radio", { name: content.add.upload }));
+    fireEvent.click(screen.getByRole("tab", { name: content.add.upload }));
     expect(screen.getByText(content.upload.dropLabel)).toBeVisible();
   });
 
@@ -120,7 +120,7 @@ describe("PortalFileAddDialog", () => {
     openDialog();
     chooseFile();
     const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
-    fireEvent.click(screen.getByRole("radio", { name: content.add.link }));
+    fireEvent.click(screen.getByRole("tab", { name: content.add.link }));
     expect(confirm).toHaveBeenCalledOnce();
     expect(screen.getByText("logo.png")).toBeVisible();
 
@@ -128,14 +128,10 @@ describe("PortalFileAddDialog", () => {
       screen.getByRole("button", { name: content.upload.startOne }),
     );
     await waitFor(() => expect(api.createTicket).toHaveBeenCalledOnce());
-    expect(
-      screen.getByRole("radio", { name: content.add.link }),
-    ).toBeDisabled();
+    expect(screen.getByRole("tab", { name: content.add.link })).toBeDisabled();
     refuseTicket();
     await waitFor(() =>
-      expect(
-        screen.getByRole("radio", { name: content.add.link }),
-      ).toBeEnabled(),
+      expect(screen.getByRole("tab", { name: content.add.link })).toBeEnabled(),
     );
     expect(
       screen.getByText(content.errors.FILE_STORAGE_UNAVAILABLE),
@@ -151,7 +147,7 @@ describe("PortalFileAddDialog", () => {
         }),
     );
     const handlers = openDialog();
-    fireEvent.click(screen.getByRole("radio", { name: content.add.link }));
+    fireEvent.click(screen.getByRole("tab", { name: content.add.link }));
     fireEvent.change(
       screen.getByRole("textbox", { name: new RegExp(content.link.name) }),
       {
@@ -166,15 +162,13 @@ describe("PortalFileAddDialog", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: content.link.submit }));
     expect(
-      screen.getByRole("radio", { name: content.add.upload }),
+      screen.getByRole("tab", { name: content.add.upload }),
     ).toBeDisabled();
     refuseLink();
     expect(await screen.findByRole("alert")).toHaveTextContent(
       content.errors.FILE_INTERNAL,
     );
-    expect(
-      screen.getByRole("radio", { name: content.add.upload }),
-    ).toBeEnabled();
+    expect(screen.getByRole("tab", { name: content.add.upload })).toBeEnabled();
     expect(
       screen.getByRole("textbox", { name: new RegExp(content.link.name) }),
     ).toHaveValue("Brand assets");

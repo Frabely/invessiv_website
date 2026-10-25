@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
+import type { TabPanelBinding } from "@invessiv/common/contracts/ui/tab-panel-binding";
 import { validateFileLink } from "@invessiv/common/patterns/files/validate-file-link";
 import { FormField } from "../../form/form-field/form-field";
 import { FormDialog } from "../../dialog/form-dialog/form-dialog";
@@ -17,6 +18,8 @@ export type FileLinkDialogFrameProps = {
   fields: ReactNode;
   /** Navigation above the form; pending work locks it, drafts may need a discard check. */
   renderNavigation?: (busy: boolean, hasDraft: boolean) => ReactNode;
+  /** When the navigation is a tab list, the form below it becomes its panel. */
+  navigationPanel?: TabPanelBinding;
   labels: {
     title: string;
     description: string;
@@ -40,6 +43,7 @@ export type FileLinkDialogFrameProps = {
 /** Shared name, HTTPS URL and submit states for CRM and portal links. */
 export function FileLinkDialogFrame({
   fields,
+  navigationPanel,
   renderNavigation,
   labels,
   cancelLabel,
@@ -91,47 +95,54 @@ export function FileLinkDialogFrame({
     >
       <div className={styles.body}>
         {renderNavigation?.(busy, !!(name.trim() || url.trim()))}
-        <form
-          className={styles.form}
-          id={formId}
-          noValidate
-          onSubmit={handleSubmit}
+        <div
+          aria-labelledby={navigationPanel?.labelledBy}
+          className={styles.panel}
+          id={navigationPanel?.id}
+          role={navigationPanel ? "tabpanel" : undefined}
         >
-          <FormField
-            errorMessage={errors.name}
-            inputProps={{
-              maxLength: 255,
-              onChange: (event) => setName(event.target.value),
-              placeholder: labels.namePlaceholder,
-              value: name,
-            }}
-            inputRef={nameRef}
-            kind={FormFieldKind.Text}
-            label={labels.name}
-            required
-          />
-          <FormField
-            errorMessage={errors.url}
-            hint={labels.urlHint}
-            inputProps={{
-              autoComplete: "url",
-              inputMode: "url",
-              maxLength: 2048,
-              onChange: (event) => setUrl(event.target.value),
-              placeholder: labels.urlPlaceholder,
-              value: url,
-            }}
-            kind={FormFieldKind.Url}
-            label={labels.url}
-            required
-          />
-          {fields}
-          {submitError ? (
-            <p className={styles.error} role="alert">
-              {submitError}
-            </p>
-          ) : null}
-        </form>
+          <form
+            className={styles.form}
+            id={formId}
+            noValidate
+            onSubmit={handleSubmit}
+          >
+            <FormField
+              errorMessage={errors.name}
+              inputProps={{
+                maxLength: 255,
+                onChange: (event) => setName(event.target.value),
+                placeholder: labels.namePlaceholder,
+                value: name,
+              }}
+              inputRef={nameRef}
+              kind={FormFieldKind.Text}
+              label={labels.name}
+              required
+            />
+            <FormField
+              errorMessage={errors.url}
+              hint={labels.urlHint}
+              inputProps={{
+                autoComplete: "url",
+                inputMode: "url",
+                maxLength: 2048,
+                onChange: (event) => setUrl(event.target.value),
+                placeholder: labels.urlPlaceholder,
+                value: url,
+              }}
+              kind={FormFieldKind.Url}
+              label={labels.url}
+              required
+            />
+            {fields}
+            {submitError ? (
+              <p className={styles.error} role="alert">
+                {submitError}
+              </p>
+            ) : null}
+          </form>
+        </div>
       </div>
     </FormDialog>
   );

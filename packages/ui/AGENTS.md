@@ -95,8 +95,13 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   `CustomSelect`) zeigen den Fokus als Orange→Blau-Verlaufsring über `focusRing` aus
   `components/action-color/action-color.module.css`. Inputs und Textareas tragen keine Pseudo-Elemente, daher sitzt
   der Ring auf ihrer Hülle. Einfarbige Fokus-Outlines nutzen immer `--color-focus` (Verlaufsstart), nie `--color-cta`.
-- **Pflicht-Kennzeichnung und Checked im Aktionsverlauf:** `FormRequiredMarker`, der Pflicht-Hinweis in `FormActions`
-  und der Checked-Zustand von `CheckboxControl` nutzen den Aktionsverlauf statt Blau.
+- **Pflicht-Kennzeichnung und Checked im Aktionsverlauf:** `FormRequiredMarker`, der Pflicht-Hinweis in `FormActions`,
+  der Checked- und Teilauswahl-Zustand von `CheckboxControl`, der Checked-Zustand von `RadioControl` (Verlaufsring mit
+  hellem Punkt) und die gewählte `OptionTile` (Verlaufsrahmen auf unveränderter Fläche) nutzen den Aktionsverlauf
+  statt Blau. Ruhend sind Checkbox und Radio neutral. Deaktiviert-gewählt zeigt denselben Verlauf, abgeschwächt wie
+  ein deaktivierter Button (`--button-disabled-opacity`/`-filter`).
+- **Upload-Fläche (`FileDropZone`):** ruhend gestrichelt und neutral; beim Hover (nur Maus) und beim Ziehen einer
+  Datei darüber Verlaufsrahmen und Verlaufstitel, das Icon ist ein `ActionIcon`, der Fokus der Verlaufsring.
 - **Web nutzt dieselben Bausteine:** Die Web-App hat keine eigenen Kopien von `FormField`, `FormActions`,
   `FormStatus`, `FormRequiredMarker` oder Buttons mehr. Next-Links laufen über `linkComponent={Link}`.
 
@@ -124,6 +129,11 @@ Aktionen haben vier Stufen. Jede Stufe hat eine benannte Komponente; Apps bauen 
   setzen. Farbe, Gewicht, Unterstreichung, Hover und Fokus setzen sie nie.
 - Werte, Hover und Fokus der Stufen folgen dem Website-Standard (`apps/web/DESIGN.md`). Eine Abweichung davon wird
   vorher mit dem Nutzer abgestimmt.
+- **Bestätigungsdialog:** `ConfirmDialog` bestätigt mit `PrimaryCtaButton` und bricht mit `SecondaryCtaButton` ab.
+  Nur `tone="danger"` (Löschen, Unumkehrbares) bestätigt mit dem roten Button.
+- **Schließen-X jedes Dialogs:** gehört allein `Dialog` (Ghost-Button mit `ActionIcon`: ruhend Textfarbe, bei Hover und
+  Tastaturfokus der volle Verlauf). `FormDialog`, `ConfirmDialog` und `FileLightbox` erben es. Kein Dialog baut ein
+  eigenes X oder überschreibt es per CSS.
 
 ## Widgets (verbindlich)
 
@@ -132,7 +142,9 @@ Aktionen haben vier Stufen. Jede Stufe hat eine benannte Komponente; Apps bauen 
   `accent` (`WidgetAccent`); die App definiert je Wert ein Token `--widget-accent-<wert>` pro Theme sowie
   `--widget-on-accent`.
 - **Eine Aktionsleiste:** Jede Karte endet in derselben Zeile. Weitere Aktionen (`footer`) stehen vorn als
-  `ButtonControl` mit `variant="quiet"`, `size="control"` und Icon **vor** dem Text. Die Öffnen-Aktion steht immer
+  `ButtonControl` mit `variant="quiet"`, `size="control"` und Icon **vor** dem Text. Eine Anlegen-Aktion (etwa
+  „Aufgabe anlegen“) ist stattdessen ein `SecondaryCtaButton` mit `size="control"` und `+` vor dem Text (Entscheidung
+  25.10.2026). Die Öffnen-Aktion steht immer
   zuletzt, rechts, und ihr Icon **hinter** dem Text sagt, was passiert: `→` Seite (`openMode="page"`), `⤢` Dialog,
   Spalten für ein Seitenpanel, `⌄` aufklappen; externe Links tragen `↗`.
 - **Buttons stehen beieinander:** Die Aktionsleiste richtet alle Buttons rechts als Gruppe aus. Reicht der Platz
@@ -162,6 +174,16 @@ Aktionen haben vier Stufen. Jede Stufe hat eine benannte Komponente; Apps bauen 
   `FilePreviewPanel` reicht `file.thumbnailUrl` selbst durch.
 
 ## Tabellen und Mehrfachauswahl (verbindlich)
+
+- **Zeilenzustände gehören `DataTableRow`:** `interactive` (Hover nur mit Maus, Tastaturfokus), `selected`
+  (Mehrfachauswahl) und `active` (z. B. die im Panel gezeigte Datei, zusätzlich mit Verlaufskante links). Alle zeigen
+  eine leichte Tönung im Aktionsverlauf. Aufrufer setzen keine eigenen Hintergründe für diese Zustände.
+- **Paginator und Zeilenaktionen:** Die aktuelle Seite ist eine Verlaufsfläche wie der Primary-Button, andere Seiten
+  bekommen beim Hover den Verlaufsrahmen. Zeilenaktionen zeigen beim Hover und Fokus die leichte Verlaufstönung, das
+  Icon im Verlaufsanfang; Löschen bleibt rot.
+- **Reiter sind immer `TabList`** (aktive Linie im Verlauf). Es gibt keinen zweiten Umschalter-Baustein;
+  `SegmentedControl` ist entfernt (25.10.2026). Inhalte unter Reitern in Datei-Dialogen werden über `navigationPanel`
+  zum Tab-Panel.
 
 - `DataTableLayout` trägt Seitenwechsel über `pagination` (Links) oder eigenes Nachladen über `footer` (z. B.
   „Weitere laden“); beides steht unter dem Scrollbereich im Rahmen. Die Tabelle scrollt in ihrem Rahmen; Kopf (sticky)

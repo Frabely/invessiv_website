@@ -170,8 +170,13 @@
 }
 
 @media (hover: hover) {
+  /* The same faint action-gradient wash as an interactive table row. */
   .button.row:not(:disabled):hover {
-    background: color-mix(in srgb, var(--color-cta) 9%, transparent);
+    background: linear-gradient(
+      118deg,
+      color-mix(in srgb, var(--color-action-accent) 6%, transparent),
+      color-mix(in srgb, var(--color-cta) 6%, transparent)
+    );
   }
 }
 

@@ -5,10 +5,11 @@
   gap: 0.25rem;
 }
 
+/* Sits next to the logo like "Invessiv" on the website and carries the same wordmark colouring. */
 .current {
+  composes: brandText from "@invessiv/ui/components/brand-lockup/brand-lockup.module.css";
   display: block;
   overflow: hidden;
-  color: var(--color-text);
   font-size: var(--font-size-brand);
   font-weight: 700;
   letter-spacing: 0.01em;
