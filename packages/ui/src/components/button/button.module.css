@@ -41,6 +41,10 @@
   filter: none;
 }
 
+/*
+ * Hover and keyboard focus show only the gradient frame and text from outlineOnHover. A tinted
+ * background colour here would stay invisible under the frame and flash blue while fading out.
+ */
 .ghost {
   composes: palette outlineOnHover from "../action-color/action-color.module.css";
   border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
@@ -56,13 +60,36 @@
   gap: inherit;
 }
 
-.ghost:focus-visible {
-  border-color: color-mix(in srgb, var(--color-cta) 28%, transparent);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 68%,
-    var(--color-cta) 12%
-  );
+/*
+ * The text gradient cannot reach an icon, so an icon takes the gradient colour of its side of the
+ * label: a leading icon the start, a trailing one the end. An ActionIcon shows the full gradient.
+ */
+.ghost:where(:not([aria-pressed="true"], [data-selected="true"])):focus-visible
+  .ghostLabel
+  > :global(svg) {
+  --action-icon-gradient-opacity: 1;
+  color: var(--action-gradient-start);
+}
+
+.ghost:where(:not([aria-pressed="true"], [data-selected="true"])):focus-visible
+  .ghostLabel
+  > :global(svg:last-child:not(:first-child)) {
+  color: var(--action-gradient-end);
+}
+
+@media (hover: hover) {
+  .ghost:where(:not([aria-pressed="true"], [data-selected="true"])):hover
+    .ghostLabel
+    > :global(svg) {
+    --action-icon-gradient-opacity: 1;
+    color: var(--action-gradient-start);
+  }
+
+  .ghost:where(:not([aria-pressed="true"], [data-selected="true"])):hover
+    .ghostLabel
+    > :global(svg:last-child:not(:first-child)) {
+    color: var(--action-gradient-end);
+  }
 }
 
 /* No frame and no surface until it is used: for tools that sit in a row next to content. */
@@ -92,15 +119,6 @@
   .primary:hover {
     background-color: var(--color-cta-hover);
     filter: none;
-  }
-
-  .ghost:hover {
-    border-color: color-mix(in srgb, var(--color-cta) 28%, transparent);
-    background: color-mix(
-      in srgb,
-      var(--color-surface-2) 68%,
-      var(--color-cta) 12%
-    );
   }
 }
 

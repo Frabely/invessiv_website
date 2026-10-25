@@ -363,7 +363,7 @@ export function LegalDocumentContent({
                     href={`#${section.id}`}
                     onClick={(event) => handleTocClick(event, section.id)}
                   >
-                    {section.title}
+                    <span className={styles.tocLabel}>{section.title}</span>
                   </a>
                 </li>
               ))}
@@ -386,7 +386,7 @@ export function LegalDocumentContent({
                   href={`#${section.id}`}
                   onClick={(event) => handleTocClick(event, section.id)}
                 >
-                  {section.title}
+                  <span className={styles.tocLabel}>{section.title}</span>
                 </a>
               </li>
             ))}

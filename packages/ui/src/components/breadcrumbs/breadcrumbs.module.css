@@ -1,9 +1,5 @@
 .nav {
-  --breadcrumbs-separator-color: color-mix(
-    in srgb,
-    var(--color-accent-orange) 55%,
-    transparent
-  );
+  --breadcrumbs-separator-color: var(--color-border-strong);
 
   display: block;
 }
@@ -35,6 +31,7 @@
   transform: rotate(32deg);
 }
 
+/* Links are third-level text links (TertiaryCta); this sets only their touch height. */
 .link,
 .current {
   display: inline-flex;
@@ -42,20 +39,15 @@
   min-height: 32px;
 }
 
-.link {
-  color: var(--color-accent-orange-text);
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-  transition:
-    color 180ms ease,
-    text-decoration-color 180ms ease;
+/* More specific than the mobile rule below, so the large size holds on every width. */
+.nav[data-large-targets="true"] .link,
+.nav[data-large-targets="true"] .current {
+  min-height: 44px;
 }
 
-.link:hover {
-  color: var(--color-accent-orange-text-hover);
-  text-decoration-color: currentColor;
+/* The current page may shrink, so a long title ends in an ellipsis instead of widening the row. */
+.item:last-child {
+  min-width: 0;
 }
 
 .current {

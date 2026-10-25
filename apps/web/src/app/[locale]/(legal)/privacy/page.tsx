@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { OPEN_GRAPH_LOCALE } from "@invessiv/common";
+import { TertiaryCta } from "@invessiv/ui";
 import { LegalDocumentContent } from "@/components/legal/legal-document-content/legal-document-content";
 import { LegalDocumentLayout } from "@/components/legal/legal-document-layout/legal-document-layout";
 import { COMPANY, COMPANY_MAILTO } from "@/config/company";
@@ -67,11 +68,15 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
           <p>{privacy.sections.controller.addressLine}</p>
           <p>
             {privacy.sections.controller.emailLabel}:{" "}
-            <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
+            <TertiaryCta href={COMPANY_MAILTO}>
+              {COMPANY.contact.email}
+            </TertiaryCta>
           </p>
           <p>
             {privacy.sections.controller.phoneLabel}:{" "}
-            <a href={phoneHref}>{privacy.sections.controller.phoneDisplay}</a>
+            <TertiaryCta href={phoneHref}>
+              {privacy.sections.controller.phoneDisplay}
+            </TertiaryCta>
           </p>
         </>
       ),

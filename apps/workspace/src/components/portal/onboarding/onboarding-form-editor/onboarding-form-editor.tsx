@@ -321,9 +321,9 @@ export function OnboardingFormEditor({
       }
       header={
         <PortalStepHeader
-          backHref={backHref}
-          backLabel={content.page.back}
-          backShortLabel={content.page.backShort}
+          overviewHref={backHref}
+          breadcrumbLabel={content.page.breadcrumb}
+          overviewLabel={content.page.backShort}
           summary={
             <OnboardingFormSummary
               completeness={completeness}

@@ -5,7 +5,7 @@
   },
   "page": {
     "heading": "Onboarding for {project}",
-    "back": "Back to overview",
+    "breadcrumb": "Breadcrumb",
     "backShort": "Overview",
     "ownerHint": "In the portal view you can only read the onboarding.",
     "ownerLink": "Open in CRM",

@@ -213,11 +213,11 @@ export function PortalFilesView({
         }
         header={
           <PortalStepHeader
-            backHref={buildPortalHref(dashboardPath, "", {
+            overviewHref={buildPortalHref(dashboardPath, "", {
               project: chosenProjectId,
             })}
-            backLabel={content.page.back}
-            backShortLabel={content.page.backShort}
+            breadcrumbLabel={content.page.breadcrumb}
+            overviewLabel={content.page.backShort}
             summary={
               <PortalFilesFilters
                 content={content}

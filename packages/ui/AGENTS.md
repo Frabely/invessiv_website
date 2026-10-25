@@ -85,7 +85,9 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   Formularen, `icon` für reine Icon-Buttons). Hover-Effekte gelten nur auf Geräten, die hovern können.
   `PrimaryCtaButton` ist die Hauptaktion, `SecondaryCtaButton` die zweite Aktion daneben oder eine einzelne Aktion,
   die nicht mit ihr konkurrieren soll. `primary` trägt den CTA-Verlauf der Website, `ghost` erhält beim Hover einen
-  Verlaufsrahmen und Verlaufstext (Label-Span mit `gap: inherit`, damit Icon-Abstände bleiben).
+  Verlaufsrahmen und Verlaufstext (Label-Span mit `gap: inherit`, damit Icon-Abstände bleiben). Icons direkt im
+  Label nehmen dabei die Verlaufsfarbe ihrer Seite an (vorn Anfang, hinten Ende, `ActionIcon` den ganzen Verlauf);
+  die Fläche bleibt unverändert, ohne blaue Tönung.
 - **Das Token muss ankommen:** Fehlt `--control-height` zur Laufzeit, fallen alle Controls still auf ihre Inhaltshöhe
   zurück und sind dann unterschiedlich hoch. Sieht ein Formular so aus, zuerst prüfen, ob das ausgelieferte globale
   Stylesheet das Token enthält (Dev-Server neu starten), bevor an den Komponenten gedreht wird.
@@ -170,7 +172,9 @@ Aktionen haben vier Stufen. Jede Stufe hat eine benannte Komponente; Apps bauen 
 
 ## Bekannte Altlasten
 
-- `ProcessTrack` setzt die Stile seiner Schritt-Buttons zurück, statt eine eigene Schaltfläche zu nutzen.
+- `ProcessTrack` setzt die Stile seiner Schritt-Buttons zurück, statt eine eigene Schaltfläche zu nutzen. Die
+  Schritte nutzen dafür `variant="quiet"`, nie `ghost`: Ghost verpackt seinen Inhalt in einen Label-Span mit
+  Verlaufs-Hover und zerlegt damit das Raster aus Balken und Beschriftung.
 - Im Portal-Bogen macht der Prüfschritt aus `ButtonControl` optisch einen Textlink (`onboarding-submit-step`), ebenso
   `feedback-item-text`. Weitere Workspace-Module bauen eigene blaue Textlinks. Ziel der späteren Migration sind
   `TertiaryCta` und `QuaternaryCta` (`as="button"` für Aktionen); der Workspace ist bewusst noch nicht umgestellt.

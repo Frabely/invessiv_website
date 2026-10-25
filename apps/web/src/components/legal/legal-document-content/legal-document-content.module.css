@@ -125,7 +125,9 @@
   gap: 9px;
 }
 
+/* Hover (pointer only) and keyboard focus show the action gradient as frame and text. */
 .tocLink {
+  composes: palette outlineOnHover from "@invessiv/ui/components/action-color/action-color.module.css";
   position: relative;
   display: block;
   border-radius: 14px;
@@ -141,11 +143,8 @@
     border-color 180ms ease;
 }
 
-.tocLink:hover,
-.tocLink:focus-visible {
-  color: color-mix(in srgb, var(--color-text) 92%, var(--color-surface-1) 8%);
-  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
-  background: color-mix(in srgb, var(--accent) 9%, var(--color-surface-2) 91%);
+.tocLabel {
+  composes: hoverText from "@invessiv/ui/components/action-color/action-color.module.css";
 }
 
 .article {
@@ -232,19 +231,6 @@
   font-size: var(--font-size-body-md);
   line-height: 1.72;
   color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
-}
-
-.sectionBody a {
-  color: var(--accent);
-  text-decoration: none;
-  border-bottom: 1px solid color-mix(in srgb, var(--accent) 62%, transparent);
-  padding-bottom: 1px;
-}
-
-.sectionBody a:hover,
-.sectionBody a:focus-visible {
-  color: color-mix(in srgb, var(--accent) 74%, var(--color-text) 26%);
-  border-bottom-color: color-mix(in srgb, var(--accent) 82%, transparent);
 }
 
 .sectionBody p strong {

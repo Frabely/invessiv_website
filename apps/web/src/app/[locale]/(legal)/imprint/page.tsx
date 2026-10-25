@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { OPEN_GRAPH_LOCALE } from "@invessiv/common";
+import { TertiaryCta } from "@invessiv/ui";
 import { LegalDocumentContent } from "@/components/legal/legal-document-content/legal-document-content";
 import { LegalDocumentLayout } from "@/components/legal/legal-document-layout/legal-document-layout";
 import {
@@ -77,11 +78,15 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
           </p>
           <p>
             <strong>{imprint.sections.contact.labels.phone}:</strong>{" "}
-            <a href={phoneHref}>{imprint.values.phoneDisplay}</a>
+            <TertiaryCta href={phoneHref}>
+              {imprint.values.phoneDisplay}
+            </TertiaryCta>
           </p>
           <p>
             <strong>{imprint.sections.contact.labels.email}:</strong>{" "}
-            <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
+            <TertiaryCta href={COMPANY_MAILTO}>
+              {COMPANY.contact.email}
+            </TertiaryCta>
           </p>
         </>
       ),
@@ -92,14 +97,22 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
       body: (
         <ul>
           <li>
-            <a href={COMPANY_SOCIAL_LINKEDIN} rel="noreferrer" target="_blank">
+            <TertiaryCta
+              href={COMPANY_SOCIAL_LINKEDIN}
+              rel="noreferrer"
+              target="_blank"
+            >
               LinkedIn
-            </a>
+            </TertiaryCta>
           </li>
           <li>
-            <a href={COMPANY_SOCIAL_INSTAGRAM} rel="noreferrer" target="_blank">
+            <TertiaryCta
+              href={COMPANY_SOCIAL_INSTAGRAM}
+              rel="noreferrer"
+              target="_blank"
+            >
               Instagram
-            </a>
+            </TertiaryCta>
           </li>
         </ul>
       ),
