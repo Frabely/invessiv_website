@@ -131,8 +131,9 @@ Aktionen haben vier Stufen. Jede Stufe hat eine benannte Komponente; Apps bauen 
   vorher mit dem Nutzer abgestimmt.
 - **Bestätigungsdialog:** `ConfirmDialog` bestätigt mit `PrimaryCtaButton` und bricht mit `SecondaryCtaButton` ab.
   Nur `tone="danger"` (Löschen, Unumkehrbares) bestätigt mit dem roten Button.
-- **Schließen-X jedes Dialogs:** gehört allein `Dialog` (Ghost-Button mit `ActionIcon`: ruhend Textfarbe, bei Hover und
-  Tastaturfokus der volle Verlauf). `FormDialog`, `ConfirmDialog` und `FileLightbox` erben es. Kein Dialog baut ein
+- **Schließen-X jedes Dialogs:** kommt aus `DialogCloseButton` (Ghost-Button mit `ActionIcon`: ruhend Textfarbe, bei Hover und
+  Tastaturfokus der volle Verlauf, mindestens 44 × 44 px). `Dialog`, `FormDialog`, `ConfirmDialog`, `FileLightbox`
+  sowie die Web-Lightbox und das Zielgruppen-Sheet nutzen diesen gemeinsamen Baustein. Kein Dialog baut ein
   eigenes X oder überschreibt es per CSS.
 
 ## Widgets (verbindlich)

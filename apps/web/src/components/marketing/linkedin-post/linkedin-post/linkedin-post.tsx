@@ -2,6 +2,7 @@
 
 import { faExpand } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { QuaternaryCta, SecondaryCtaButton } from "@invessiv/ui";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { useEffect, useId, useRef, useState } from "react";
@@ -195,16 +196,17 @@ export function LinkedinPost({
               <div className={styles.headerAction}>{headerAction}</div>
             ) : null}
             {showMaximize ? (
-              <button
+              <SecondaryCtaButton
                 aria-haspopup="dialog"
                 aria-label={maximizeLabel}
                 className={styles.maximizeButton}
                 onClick={() => setIsMaximized(true)}
                 ref={maximizeButtonRef}
+                size="icon"
                 type="button"
               >
                 <FontAwesomeIcon aria-hidden="true" icon={faExpand} />
-              </button>
+              </SecondaryCtaButton>
             ) : null}
           </div>
         ) : null}
@@ -220,7 +222,8 @@ export function LinkedinPost({
           {caption}
         </p>
         {hasToggle ? (
-          <button
+          <QuaternaryCta
+            as="button"
             aria-controls={captionId}
             aria-expanded={isExpanded}
             className={styles.captionToggle}
@@ -228,7 +231,7 @@ export function LinkedinPost({
             type="button"
           >
             {isExpanded ? captionLess : collapsedToggleLabel}
-          </button>
+          </QuaternaryCta>
         ) : null}
       </div>
 

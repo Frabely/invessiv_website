@@ -17,13 +17,7 @@
   width: 100%;
   border-radius: 18px;
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  background:
-    radial-gradient(
-      220px 140px at 14% 0%,
-      color-mix(in srgb, var(--accent) 8%, transparent),
-      transparent 72%
-    ),
-    color-mix(in srgb, var(--color-surface-1) 95%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 95%, transparent);
   box-shadow:
     0 10px 26px rgba(8, 10, 15, 0.24),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -87,13 +81,7 @@
   padding: 10px 12px 14px;
   border-radius: 18px;
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  background:
-    radial-gradient(
-      220px 140px at 14% 0%,
-      color-mix(in srgb, var(--accent) 8%, transparent),
-      transparent 72%
-    ),
-    color-mix(in srgb, var(--color-surface-1) 97%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 97%, transparent);
   box-shadow:
     0 18px 36px rgba(8, 10, 15, 0.32),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -169,13 +157,7 @@
   padding: 22px 22px 20px;
   border: 1px solid color-mix(in srgb, var(--color-border) 68%, transparent);
   border-radius: 20px;
-  background:
-    radial-gradient(
-      320px 160px at 100% 0%,
-      color-mix(in srgb, var(--color-cta) 7%, transparent),
-      transparent 74%
-    ),
-    color-mix(in srgb, var(--color-surface-1) 84%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 84%, transparent);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
     0 12px 24px rgba(7, 14, 27, 0.12);
@@ -245,13 +227,7 @@
 
 :global([data-theme="light"]) .articleSection {
   border-color: var(--color-border);
-  background:
-    radial-gradient(
-      320px 160px at 100% 0%,
-      color-mix(in srgb, var(--color-cta) 5%, transparent),
-      transparent 74%
-    ),
-    color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.72),
     0 10px 22px rgba(36, 55, 90, 0.06);
@@ -296,13 +272,7 @@
     overflow-y: auto;
     border-radius: 22px;
     border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-    background:
-      radial-gradient(
-        240px 160px at 14% 0%,
-        color-mix(in srgb, var(--accent) 8%, transparent),
-        transparent 72%
-      ),
-      color-mix(in srgb, var(--color-surface-1) 95%, transparent);
+    background: color-mix(in srgb, var(--color-surface-1) 95%, transparent);
     box-shadow:
       0 14px 28px rgba(8, 10, 15, 0.14),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);

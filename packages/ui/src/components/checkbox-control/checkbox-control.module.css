@@ -41,10 +41,7 @@
     box-shadow 160ms ease;
 }
 
-/*
- * Checked carries the action gradient, like the primary button. A partial selection (e.g. the
- * select-all box of a table) looks the same: something is selected, and the box says so.
- */
+/* A partial selection fills only the left half; the other half keeps the neutral surface. */
 .input:checked + .box,
 .input:indeterminate + .box {
   border-color: transparent;
@@ -66,6 +63,18 @@
   box-shadow: none;
   opacity: var(--button-disabled-opacity, 0.5);
   filter: var(--button-disabled-filter, saturate(0.7));
+}
+
+.input:indeterminate + .box,
+.root[data-disabled="true"] .input:indeterminate + .box {
+  border-color: color-mix(
+    in srgb,
+    var(--color-border) 72%,
+    var(--color-text-muted) 28%
+  );
+  background:
+    var(--action-gradient) left center / 50% 100% no-repeat border-box,
+    var(--color-surface-1);
 }
 
 @media (prefers-reduced-motion: reduce) {

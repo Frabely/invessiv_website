@@ -75,28 +75,60 @@
  * The text gradient cannot reach an icon, so an icon takes the gradient colour of its side of the
  * label: a leading icon the start, a trailing one the end. An ActionIcon shows the full gradient.
  */
-.ghost:where(:not([aria-pressed="true"], [data-selected="true"])):focus-visible
+.ghost:where(
+    :not(
+      :disabled,
+      [aria-disabled="true"],
+      [data-disabled="true"],
+      [aria-pressed="true"],
+      [data-selected="true"]
+    )
+  ):focus-visible
   .ghostLabel
   > :global(svg) {
   --action-icon-gradient-opacity: 1;
   color: var(--action-gradient-start);
 }
 
-.ghost:where(:not([aria-pressed="true"], [data-selected="true"])):focus-visible
+.ghost:where(
+    :not(
+      :disabled,
+      [aria-disabled="true"],
+      [data-disabled="true"],
+      [aria-pressed="true"],
+      [data-selected="true"]
+    )
+  ):focus-visible
   .ghostLabel
   > :global(svg:last-child:not(:first-child)) {
   color: var(--action-gradient-end);
 }
 
 @media (hover: hover) {
-  .ghost:where(:not([aria-pressed="true"], [data-selected="true"])):hover
+  .ghost:where(
+      :not(
+        :disabled,
+        [aria-disabled="true"],
+        [data-disabled="true"],
+        [aria-pressed="true"],
+        [data-selected="true"]
+      )
+    ):hover
     .ghostLabel
     > :global(svg) {
     --action-icon-gradient-opacity: 1;
     color: var(--action-gradient-start);
   }
 
-  .ghost:where(:not([aria-pressed="true"], [data-selected="true"])):hover
+  .ghost:where(
+      :not(
+        :disabled,
+        [aria-disabled="true"],
+        [data-disabled="true"],
+        [aria-pressed="true"],
+        [data-selected="true"]
+      )
+    ):hover
     .ghostLabel
     > :global(svg:last-child:not(:first-child)) {
     color: var(--action-gradient-end);

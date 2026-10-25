@@ -41,42 +41,6 @@
   top: -0.85rem;
   right: -0.85rem;
   z-index: 2;
-  display: grid;
-  place-items: center;
-  width: 2.4rem;
-  height: 2.4rem;
-  padding: 0;
-  border: 1px solid
-    color-mix(in srgb, var(--color-border-strong) 70%, transparent);
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--color-surface-2) 96%, transparent);
-  color: var(--color-text);
-  cursor: pointer;
-  box-shadow: 0 10px 26px -14px var(--color-shadow);
-  transition:
-    background 180ms ease,
-    transform 180ms ease,
-    color 180ms ease;
-}
-
-.close:hover {
-  transform: scale(1.06);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 100%,
-    var(--color-cta) 8%
-  );
-  color: var(--color-cta);
-}
-
-.close:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 3px;
-}
-
-.close svg {
-  width: auto;
-  height: 1.05rem;
 }
 
 @keyframes backdrop-in {
@@ -103,13 +67,5 @@
   .backdrop,
   .dialog {
     animation: none;
-  }
-
-  .close {
-    transition: none;
-  }
-
-  .close:hover {
-    transform: none;
   }
 }

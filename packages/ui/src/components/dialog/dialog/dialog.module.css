@@ -113,22 +113,6 @@
   line-height: 1.55;
 }
 
-/* The cross takes the button's text colour at rest and the full action gradient on hover and focus. */
-.closeButton {
-  --action-icon-color: currentColor;
-  --action-icon-gradient-opacity: 0;
-  flex: 0 0 auto;
-  min-width: 2.35rem;
-  min-height: 2.35rem;
-  padding: 0;
-  border-radius: 999px;
-}
-
-.closeButton :global(svg) {
-  width: 0.9rem;
-  height: 0.9rem;
-}
-
 .body {
   flex: 1 1 auto;
   min-height: 0;

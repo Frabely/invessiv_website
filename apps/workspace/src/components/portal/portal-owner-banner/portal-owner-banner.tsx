@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { QuaternaryCta } from "@invessiv/ui";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { PortalShellDictionary } from "@/i18n/dictionaries/portal";
@@ -28,9 +30,13 @@ export function PortalOwnerBanner({
         </span>
         <span className={styles.hint}>{content.hint}</span>
       </p>
-      <a className={styles.link} href={cockpitHref}>
+      <QuaternaryCta
+        className={styles.link}
+        href={cockpitHref}
+        linkComponent={Link}
+      >
         {content.cockpitLink}
-      </a>
+      </QuaternaryCta>
     </aside>
   );
 }

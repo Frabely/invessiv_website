@@ -1,5 +1,4 @@
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { DialogCloseButton } from "@invessiv/ui";
 import type {
   PointerEvent as ReactPointerEvent,
   ReactNode,
@@ -128,15 +127,12 @@ export function AudienceSheet({
           <span className={styles.grabber} />
         </div>
 
-        <button
-          aria-label={closeLabel}
+        <DialogCloseButton
+          label={closeLabel}
           className={styles.close}
           onClick={onClose}
           ref={closeButtonRef}
-          type="button"
-        >
-          <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-        </button>
+        />
 
         <div className={styles.content}>{children}</div>
       </div>

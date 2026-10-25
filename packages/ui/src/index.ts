@@ -62,3 +62,5 @@ export * from "./components/theme-switch/theme-switch";
 export * from "./hooks/use-dismissible-details";
 
 export * from "./components/scale-control/scale-control";
+
+export { DialogCloseButton } from "./components/dialog/dialog-close-button/dialog-close-button";
