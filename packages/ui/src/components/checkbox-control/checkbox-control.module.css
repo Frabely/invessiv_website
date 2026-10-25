@@ -33,11 +33,7 @@
   border: 1px solid
     color-mix(in srgb, var(--color-border) 72%, var(--color-text-muted) 28%);
   border-radius: 6px;
-  background: color-mix(
-    in srgb,
-    var(--color-cta) 7%,
-    var(--color-surface-1) 93%
-  );
+  background: var(--color-surface-1);
   pointer-events: none;
   transition:
     background 160ms ease,
@@ -45,21 +41,14 @@
     box-shadow 160ms ease;
 }
 
-/* Checked carries the action gradient, like the primary button. */
-.input:checked + .box {
+/*
+ * Checked carries the action gradient, like the primary button. A partial selection (e.g. the
+ * select-all box of a table) looks the same: something is selected, and the box says so.
+ */
+.input:checked + .box,
+.input:indeterminate + .box {
   border-color: transparent;
   background: var(--action-gradient) border-box;
-  box-shadow: 0 0 0 4px
-    color-mix(in srgb, var(--color-action-accent) 16%, transparent);
-}
-
-.input:indeterminate + .box {
-  border-color: color-mix(in srgb, var(--color-action-accent) 50%, transparent);
-  background: color-mix(
-    in srgb,
-    var(--color-action-accent) 28%,
-    var(--color-surface-1) 72%
-  );
   box-shadow: 0 0 0 4px
     color-mix(in srgb, var(--color-action-accent) 16%, transparent);
 }
@@ -70,14 +59,13 @@
   box-shadow: none;
 }
 
-.root[data-disabled="true"] .input:checked + .box {
-  border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
-  background: color-mix(
-    in srgb,
-    var(--color-cta) 44%,
-    var(--color-surface-2) 56%
-  );
+/* Disabled but selected: the same gradient, faded like a disabled button. */
+.root[data-disabled="true"] .input:is(:checked, :indeterminate) + .box {
+  border-color: transparent;
+  background: var(--action-gradient) border-box;
   box-shadow: none;
+  opacity: var(--button-disabled-opacity, 0.5);
+  filter: var(--button-disabled-filter, saturate(0.7));
 }
 
 @media (prefers-reduced-motion: reduce) {

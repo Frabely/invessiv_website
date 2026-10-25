@@ -7,13 +7,14 @@
   min-width: 0;
   min-height: var(--control-height);
   padding: 0.5rem 1rem;
-  border: 1px solid var(--control-border-color);
-  border-radius: var(--control-radius);
-  background: color-mix(
+  --tile-surface: color-mix(
     in srgb,
     var(--color-surface-2) 64%,
     var(--color-surface-1) 36%
   );
+  border: 1px solid var(--control-border-color);
+  border-radius: var(--control-radius);
+  background: var(--tile-surface);
   color: var(--color-text);
   font-size: var(--font-size-body-md);
   line-height: 1.4;
@@ -25,9 +26,12 @@
   overflow-wrap: anywhere;
 }
 
+/* Chosen: a gradient frame on the unchanged surface, like an open question on the website. */
 .tile:has(input:checked) {
-  border-color: color-mix(in srgb, var(--color-cta) 60%, transparent);
-  background: color-mix(in srgb, var(--color-cta) 12%, var(--color-surface-1));
+  border-color: transparent;
+  background:
+    linear-gradient(var(--tile-surface), var(--tile-surface)) padding-box,
+    var(--action-gradient) border-box;
 }
 
 .tile:has(input:disabled) {

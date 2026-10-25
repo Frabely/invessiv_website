@@ -4,11 +4,10 @@ import type { ReactNode } from "react";
 import { faPersonDigging, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
-import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { PortalOurTaskDto } from "@invessiv/common/contracts/portal/portal-our-task.dto";
-import { Badge, ButtonControl, Widget } from "@invessiv/ui";
+import { Badge, SecondaryCtaButton, Widget } from "@invessiv/ui";
 import { TASK_STATUS_BADGE_TONES } from "@/common/constants/crm/badges/task-status-badge-tones";
 import { TASK_STATUS_ICONS } from "@/common/constants/crm/badges/task-status-icons";
 import type { Locale } from "@/config/i18n";
@@ -96,15 +95,14 @@ export function PortalOurTasksWidget({
     icon: faPersonDigging,
     title: labels.title,
     footer: onCreateAction ? (
-      <ButtonControl
+      <SecondaryCtaButton
         onClick={onCreateAction}
         size={ButtonSize.Control}
         type="button"
-        variant={ButtonVariant.Quiet}
       >
         <FontAwesomeIcon aria-hidden="true" icon={faPlus} />
-        <span>{labels.create}</span>
-      </ButtonControl>
+        {labels.create}
+      </SecondaryCtaButton>
     ) : undefined,
   };
 

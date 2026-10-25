@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { ButtonControl } from "../../button/button";
+import { PrimaryCtaButton, SecondaryCtaButton } from "../../button/button";
 import { Dialog } from "../dialog/dialog";
 import styles from "./confirm-dialog.module.css";
 
@@ -39,24 +39,32 @@ export function ConfirmDialog({
       description={description}
       footer={
         <>
-          <ButtonControl
+          <SecondaryCtaButton
             disabled={busy}
             onClick={onCancelAction}
             type="button"
-            variant="ghost"
           >
             {cancelLabel}
-          </ButtonControl>
+          </SecondaryCtaButton>
           {secondaryAction}
-          <button
-            className={styles.confirmButton}
-            data-tone={tone}
-            disabled={busy}
-            onClick={onConfirmAction}
-            type="button"
-          >
-            {confirmLabel}
-          </button>
+          {tone === "danger" ? (
+            <button
+              className={styles.dangerButton}
+              disabled={busy}
+              onClick={onConfirmAction}
+              type="button"
+            >
+              {confirmLabel}
+            </button>
+          ) : (
+            <PrimaryCtaButton
+              disabled={busy}
+              onClick={onConfirmAction}
+              type="button"
+            >
+              {confirmLabel}
+            </PrimaryCtaButton>
+          )}
         </>
       }
       onCloseAction={onCancelAction}

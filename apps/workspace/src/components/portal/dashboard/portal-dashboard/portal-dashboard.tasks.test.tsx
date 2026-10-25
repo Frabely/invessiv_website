@@ -228,7 +228,7 @@ describe("PortalDashboard tasks", () => {
 
     expect(
       within(ourTasksWidget()).queryByRole("button", {
-        name: "Create a task for us",
+        name: "Create task",
       }),
     ).toBeNull();
     expect(screen.queryByRole("dialog")).toBeNull();

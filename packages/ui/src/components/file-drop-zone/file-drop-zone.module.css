@@ -1,28 +1,40 @@
+/*
+ * Dashed and neutral at rest. Hover (pointer only) and a file dragged over it turn the frame into
+ * the action gradient; keyboard focus shows the gradient focus ring.
+ */
 .zone {
-  position: relative;
+  composes: focusRing from "../action-color/action-color.module.css";
+  --focus-ring-radius: 0.85rem;
+  --drop-zone-surface: color-mix(
+    in srgb,
+    var(--color-surface-2) 55%,
+    var(--color-surface-1)
+  );
   border: 1.5px dashed var(--color-border-strong);
   border-radius: 0.85rem;
-  background: color-mix(in srgb, var(--color-surface-2) 55%, transparent);
-  transition:
-    border-color 160ms ease,
-    background-color 160ms ease,
-    transform 160ms ease;
-}
-
-.zone:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 55%, var(--color-border));
+  background: var(--drop-zone-surface);
+  transition: transform 160ms ease;
 }
 
 .zone[data-active="true"] {
   border-style: solid;
-  border-color: var(--color-cta);
-  background: color-mix(in srgb, var(--color-cta) 12%, var(--color-surface-1));
+  border-color: transparent;
+  background:
+    linear-gradient(var(--drop-zone-surface), var(--drop-zone-surface))
+      padding-box,
+    var(--action-gradient) border-box;
   transform: scale(1.01);
 }
 
-.zone:has(.input:focus-visible) {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 3px;
+@media (hover: hover) {
+  .zone:not([data-disabled="true"]):hover {
+    border-style: solid;
+    border-color: transparent;
+    background:
+      linear-gradient(var(--drop-zone-surface), var(--drop-zone-surface))
+        padding-box,
+      var(--action-gradient) border-box;
+  }
 }
 
 .zone[data-disabled="true"] {
@@ -63,10 +75,19 @@
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-cta) 16%, transparent);
-  color: var(--color-cta);
+  background: linear-gradient(
+    118deg,
+    color-mix(in srgb, var(--color-action-accent) 14%, transparent),
+    color-mix(in srgb, var(--color-cta) 14%, transparent)
+  );
+  --action-icon-gradient-opacity: 1;
   font-size: 1.1rem;
   transition: transform 160ms ease;
+}
+
+.icon :global(svg) {
+  width: 1em;
+  height: 1em;
 }
 
 .zone[data-active="true"] .icon {
@@ -80,9 +101,20 @@
 }
 
 .title {
+  composes: hoverText from "../action-color/action-color.module.css";
   font-size: var(--font-size-body-sm);
   font-weight: 650;
   line-height: 1.35;
+}
+
+/* hoverText covers hover and keyboard focus; a file held over the zone shows it as well. */
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .zone[data-active="true"] .title {
+    background-image: var(--action-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 .hint {

@@ -33,11 +33,7 @@
   border: 1px solid
     color-mix(in srgb, var(--color-border) 72%, var(--color-text-muted) 28%);
   border-radius: 50%;
-  background: color-mix(
-    in srgb,
-    var(--color-cta) 7%,
-    var(--color-surface-1) 93%
-  );
+  background: var(--color-surface-1);
   pointer-events: none;
   transition:
     background 160ms ease,
@@ -45,15 +41,17 @@
     box-shadow 160ms ease;
 }
 
-/* The filled centre is painted, not a second element, so it scales with the ring. */
+/*
+ * Checked carries the action gradient like the checkbox. The light centre is painted over it, not
+ * a second element, so it scales with the ring.
+ */
 .input:checked + .dot {
-  border-color: color-mix(in srgb, var(--color-cta) 54%, transparent);
-  background: radial-gradient(
-    circle,
-    var(--color-on-cta) 0 32%,
-    var(--color-cta) 36% 100%
-  );
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-cta) 16%, transparent);
+  border-color: transparent;
+  background:
+    radial-gradient(circle, var(--color-on-cta) 0 32%, transparent 36%),
+    var(--action-gradient) border-box;
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--color-action-accent) 16%, transparent);
 }
 
 .root[data-disabled="true"] .dot {
@@ -62,15 +60,15 @@
   box-shadow: none;
 }
 
+/* Disabled but selected: the same gradient, faded like a disabled button. */
 .root[data-disabled="true"] .input:checked + .dot {
-  border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
-  background: radial-gradient(
-    circle,
-    var(--color-surface-1) 0 32%,
-    color-mix(in srgb, var(--color-cta) 44%, var(--color-surface-2) 56%) 36%
-      100%
-  );
+  border-color: transparent;
+  background:
+    radial-gradient(circle, var(--color-on-cta) 0 32%, transparent 36%),
+    var(--action-gradient) border-box;
   box-shadow: none;
+  opacity: var(--button-disabled-opacity, 0.5);
+  filter: var(--button-disabled-filter, saturate(0.7));
 }
 
 @media (prefers-reduced-motion: reduce) {

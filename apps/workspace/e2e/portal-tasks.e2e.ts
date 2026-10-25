@@ -25,9 +25,7 @@ test.describe("portal tasks", () => {
     );
 
     const teamTasks = page.getByRole("region", { name: "Daran arbeiten wir" });
-    await teamTasks
-      .getByRole("button", { name: "Aufgabe für uns anlegen" })
-      .click();
+    await teamTasks.getByRole("button", { name: "Aufgabe anlegen" }).click();
     const dialog = page.getByRole("dialog", {
       name: "Aufgabe für uns anlegen",
     });
