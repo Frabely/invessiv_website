@@ -4,7 +4,7 @@
     "description": "Alles, was wir für dich freigegeben haben, und alles, was du uns geschickt hast – an einem Ort."
   },
   "page": {
-    "back": "Zurück zum Überblick",
+    "breadcrumb": "Breadcrumb",
     "backShort": "Überblick",
     "heading": "Dateien"
   },
