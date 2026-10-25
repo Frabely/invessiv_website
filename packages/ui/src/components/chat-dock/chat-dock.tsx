@@ -5,6 +5,7 @@ import { faComments, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { ChatDockContent } from "@invessiv/common/contracts/ui/chat-dock-content";
+import { ActionIcon } from "../action-icon/action-icon";
 import { ButtonControl } from "../button/button";
 import styles from "./chat-dock.module.css";
 
@@ -58,7 +59,7 @@ export function ChatDock({
       data-expanded={expanded}
       data-overlay={overlay}
     >
-      <ButtonControl
+      <button
         aria-controls={panelId}
         aria-expanded={expanded}
         aria-label={toggleLabel}
@@ -69,17 +70,16 @@ export function ChatDock({
         }}
         title={toggleLabel}
         type="button"
-        variant="ghost"
       >
         <span className={styles.railIcon}>
-          <FontAwesomeIcon aria-hidden="true" icon={faComments} />
+          <ActionIcon icon={faComments} />
           {hasUnread ? (
             <span aria-hidden="true" className={styles.railCount}>
               {unreadCount > 99 ? "99+" : unreadCount}
             </span>
           ) : null}
         </span>
-      </ButtonControl>
+      </button>
       <div className={styles.panel} hidden={!expanded} id={panelId}>
         <header className={styles.head}>
           <h2 id={headingId}>{content.title}</h2>
