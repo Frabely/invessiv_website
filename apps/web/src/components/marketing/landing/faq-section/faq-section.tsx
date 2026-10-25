@@ -17,7 +17,7 @@ import type { LandingFaqContent } from "@/i18n/dictionaries/landing/faq";
 import styles from "./faq-section.module.css";
 import { TextCta } from "@/components/shared/text-cta/text-cta";
 import { DisclosureButton } from "@/components/shared/disclosure-button/disclosure-button";
-import { ActionIcon } from "@/components/shared/action-icon/action-icon";
+import { ActionIcon } from "@invessiv/ui";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const INITIAL_VISIBLE_ITEMS = 5;

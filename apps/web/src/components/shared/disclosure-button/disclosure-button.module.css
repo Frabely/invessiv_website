@@ -1,5 +1,5 @@
 .button {
-  composes: palette outlineOnHover from "../action-color/action-color.module.css";
+  composes: palette outlineOnHover from "@invessiv/ui/components/action-color/action-color.module.css";
   --action-icon-gradient-opacity: 0;
   --action-icon-color: currentColor;
   display: inline-flex;
@@ -19,7 +19,7 @@
 }
 
 .label {
-  composes: hoverText from "../action-color/action-color.module.css";
+  composes: hoverText from "@invessiv/ui/components/action-color/action-color.module.css";
 }
 
 .marker {

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { AppProviders } from "@/components/providers/app-providers";
+import { figtree } from "@/config/fonts";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getWorkspacePageContent } from "@/i18n/dictionaries/workspace";
 import { SITE_NAME, WORKSPACE_URL } from "@/lib/site-metadata";
@@ -75,7 +76,11 @@ export default async function LocaleLayout({
   const content = getWorkspacePageContent(activeLocale);
 
   return (
-    <html lang={activeLocale} suppressHydrationWarning>
+    <html
+      className={figtree.variable}
+      lang={activeLocale}
+      suppressHydrationWarning
+    >
       <body>
         <a className="skip-link" href="#main-content">
           {content.shell.skipLinkLabel}

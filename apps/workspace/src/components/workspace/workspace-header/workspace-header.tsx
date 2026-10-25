@@ -1,14 +1,12 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { BrandLockup } from "@invessiv/ui";
+import { BrandLockup, LocaleSwitch, ThemeSwitch } from "@invessiv/ui";
 import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
 import { WorkspaceSearch } from "@/components/workspace/workspace-search/workspace-search";
-import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
-import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
 import type { Locale } from "@/config/i18n";
 import { SITE_ROUTES } from "@/config/routes";
 import type { WorkspacePageContent } from "@/i18n/dictionaries/workspace";
@@ -102,6 +100,8 @@ export function WorkspaceHeader({
               collapseLabelOnMobile
               label={headerContent.brandLabel}
               logoAlt={headerContent.brandLogoAlt}
+              logoWidth={1562}
+              logoHeight={1333}
               priority
             />
           </a>

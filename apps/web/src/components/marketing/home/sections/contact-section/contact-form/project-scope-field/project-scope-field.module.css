@@ -21,7 +21,7 @@
 }
 
 .chip {
-  composes: palette outlineOnHover from "../../../../../../shared/action-color/action-color.module.css";
+  composes: palette outlineOnHover from "@invessiv/ui/components/action-color/action-color.module.css";
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -93,7 +93,7 @@
 }
 
 .selected {
-  composes: subtleFill from "../../../../../../shared/action-color/action-color.module.css";
+  composes: subtleFill from "@invessiv/ui/components/action-color/action-color.module.css";
 }
 
 .chip[data-selected="true"] {
@@ -118,12 +118,12 @@
 }
 
 .chipLabel {
-  composes: hoverText from "../../../../../../shared/action-color/action-color.module.css";
+  composes: hoverText from "@invessiv/ui/components/action-color/action-color.module.css";
   min-width: 0;
 }
 
 .selectedLabel {
-  composes: text from "../../../../../../shared/action-color/action-color.module.css";
+  composes: text from "@invessiv/ui/components/action-color/action-color.module.css";
   min-width: 0;
 }
 

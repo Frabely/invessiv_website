@@ -135,7 +135,7 @@
 }
 
 .summary {
-  composes: palette from "../../../shared/action-color/action-color.module.css";
+  composes: palette from "@invessiv/ui/components/action-color/action-color.module.css";
   --action-icon-gradient-opacity: 1;
   display: grid;
   grid-template-columns: 1fr auto;
@@ -163,7 +163,7 @@
 }
 
 .question {
-  composes: hoverText from "../../../shared/action-color/action-color.module.css";
+  composes: hoverText from "@invessiv/ui/components/action-color/action-color.module.css";
   margin: 0;
   color: var(--color-text);
   font-size: clamp(1.12rem, 1.4vw, 1.34rem);

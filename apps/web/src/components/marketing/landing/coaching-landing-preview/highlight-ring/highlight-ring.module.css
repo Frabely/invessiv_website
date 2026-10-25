@@ -1,5 +1,5 @@
 .overlay {
-  composes: palette from "../../../../shared/action-color/action-color.module.css";
+  composes: palette from "@invessiv/ui/components/action-color/action-color.module.css";
   --preview-ring-left: 0px;
   --preview-ring-top: 0px;
   --preview-ring-width: 0px;

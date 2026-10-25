@@ -1,7 +1,7 @@
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
-import { ActionIcon } from "@/components/shared/action-icon/action-icon";
+import { ActionIcon } from "@invessiv/ui";
 
 import {
   CONTACT_CHANNEL_KEY,

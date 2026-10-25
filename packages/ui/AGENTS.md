@@ -7,6 +7,23 @@ und `packages/AGENTS.md` (Abschnitt `packages/ui`).
 
 Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 
+## Gemeinsamer Design-Kern (verbindlich)
+
+- **Tokens:** `src/styles/tokens.css` hält Palette (Marken-, Highlight-, Aktions- und Neutralrollen), Schriftfamilien,
+  Schriftgrößen, Layoutschiene und deren Breakpoints für **alle** Apps. Die Werte gehören dem Website-Design
+  (`apps/web/DESIGN.md`); bei Abweichungen gewinnt die Website. `src/styles/base.css` hält Reset und
+  Dokument-Defaults. Jede App importiert beide direkt nach Tailwind in ihrer `globals.css` und ergänzt dort nur eigene
+  Tokens (Web: FAQ-/Hero-/Marketing-Tokens; Workspace: Control-, Status- und Widget-Tokens). Gemeinsame Tokens nicht
+  in einer App-`globals.css` neu definieren.
+- **Schriften:** Jede App lädt die Fonts selbst per `next/font` (Paket bleibt frei von `next/*`), mit denselben
+  Variablennamen (`--font-figtree`, `--font-metrophobic`), die `tokens.css` erwartet.
+- **Aktionsfarbe:** Der Orange-Blau-CTA-Verlauf liegt einmalig in `components/action-color/action-color.module.css`.
+  Paket-Komponenten komponieren ihn relativ, App-CSS-Module über
+  `composes: … from "@invessiv/ui/components/action-color/action-color.module.css"`. `ActionIcon` zeigt
+  Font-Awesome-Icons im selben Verlauf.
+- **Header-Controls:** `ThemeSwitch` und `LocaleSwitch` (inkl. `useDismissibleDetails`) sind die einzigen
+  Theme-/Sprachumschalter aller Apps.
+
 ## Wer eine UI-Komponente nutzt, stylt sie nicht um (verbindlich)
 
 - **Im Regelfall kein eigenes CSS für eine Komponente aus `@invessiv/ui`.** Höhe, Innenabstand, Rahmen, Farben,
@@ -51,7 +68,8 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - **Buttons:** `variant` wählt das Aussehen (`primary`, `ghost`, `quiet`), `size` die Größe (`default`, `control` in
   Formularen, `icon` für reine Icon-Buttons). Hover-Effekte gelten nur auf Geräten, die hovern können.
   `PrimaryCtaButton` ist die Hauptaktion, `SecondaryCtaButton` die zweite Aktion daneben oder eine einzelne Aktion,
-  die nicht mit ihr konkurrieren soll.
+  die nicht mit ihr konkurrieren soll. `primary` trägt den CTA-Verlauf der Website, `ghost` erhält beim Hover einen
+  Verlaufsrahmen und Verlaufstext (Label-Span mit `gap: inherit`, damit Icon-Abstände bleiben).
 - **Das Token muss ankommen:** Fehlt `--control-height` zur Laufzeit, fallen alle Controls still auf ihre Inhaltshöhe
   zurück und sind dann unterschiedlich hoch. Sieht ein Formular so aus, zuerst prüfen, ob das ausgelieferte globale
   Stylesheet das Token enthält (Dev-Server neu starten), bevor an den Komponenten gedreht wird.

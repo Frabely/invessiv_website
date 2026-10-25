@@ -1,5 +1,5 @@
 .bubble {
-  composes: palette outlineOnHover from "../../../../../shared/action-color/action-color.module.css";
+  composes: palette outlineOnHover from "@invessiv/ui/components/action-color/action-color.module.css";
   --action-surface: var(--qna-bubble-surface);
   --qna-bubble-surface: color-mix(
     in srgb,
@@ -97,7 +97,7 @@
 }
 
 .question {
-  composes: hoverText from "../../../../../shared/action-color/action-color.module.css";
+  composes: hoverText from "@invessiv/ui/components/action-color/action-color.module.css";
   margin: 0;
   color: var(--color-text);
   font-size: var(--font-size-body-md);

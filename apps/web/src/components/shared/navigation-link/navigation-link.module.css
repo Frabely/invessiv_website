@@ -1,5 +1,5 @@
 .link {
-  composes: palette from "../action-color/action-color.module.css";
+  composes: palette from "@invessiv/ui/components/action-color/action-color.module.css";
   position: relative;
   display: inline-block;
   width: fit-content;

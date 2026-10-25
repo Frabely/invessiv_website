@@ -33,7 +33,7 @@
 }
 
 .primary {
-  composes: palette fill from "../action-color/action-color.module.css";
+  composes: palette fill from "@invessiv/ui/components/action-color/action-color.module.css";
   border-color: transparent;
   background-origin: border-box;
   background-color: var(--color-cta);
@@ -53,14 +53,14 @@
 }
 
 .ghost {
-  composes: palette outlineOnHover from "../action-color/action-color.module.css";
+  composes: palette outlineOnHover from "@invessiv/ui/components/action-color/action-color.module.css";
   border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
 }
 
 .ghostLabel {
-  composes: hoverText from "../action-color/action-color.module.css";
+  composes: hoverText from "@invessiv/ui/components/action-color/action-color.module.css";
 }
 
 .ghost:hover,

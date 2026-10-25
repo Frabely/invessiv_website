@@ -1,5 +1,5 @@
 .root {
-  composes: palette from "../action-color/action-color.module.css";
+  composes: palette from "@invessiv/ui/components/action-color/action-color.module.css";
   display: inline-flex;
   align-items: baseline;
   gap: 0.35em;
@@ -30,7 +30,7 @@
 }
 
 .arrow {
-  composes: text from "../action-color/action-color.module.css";
+  composes: text from "@invessiv/ui/components/action-color/action-color.module.css";
   flex: 0 0 auto;
   font-size: 1.25em;
   line-height: 1;

@@ -1,11 +1,20 @@
 "use client";
 
-import type { MouseEvent } from "react";
-
-import { SUPPORTED_LOCALES, type Locale } from "@/config/i18n";
+import { useRef, type MouseEvent } from "react";
+import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import {
+  SUPPORTED_LOCALES,
+  type Locale,
+} from "@invessiv/common/contracts/i18n/locale";
+import {
+  HeaderControlVariant,
+  type HeaderControlVariant as HeaderControlVariantValue,
+} from "@invessiv/common/constants/ui/header-control-variants";
+import { useDismissibleDetails } from "../../hooks/use-dismissible-details";
+import { ActionIcon } from "../action-icon/action-icon";
 import styles from "./locale-switch.module.css";
 
-type LocaleSwitchProps = {
+export type LocaleSwitchProps = {
   className?: string;
   locale: Locale;
   localeMenuLabel: string;
@@ -15,7 +24,7 @@ type LocaleSwitchProps = {
     nextLocale: Locale,
     event: MouseEvent<HTMLButtonElement>,
   ) => void;
-  variant?: "desktop" | "mobile";
+  variant?: HeaderControlVariantValue;
 };
 
 export function LocaleSwitch({
@@ -25,22 +34,19 @@ export function LocaleSwitch({
   localeSwitchLabel,
   locales = SUPPORTED_LOCALES,
   onSelectAction,
-  variant = "desktop",
+  variant = HeaderControlVariant.Desktop,
 }: LocaleSwitchProps) {
+  const detailsRef = useRef<HTMLDetailsElement | null>(null);
+  useDismissibleDetails(detailsRef);
   const rootClassName = className
     ? `${styles.root} ${styles[variant]} ${className}`
     : `${styles.root} ${styles[variant]}`;
 
   return (
-    <details className={rootClassName}>
+    <details className={rootClassName} ref={detailsRef}>
       <summary aria-label={localeMenuLabel} className={styles.summary}>
         <span aria-hidden="true" className={styles.icon}>
-          <svg fill="none" viewBox="0 0 24 24">
-            <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
-            <path d="M3 12h18" />
-            <path d="M12 3a15.5 15.5 0 0 1 0 18" />
-            <path d="M12 3a15.5 15.5 0 0 0 0 18" />
-          </svg>
+          <ActionIcon icon={faGlobe} />
         </span>
         <span className={styles.code}>{locale.toUpperCase()}</span>
       </summary>
@@ -62,7 +68,9 @@ export function LocaleSwitch({
               onClick={(event) => onSelectAction(supportedLocale, event)}
               type="button"
             >
-              {supportedLocale.toUpperCase()}
+              <span className={styles.optionLabel}>
+                {supportedLocale.toUpperCase()}
+              </span>
             </button>
           );
         })}

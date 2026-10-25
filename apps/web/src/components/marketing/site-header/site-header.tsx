@@ -12,12 +12,10 @@ import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
-import { BrandLockup } from "@invessiv/ui";
+import { BrandLockup, LocaleSwitch, ThemeSwitch } from "@invessiv/ui";
 import { BRAND_ASSETS } from "@/common/constants/brand/brand-assets";
 import { ReadingProgress } from "@/components/marketing/shared/reading-progress/reading-progress";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
-import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
-import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
 import type { NavigationItem } from "@/config/navigation/home";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import {

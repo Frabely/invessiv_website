@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { ActionIcon } from "@/components/shared/action-icon/action-icon";
+import { ActionIcon } from "@invessiv/ui";
 import styles from "./disclosure-button.module.css";
 
 type DisclosureButtonProps = Omit<

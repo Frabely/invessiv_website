@@ -2,7 +2,7 @@ import { useId } from "react";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import styles from "./action-icon.module.css";
 
-type ActionIconProps = {
+export type ActionIconProps = {
   icon: IconDefinition;
 };
 

@@ -55,3 +55,7 @@ export * from "./components/files/file-project-select/file-project-select";
 export * from "./components/dialog/form-dialog/form-dialog";
 export * from "./components/form/form-notice/form-notice";
 export * from "./components/hours-meter/hours-meter";
+export * from "./components/action-icon/action-icon";
+export * from "./components/locale-switch/locale-switch";
+export * from "./components/theme-switch/theme-switch";
+export * from "./hooks/use-dismissible-details";

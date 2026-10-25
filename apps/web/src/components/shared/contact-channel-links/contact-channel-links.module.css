@@ -13,7 +13,7 @@
 }
 
 .link {
-  composes: palette subtlePalette from "../action-color/action-color.module.css";
+  composes: palette subtlePalette from "@invessiv/ui/components/action-color/action-color.module.css";
   --action-icon-gradient-opacity: 1;
   display: inline-flex;
   align-items: center;

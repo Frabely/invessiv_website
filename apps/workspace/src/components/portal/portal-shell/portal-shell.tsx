@@ -6,11 +6,15 @@ import { type ReactNode, useState } from "react";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
-import { ButtonControl, Dialog, DialogSize } from "@invessiv/ui";
+import {
+  ButtonControl,
+  Dialog,
+  DialogSize,
+  LocaleSwitch,
+  ThemeSwitch,
+} from "@invessiv/ui";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
-import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
-import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
 import type { PortalShellDictionary } from "@/i18n/dictionaries/portal";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import styles from "./portal-shell.module.css";
@@ -95,7 +99,7 @@ export function PortalShell({
               height={28}
               priority
               src="/brand/invessiv-logo.svg"
-              width={28}
+              width={33}
             />
           </a>
           <div className={styles.switcherSlot}>{switcher}</div>

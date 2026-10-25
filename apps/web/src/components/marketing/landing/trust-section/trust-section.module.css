@@ -394,7 +394,7 @@
 }
 
 .reply {
-  composes: palette outlineOnHover from "../../../shared/action-color/action-color.module.css";
+  composes: palette outlineOnHover from "@invessiv/ui/components/action-color/action-color.module.css";
   --action-surface: color-mix(
     in srgb,
     var(--color-bg) 80%,
@@ -434,7 +434,7 @@
 }
 
 .replyLabel {
-  composes: text from "../../../shared/action-color/action-color.module.css";
+  composes: text from "@invessiv/ui/components/action-color/action-color.module.css";
   color: var(--color-cta);
   font-size: clamp(0.92rem, 0.88rem + 0.18vw, 1rem);
   line-height: 1.35;
@@ -446,7 +446,7 @@
 }
 
 .replySend {
-  composes: fill from "../../../shared/action-color/action-color.module.css";
+  composes: fill from "@invessiv/ui/components/action-color/action-color.module.css";
   display: grid;
   flex: 0 0 auto;
   place-items: center;

@@ -66,7 +66,7 @@
 }
 
 .serviceChip {
-  composes: palette outlineOnHover from "../../../../shared/action-color/action-color.module.css";
+  composes: palette outlineOnHover from "@invessiv/ui/components/action-color/action-color.module.css";
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -112,7 +112,7 @@
 }
 
 .serviceChipActive {
-  composes: subtleFill from "../../../../shared/action-color/action-color.module.css";
+  composes: subtleFill from "@invessiv/ui/components/action-color/action-color.module.css";
 }
 
 .serviceChip[aria-pressed="true"],
@@ -134,11 +134,11 @@
 }
 
 .serviceChipLabel {
-  composes: hoverText from "../../../../shared/action-color/action-color.module.css";
+  composes: hoverText from "@invessiv/ui/components/action-color/action-color.module.css";
 }
 
 .selectedLabel {
-  composes: text from "../../../../shared/action-color/action-color.module.css";
+  composes: text from "@invessiv/ui/components/action-color/action-color.module.css";
 }
 
 .sectionDivider {
