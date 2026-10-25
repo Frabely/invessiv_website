@@ -7,6 +7,23 @@ und `packages/AGENTS.md` (Abschnitt `packages/ui`).
 
 Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 
+## Änderungen am Standardverhalten vorher abstimmen (verbindlich)
+
+- Wird eine bestehende Komponente direkt geändert und verändert das ihr bisheriges Standardverhalten oder
+  Standardaussehen, **vor der Umsetzung ausdrücklich fragen**, ob diese Änderung für alle betroffenen Verwendungen
+  gelten soll. Das umfasst auch CSS, Hover-, Fokus- und Auswahlzustände, Maße, Prop-Defaults sowie Änderungen an
+  geteilten Hooks, Stilen oder Tokens, die sich auf bestehende Komponenten auswirken.
+- Vor der Rückfrage die Verwendungen in allen Apps und im UI-Paket ermitteln. Konkret erklären, was sich gegenüber
+  bisher ändert, welche Stellen betroffen sind und wo das bisherige Verhalten weiter sinnvoll sein könnte.
+  Ungeprüfte oder dynamische Verwendungen als Unsicherheit benennen.
+- Die Entscheidung ausdrücklich anbieten: **bestehenden Standard überall ändern** oder **bisherigen Standard
+  erhalten und die neue Darstellung bzw. das neue Verhalten über eine app-neutrale Prop/Variante gezielt aktivieren**.
+  Ein Auftrag für eine einzelne Stelle oder einen Bereich ist keine Zustimmung zur Änderung aller Verwendungen.
+- Bis zur ausdrücklichen Entscheidung keine Änderung am bestehenden Standard umsetzen. Wurde die konkrete Änderung
+  samt ihrer Reichweite im laufenden Gespräch bereits ausdrücklich bestätigt, ist keine erneute Rückfrage nötig.
+- Soll der bisherige Standard an einzelnen Stellen erhalten bleiben, eine passende gemeinsame Variante bzw. Prop
+  verwenden und die betroffenen Aufrufer bewusst zuordnen; keine lokalen CSS-Overrides oder Komponenten-Kopien.
+
 ## Gemeinsamer Design-Kern (verbindlich)
 
 - **Tokens:** `src/styles/tokens.css` hält Palette (Marken-, Highlight-, Aktions- und Neutralrollen), Schriftfamilien,

@@ -21,7 +21,11 @@ import {
   useMergeRefs,
 } from "@floating-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faChevronDown,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { TriState } from "@invessiv/common/constants/filters/tri-state";
 import type {
@@ -30,6 +34,7 @@ import type {
 } from "@invessiv/common/contracts/ui/custom-select-option";
 import styles from "./custom-select.module.css";
 import { DialogPortalRootContext } from "../dialog/dialog-portal-root-context";
+import { ActionIcon } from "../action-icon/action-icon";
 
 type SingleSelectProps<TValue extends string> = {
   multiple?: false;
@@ -211,7 +216,7 @@ export function CustomSelect<TValue extends string = string>(
             )}
           </span>
           <span aria-hidden="true" className={styles.chevron}>
-            v
+            <ActionIcon icon={faChevronDown} />
           </span>
         </button>
 
@@ -370,7 +375,7 @@ export function CustomSelect<TValue extends string = string>(
           ) : null}
         </span>
         <span aria-hidden="true" className={styles.chevron}>
-          v
+          <ActionIcon icon={faChevronDown} />
         </span>
       </button>
 
