@@ -291,24 +291,25 @@
 }
 
 .step[data-journey-state]:not([data-journey-state="active"]) {
-  border-color: color-mix(in srgb, var(--color-border) 38%, transparent);
-  background: color-mix(in srgb, var(--color-bg) 80%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-border) 22%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 94%, var(--color-surface-1));
 }
 
 .step[data-journey-state]:not([data-journey-state="active"]) .stepInner {
-  opacity: 1;
+  opacity: 0.68;
 }
 
-.step[data-journey-state]:not([data-journey-state="active"]),
-:is(
-  .stepTitle,
-  .stepNumber,
-  .stepEffortLabel,
-  .stepEffortValue,
-  .stepResultLabel,
-  .stepResultValue
-) {
-  color: color-mix(in srgb, var(--color-text-muted) 90%, var(--color-bg));
+/* Fade a full-contrast foreground so the quiet cards remain readable in both themes. */
+.step[data-journey-state]:not([data-journey-state="active"])
+  :is(
+    .stepTitle,
+    .stepNumber,
+    .stepEffortLabel,
+    .stepEffortValue,
+    .stepResultLabel,
+    .stepResultValue
+  ) {
+  color: var(--color-text);
 }
 
 .step[data-journey-state]:not([data-journey-state="active"]) .stepTitle {
@@ -325,6 +326,7 @@
 }
 
 .stepInner {
+  opacity: 1;
   display: flex;
   flex-direction: column;
   gap: 13px;

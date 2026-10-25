@@ -21,11 +21,7 @@
   --color-brand-primary: #e38a3c;
   --color-brand-secondary: #86ace6;
   --color-brand-primary-muted: #d9b08c;
-  --color-highlight-base: color-mix(
-    in srgb,
-    var(--color-brand-secondary) 55%,
-    var(--color-text-muted)
-  );
+  --color-highlight-base: var(--color-cta);
   /* Informational emphasis only; actions use --color-action-base. */
   --color-highlight: var(--color-highlight-base);
   --color-highlight-surface: color-mix(
@@ -156,11 +152,7 @@
   --color-brand-primary: #af581f;
   --color-brand-secondary: #3568ad;
   --color-brand-primary-muted: #925d3e;
-  --color-highlight-base: color-mix(
-    in srgb,
-    var(--color-brand-secondary) 40%,
-    var(--color-text-muted)
-  );
+  --color-highlight-base: var(--color-cta);
   --color-bg: #f6f5f2;
   --color-surface-1: #ffffff;
   --color-surface-2: #eeede9;
