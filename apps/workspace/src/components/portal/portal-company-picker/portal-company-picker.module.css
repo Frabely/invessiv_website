@@ -27,22 +27,5 @@
 }
 
 .option {
-  display: block;
-  padding: 1rem 1.2rem;
-  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
-  border-radius: 12px;
-  background: var(--color-surface-1);
-  color: var(--color-text);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.option:hover,
-.option:focus-visible {
-  border-color: var(--color-cta);
-}
-
-.option:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
+  width: 100%;
 }

@@ -39,13 +39,6 @@
   overflow-wrap: anywhere;
 }
 
-.required {
-  margin-left: 0.2rem;
-  color: var(--color-cta);
-  font-weight: 700;
-  text-decoration: none;
-}
-
 .value {
   min-width: 0;
   margin: 0;

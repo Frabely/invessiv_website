@@ -12,8 +12,9 @@
 /* One continuous track of five segments: the poles sit under its two ends. */
 .track {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  overflow: hidden;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  overflow: visible;
   border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
   border-radius: var(--control-radius);
   background: color-mix(
@@ -24,6 +25,8 @@
 }
 
 .step {
+  composes: focusRing from "../action-color/action-color.module.css";
+  --focus-ring-offset: -4px;
   position: relative;
   display: grid;
   place-items: center;
@@ -62,13 +65,8 @@
 }
 
 .step[data-checked="true"] {
-  background: var(--color-cta);
+  background: var(--action-gradient);
   color: var(--color-on-cta);
-}
-
-.step:has(input:focus-visible) {
-  outline: 2px solid var(--color-focus);
-  outline-offset: -3px;
 }
 
 .poles {
@@ -82,4 +80,19 @@
 
 .poles span:last-child {
   text-align: right;
+}
+
+.step:has(input:disabled) {
+  opacity: var(--button-disabled-opacity);
+  filter: var(--button-disabled-filter);
+  cursor: default;
+}
+.step input:disabled {
+  cursor: default;
+}
+.step:first-child {
+  border-radius: var(--control-radius) 0 0 var(--control-radius);
+}
+.step:last-child {
+  border-radius: 0 var(--control-radius) var(--control-radius) 0;
 }

@@ -50,7 +50,7 @@ export function LineItemTemplatesList({
             </PrimaryCtaLink>
           }
           description={content.list.noResults.description}
-          icon={<FontAwesomeIcon icon={faLayerGroup} />}
+          icon={faLayerGroup}
           title={content.list.noResults.title}
           variant="filtered"
         />
@@ -72,7 +72,7 @@ export function LineItemTemplatesList({
           ) : undefined
         }
         description={content.list.empty.description}
-        icon={<FontAwesomeIcon icon={faLayerGroup} />}
+        icon={faLayerGroup}
         title={content.list.empty.title}
       />
     );

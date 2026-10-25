@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { ButtonControl, LinkedText } from "@invessiv/ui";
+import { QuaternaryCta, LinkedText } from "@invessiv/ui";
 import styles from "./feedback-item-text.module.css";
 
 export type FeedbackItemTextProps = {
@@ -31,16 +31,16 @@ export function FeedbackItemText({ text, labels }: FeedbackItemTextProps) {
         <LinkedText text={text} />
       </p>
       {foldable ? (
-        <ButtonControl
+        <QuaternaryCta
+          as="button"
           aria-controls={textId}
           aria-expanded={expanded}
           className={styles.toggle}
           onClick={() => setExpanded((current) => !current)}
           type="button"
-          variant="ghost"
         >
           {expanded ? labels.showLess : labels.showMore}
-        </ButtonControl>
+        </QuaternaryCta>
       ) : null}
     </div>
   );

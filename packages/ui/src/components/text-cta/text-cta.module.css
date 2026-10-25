@@ -47,6 +47,11 @@ summary.root::-webkit-details-marker {
   line-height: 1;
 }
 
+/* Appearance adapters can style a third-party text action whose markup has no label span. */
+.standaloneQuaternary {
+  composes: root label;
+}
+
 .root:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 3px;
@@ -56,7 +61,8 @@ summary.root::-webkit-details-marker {
 @supports ((background-clip: text) or (-webkit-background-clip: text)) and
   (color: color-mix(in srgb, red, blue)) {
   .tertiary .label,
-  .quaternary:focus-visible .label {
+  .quaternary:focus-visible .label,
+  .standaloneQuaternary:focus-visible {
     background-image: var(--action-gradient), var(--action-gradient);
     background-size:
       100% 100%,
@@ -67,7 +73,8 @@ summary.root::-webkit-details-marker {
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .quaternary:hover .label {
+    .quaternary:hover .label,
+    .standaloneQuaternary:hover {
       background-image: var(--action-gradient), var(--action-gradient);
       background-size:
         100% 100%,
@@ -82,7 +89,8 @@ summary.root::-webkit-details-marker {
 @media (forced-colors: active) {
   .root .label,
   .quaternary:hover .label,
-  .root .arrow {
+  .root .arrow,
+  .standaloneQuaternary {
     background-image: none;
     -webkit-text-fill-color: currentColor;
     text-decoration: underline;

@@ -1,0 +1,47 @@
+/* Clerk owns the markup; appearance slots compose the same primitives as native app controls. */
+.primary {
+  composes: button primary control from "@invessiv/ui/components/button/button.module.css";
+}
+
+.secondary {
+  composes: button ghost control from "@invessiv/ui/components/button/button.module.css";
+}
+
+.textAction {
+  composes: standaloneQuaternary from "@invessiv/ui/components/text-cta/text-cta.module.css";
+}
+
+.menuAction {
+  composes: button quiet control from "@invessiv/ui/components/button/button.module.css";
+}
+
+.avatar {
+  composes: palette fill from "@invessiv/ui/components/action-color/action-color.module.css";
+  color: var(--color-on-cta);
+}
+
+.field {
+  composes: control from "@invessiv/ui/components/form/form-field/form-field.module.css";
+}
+
+.inputShell {
+  composes: inputShell from "@invessiv/ui/components/form/form-field/form-field.module.css";
+}
+
+.input {
+  min-height: var(--control-height);
+  border-radius: var(--control-radius);
+  border-color: var(--control-border-color);
+  color: var(--color-text);
+  background: var(--color-surface-2);
+  font-family: var(--font-family-base);
+}
+
+/* Clerk supplies the accessible visibility toggle; Edge must not add its native second eye. */
+.input::-ms-reveal {
+  display: none;
+}
+
+.input::-ms-clear {
+  display: none;
+}

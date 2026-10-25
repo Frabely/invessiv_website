@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { faFilterCircleXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { EmptyState, PrimaryCtaLink } from "@invessiv/ui";
 import { LeadsEmptyStateVariant } from "@invessiv/common/constants/leads/list/lead-empty-state-variants";
-import styles from "./list-empty-state.module.css";
-
 type ListEmptyStateProps = {
   actionHref?: string;
   actionLabel: string;
@@ -10,47 +11,6 @@ type ListEmptyStateProps = {
   variant: LeadsEmptyStateVariant;
 };
 
-function getIconPath(variant: LeadsEmptyStateVariant) {
-  return variant === LeadsEmptyStateVariant.Filtered
-    ? "M4 6h16M7 12h10M10 18h4"
-    : "M12 5v14M5 12h14";
-}
-
-function renderAction(
-  actionHref: string | undefined,
-  actionLabel: string,
-  variant: LeadsEmptyStateVariant,
-) {
-  const commonContent = (
-    <>
-      <span aria-hidden="true" className={styles.actionIcon}>
-        <svg
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2.25}
-          viewBox="0 0 24 24"
-        >
-          <path d={getIconPath(variant)} />
-        </svg>
-      </span>
-      <span className={styles.actionLabel}>{actionLabel}</span>
-    </>
-  );
-
-  // Without a target the actor lacks the permission; a disabled button would be a dead end.
-  if (!actionHref) {
-    return null;
-  }
-
-  return (
-    <Link className={styles.primaryAction} href={actionHref}>
-      {commonContent}
-    </Link>
-  );
-}
-
 export function ListEmptyState({
   actionHref,
   actionLabel,
@@ -58,30 +18,22 @@ export function ListEmptyState({
   title,
   variant,
 }: ListEmptyStateProps) {
+  const filtered = variant === LeadsEmptyStateVariant.Filtered;
+  const icon = filtered ? faFilterCircleXmark : faPlus;
   return (
-    <section className={styles.shell}>
-      <div className={styles.panel} data-variant={variant}>
-        <div className={styles.iconFrame} aria-hidden="true">
-          <svg
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            viewBox="0 0 24 24"
-          >
-            <path d={getIconPath(variant)} />
-          </svg>
-        </div>
-
-        <div className={styles.content}>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.description}>{description}</p>
-          <div className={styles.actions}>
-            {renderAction(actionHref, actionLabel, variant)}
-          </div>
-        </div>
-      </div>
-    </section>
+    <EmptyState
+      description={description}
+      title={title}
+      icon={icon}
+      variant={filtered ? "filtered" : "default"}
+      action={
+        actionHref ? (
+          <PrimaryCtaLink href={actionHref} linkComponent={Link}>
+            <FontAwesomeIcon aria-hidden="true" icon={icon} />
+            {actionLabel}
+          </PrimaryCtaLink>
+        ) : undefined
+      }
+    />
   );
 }

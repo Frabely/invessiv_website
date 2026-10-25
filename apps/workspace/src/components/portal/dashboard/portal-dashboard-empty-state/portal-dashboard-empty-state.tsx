@@ -1,5 +1,5 @@
 import { faSeedling } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { EmptyState } from "@invessiv/ui";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import styles from "./portal-dashboard-empty-state.module.css";
@@ -17,7 +17,7 @@ export function PortalDashboardEmptyState({
       <EmptyState
         alignment="start"
         description={content.emptyDescription}
-        icon={<FontAwesomeIcon icon={faSeedling} />}
+        icon={faSeedling}
         title={content.emptyTitle}
       />
     </div>

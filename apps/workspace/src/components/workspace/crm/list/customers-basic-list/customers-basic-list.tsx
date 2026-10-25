@@ -72,7 +72,7 @@ export function CustomersBasicList({
             </PrimaryCtaLink>
           }
           description={content.noResults.description}
-          icon={<FontAwesomeIcon icon={faFilterCircleXmark} />}
+          icon={faFilterCircleXmark}
           title={content.noResults.title}
           variant="filtered"
         />
@@ -98,7 +98,7 @@ export function CustomersBasicList({
           ) : undefined
         }
         description={content.empty.description}
-        icon={<FontAwesomeIcon icon={faAddressBook} />}
+        icon={faAddressBook}
         title={content.empty.title}
       />
     );

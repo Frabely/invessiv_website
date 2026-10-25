@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { ActionIcon } from "../action-icon/action-icon";
 import styles from "./empty-state.module.css";
 
 export type EmptyStateProps = {
   action?: ReactNode;
   alignment?: "start" | "center";
   description: string;
-  icon: ReactNode;
+  icon: IconDefinition;
   title: string;
   variant?: "default" | "filtered";
 };
@@ -22,7 +24,7 @@ export function EmptyState({
     <section className={styles.shell} data-alignment={alignment}>
       <div className={styles.panel} data-variant={variant}>
         <div aria-hidden="true" className={styles.iconFrame}>
-          {icon}
+          <ActionIcon icon={icon} />
         </div>
         <div className={styles.content}>
           <h2 className={styles.title}>{title}</h2>

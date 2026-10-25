@@ -1,17 +1,14 @@
 "use client";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import { deDE, enUS } from "@clerk/localizations";
 import type { ReactNode } from "react";
 import type { Locale } from "@/config/i18n";
 import { LanguageProvider } from "@/components/providers/language-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import type { Theme } from "@/lib/theme/theme";
 
-const clerkLocalizations: Record<Locale, typeof deDE> = {
-  de: deDE,
-  en: enUS,
-};
+import { getClerkLocalization } from "@/i18n/clerk-localization";
+import { createClerkAppearance } from "./clerk-appearance";
 
 type AppProvidersProps = {
   children: ReactNode;
@@ -25,7 +22,10 @@ export function AppProviders({
   initialTheme,
 }: AppProvidersProps) {
   return (
-    <ClerkProvider localization={clerkLocalizations[initialLocale]}>
+    <ClerkProvider
+      appearance={createClerkAppearance()}
+      localization={getClerkLocalization(initialLocale)}
+    >
       <ThemeProvider initialTheme={initialTheme}>
         <LanguageProvider initialLocale={initialLocale}>
           {children}

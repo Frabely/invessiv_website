@@ -1,5 +1,6 @@
 import { useId } from "react";
 import Link from "next/link";
+import { SecondaryCtaLink } from "@invessiv/ui";
 import type { PortalBookingDto } from "@invessiv/common/contracts/portal/portal-booking.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
@@ -53,9 +54,13 @@ export function OnboardingBookingCard({
         <>
           <p className={styles.text}>{texts.fallback.text}</p>
           {chatHref ? (
-            <Link className={styles.action} href={chatHref}>
+            <SecondaryCtaLink
+              linkComponent={Link}
+              className={styles.action}
+              href={chatHref}
+            >
               {texts.fallback.chat}
-            </Link>
+            </SecondaryCtaLink>
           ) : null}
         </>
       )}

@@ -1,3 +1,4 @@
+import { FormRequiredMarker } from "@invessiv/ui";
 import type { ReactNode } from "react";
 import type { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
@@ -83,9 +84,12 @@ export function OnboardingTemplateReadView({
           <dt className={styles.label}>
             {field.label}
             {field.requirement === QuestionnaireFieldRequirement.Required ? (
-              <abbr className={styles.required} title={texts.required}>
-                *
-              </abbr>
+              <span>
+                <span aria-hidden="true">
+                  <FormRequiredMarker />
+                </span>
+                <span className="sr-only">{texts.required}</span>
+              </span>
             ) : null}
           </dt>
           <dd className={styles.value}>

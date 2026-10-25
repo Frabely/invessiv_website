@@ -4,7 +4,6 @@ import {
   faFilterCircleXmark,
   faListCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { EmptyState, PrimaryCtaLink } from "@invessiv/ui";
 import { TasksEmptyStateVariant } from "@/common/constants/crm/list/tasks-empty-state-variants";
@@ -50,7 +49,7 @@ export function TasksOverviewEmptyState({
         </PrimaryCtaLink>
       }
       description={texts.description}
-      icon={<FontAwesomeIcon icon={icon} />}
+      icon={icon}
       title={texts.title}
       variant={
         variant === TasksEmptyStateVariant.NoResults ? "filtered" : undefined

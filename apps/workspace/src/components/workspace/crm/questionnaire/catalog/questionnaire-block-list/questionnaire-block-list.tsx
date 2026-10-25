@@ -43,7 +43,7 @@ export function QuestionnaireBlockList({
             </PrimaryCtaLink>
           }
           description={text.noResults.description}
-          icon={<FontAwesomeIcon icon={faLayerGroup} />}
+          icon={faLayerGroup}
           title={text.noResults.title}
           variant="filtered"
         />
@@ -63,7 +63,7 @@ export function QuestionnaireBlockList({
           ) : undefined
         }
         description={text.empty.description}
-        icon={<FontAwesomeIcon icon={faLayerGroup} />}
+        icon={faLayerGroup}
         title={text.empty.title}
       />
     );

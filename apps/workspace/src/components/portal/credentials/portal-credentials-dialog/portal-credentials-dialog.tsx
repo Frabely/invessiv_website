@@ -204,7 +204,7 @@ export function PortalCredentialsDialog({
                 ? content.empty.description
                 : content.empty.readOnlyDescription
             }
-            icon={<FontAwesomeIcon icon={faKey} />}
+            icon={faKey}
             title={content.empty.title}
           />
         ) : (

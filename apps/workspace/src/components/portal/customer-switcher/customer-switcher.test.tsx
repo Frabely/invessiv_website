@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import type { PortalMembershipOptionDto } from "@invessiv/common/contracts/portal/portal-membership-option.dto";
 import { getPortalShellDictionary } from "@/i18n/dictionaries/portal";
@@ -20,6 +20,37 @@ const COMPANY_B: PortalMembershipOptionDto = {
 
 describe("CustomerSwitcher", () => {
   afterEach(cleanup);
+
+  it("closes on Escape and returns focus to the summary", () => {
+    const { container } = render(
+      <CustomerSwitcher
+        activeCustomerId={COMPANY_A.customerId}
+        companies={[COMPANY_A, COMPANY_B]}
+        content={CONTENT}
+        locale="de"
+      />,
+    );
+    const details = container.querySelector("details")!;
+    details.open = true;
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(details.open).toBe(false);
+    expect(container.querySelector("summary")).toHaveFocus();
+  });
+
+  it("closes when a pointer is pressed outside the company menu", () => {
+    const { container } = render(
+      <CustomerSwitcher
+        activeCustomerId={COMPANY_A.customerId}
+        companies={[COMPANY_A, COMPANY_B]}
+        content={CONTENT}
+        locale="en"
+      />,
+    );
+    const details = container.querySelector("details")!;
+    details.open = true;
+    fireEvent.pointerDown(document.body);
+    expect(details.open).toBe(false);
+  });
 
   it("links the single company name to the overview", () => {
     render(

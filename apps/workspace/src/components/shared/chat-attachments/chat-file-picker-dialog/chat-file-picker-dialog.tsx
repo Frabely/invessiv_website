@@ -1,7 +1,8 @@
 import { useEffect, useId, useState } from "react";
 import {
   ButtonControl,
-  CheckboxControl,
+  OptionTile,
+  FormField,
   Dialog,
   DialogSize,
   FileKindIcon,
@@ -10,7 +11,7 @@ import {
 import type { ComposerAttachment } from "@invessiv/common/contracts/ui/composer-attachment";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { FileListLoadStatus } from "@/common/constants/files/file-list-load-status";
-import type { ChatAttachmentApi } from "@/common/contracts/files/chat-attachment-api";
+import type { ChatFilePickerListFiles } from "@/common/contracts/files/chat-file-picker-list-files";
 import type { ChatAttachmentTexts } from "@/common/contracts/files/chat-attachment-texts";
 import { mapPagedFiles } from "@/common/patterns/files/map-paged-files";
 import { usePagedFiles } from "@/hooks/shared/use-paged-files";
@@ -22,7 +23,7 @@ export type ChatFilePickerDialogProps = {
   /** Entries already on the message; shown checked and not selectable twice. */
   attachedIds: readonly string[];
   labels: ChatAttachmentTexts;
-  listFiles: NonNullable<ChatAttachmentApi<{ id: string }>["listFiles"]>;
+  listFiles: ChatFilePickerListFiles;
   onCloseAction: () => void;
   onPickAction: (attachments: ComposerAttachment[]) => void;
   /** Free attachment slots of the message. */
@@ -109,16 +110,18 @@ export function ChatFilePickerDialog({
     >
       <div className={styles.body}>
         {searchable ? (
-          <div className={styles.search}>
-            <label htmlFor={searchId}>{labels.search}</label>
-            <input
-              id={searchId}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder={labels.searchPlaceholder}
-              type="search"
-              value={search}
-            />
-          </div>
+          <FormField
+            label={labels.search ?? labels.pickerTitle}
+            kind="text"
+            reserveErrorSpace={false}
+            inputProps={{
+              id: searchId,
+              type: "search",
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: labels.searchPlaceholder,
+              value: search,
+            }}
+          />
         ) : null}
         {list.status === FileListLoadStatus.Error ? (
           <div className={styles.status} role="alert">
@@ -140,23 +143,26 @@ export function ChatFilePickerDialog({
                 selected.some((entry) => entry.fileId === file.fileId);
               return (
                 <li key={file.fileId}>
-                  <label className={styles.row} data-checked={checked}>
-                    <CheckboxControl
-                      aria-label={formatMessage(labels.selectNamed, {
-                        name: file.displayName,
-                      })}
-                      checked={checked}
-                      disabled={attached || (!checked && full)}
-                      onChange={() => toggle(withoutId(file))}
-                    />
-                    <FileKindIcon assetKind={file.assetKind} />
-                    <span className={styles.name}>{file.displayName}</span>
-                    {file.releasesOnSend && labels.internalBadge ? (
-                      <span className={styles.badge}>
-                        {labels.internalBadge}
-                      </span>
-                    ) : null}
-                  </label>
+                  <OptionTile
+                    kind="checkbox"
+                    className={styles.row}
+                    aria-label={formatMessage(labels.selectNamed, {
+                      name: file.displayName,
+                    })}
+                    checked={checked}
+                    disabled={attached || (!checked && full)}
+                    onChange={() => toggle(withoutId(file))}
+                  >
+                    <span className={styles.file}>
+                      <FileKindIcon assetKind={file.assetKind} />
+                      <span className={styles.name}>{file.displayName}</span>
+                      {file.releasesOnSend && labels.internalBadge ? (
+                        <span className={styles.badge}>
+                          {labels.internalBadge}
+                        </span>
+                      ) : null}
+                    </span>
+                  </OptionTile>
                 </li>
               );
             })}

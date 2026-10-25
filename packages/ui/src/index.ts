@@ -60,3 +60,5 @@ export * from "./components/action-icon/action-icon";
 export * from "./components/locale-switch/locale-switch";
 export * from "./components/theme-switch/theme-switch";
 export * from "./hooks/use-dismissible-details";
+
+export * from "./components/scale-control/scale-control";

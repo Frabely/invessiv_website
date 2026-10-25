@@ -1,0 +1,98 @@
+[
+  {
+    "locale": "de",
+    "theme": "dark",
+    "mobile": false,
+    "overflow": false,
+    "requests": 2,
+    "focus": {
+      "bg": "linear-gradient(118deg, color(srgb 0.909961 0.623765 0.372941) 0%, color(srgb 0.820243 0.656565 0.536941) 28%, color(srgb 0.610902 0.733098 0.919608) 100%)",
+      "ring": "1"
+    },
+    "chatGradient": "linear-gradient(118deg, rgb(227, 138, 60) 0%, color(srgb 0.780784 0.581177 0.435294) 28%, rgb(134, 172, 230) 100%)"
+  },
+  {
+    "locale": "de",
+    "theme": "dark",
+    "mobile": true,
+    "overflow": false,
+    "requests": 2,
+    "focus": {
+      "bg": "linear-gradient(118deg, color(srgb 0.909961 0.623765 0.372941) 0%, color(srgb 0.820243 0.656565 0.536941) 28%, color(srgb 0.610902 0.733098 0.919608) 100%)",
+      "ring": "1"
+    },
+    "chatGradient": "linear-gradient(118deg, rgb(227, 138, 60) 0%, color(srgb 0.780784 0.581177 0.435294) 28%, rgb(134, 172, 230) 100%)"
+  },
+  {
+    "locale": "de",
+    "theme": "light",
+    "mobile": false,
+    "overflow": false,
+    "requests": 2,
+    "focus": {
+      "bg": "linear-gradient(118deg, color(srgb 0.583333 0.293333 0.103333) 0%, color(srgb 0.461333 0.309333 0.245333) 28%, color(srgb 0.176667 0.346667 0.576667) 100%)",
+      "ring": "1"
+    },
+    "chatGradient": "linear-gradient(118deg, rgb(175, 88, 31) 0%, color(srgb 0.542745 0.363922 0.288627) 28%, rgb(53, 104, 173) 100%)"
+  },
+  {
+    "locale": "de",
+    "theme": "light",
+    "mobile": true,
+    "overflow": false,
+    "requests": 2,
+    "focus": {
+      "bg": "linear-gradient(118deg, color(srgb 0.583333 0.293333 0.103333) 0%, color(srgb 0.461333 0.309333 0.245333) 28%, color(srgb 0.176667 0.346667 0.576667) 100%)",
+      "ring": "1"
+    },
+    "chatGradient": "linear-gradient(118deg, rgb(175, 88, 31) 0%, color(srgb 0.542745 0.363922 0.288627) 28%, rgb(53, 104, 173) 100%)"
+  },
+  {
+    "locale": "en",
+    "theme": "dark",
+    "mobile": false,
+    "overflow": false,
+    "requests": 2,
+    "focus": {
+      "bg": "linear-gradient(118deg, color(srgb 0.909961 0.623765 0.372941) 0%, color(srgb 0.820243 0.656565 0.536941) 28%, color(srgb 0.610902 0.733098 0.919608) 100%)",
+      "ring": "1"
+    },
+    "chatGradient": "linear-gradient(118deg, rgb(227, 138, 60) 0%, color(srgb 0.780784 0.581177 0.435294) 28%, rgb(134, 172, 230) 100%)"
+  },
+  {
+    "locale": "en",
+    "theme": "dark",
+    "mobile": true,
+    "overflow": false,
+    "requests": 2,
+    "focus": {
+      "bg": "linear-gradient(118deg, color(srgb 0.909961 0.623765 0.372941) 0%, color(srgb 0.820243 0.656565 0.536941) 28%, color(srgb 0.610902 0.733098 0.919608) 100%)",
+      "ring": "1"
+    },
+    "chatGradient": "linear-gradient(118deg, rgb(227, 138, 60) 0%, color(srgb 0.780784 0.581177 0.435294) 28%, rgb(134, 172, 230) 100%)"
+  },
+  {
+    "locale": "en",
+    "theme": "light",
+    "mobile": false,
+    "overflow": false,
+    "requests": 2,
+    "focus": {
+      "bg": "linear-gradient(118deg, color(srgb 0.583333 0.293333 0.103333) 0%, color(srgb 0.461333 0.309333 0.245333) 28%, color(srgb 0.176667 0.346667 0.576667) 100%)",
+      "ring": "1"
+    },
+    "chatGradient": "linear-gradient(118deg, rgb(175, 88, 31) 0%, color(srgb 0.542745 0.363922 0.288627) 28%, rgb(53, 104, 173) 100%)"
+  },
+  {
+    "locale": "en",
+    "theme": "light",
+    "mobile": true,
+    "overflow": false,
+    "requests": 2,
+    "focus": {
+      "bg": "linear-gradient(118deg, color(srgb 0.583333 0.293333 0.103333) 0%, color(srgb 0.461333 0.309333 0.245333) 28%, color(srgb 0.176667 0.346667 0.576667) 100%)",
+      "ring": "1"
+    },
+    "chatGradient": "linear-gradient(118deg, rgb(175, 88, 31) 0%, color(srgb 0.542745 0.363922 0.288627) 28%, rgb(53, 104, 173) 100%)"
+  }
+]

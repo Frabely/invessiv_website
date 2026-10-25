@@ -3,7 +3,7 @@ import {
   faBellConcierge,
   faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import type { ServiceRequestInboxDto } from "@invessiv/common/contracts/crm/service-requests/service-request-inbox.dto";
 import { EmptyState, PrimaryCtaLink } from "@invessiv/ui";
 import { ServiceRequestInboxFilter as F } from "@/common/constants/crm/service-request-inbox-query-params";
@@ -66,13 +66,13 @@ export function ServiceRequestInbox({
             </PrimaryCtaLink>
           }
           description={content.noOpen.description}
-          icon={<FontAwesomeIcon icon={faCircleCheck} />}
+          icon={faCircleCheck}
           title={content.noOpen.title}
         />
       ) : (
         <EmptyState
           description={content.empty.description}
-          icon={<FontAwesomeIcon icon={faBellConcierge} />}
+          icon={faBellConcierge}
           title={content.empty.title}
         />
       )}

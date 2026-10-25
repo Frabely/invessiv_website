@@ -131,7 +131,7 @@ export function RolesList({
             action={createButton}
             alignment="start"
             description={content.list.emptyDescription}
-            icon={<FontAwesomeIcon icon={faPlus} />}
+            icon={faPlus}
             title={content.list.emptyTitle}
           />
         )}

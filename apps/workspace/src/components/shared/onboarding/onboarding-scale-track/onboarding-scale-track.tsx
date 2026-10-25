@@ -1,5 +1,5 @@
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
-import styles from "./onboarding-scale-track.module.css";
+import { ScaleControl } from "@invessiv/ui";
 
 const STEPS = Array.from(
   { length: QUESTIONNAIRE_LIMITS.scaleSteps },
@@ -38,46 +38,18 @@ export function OnboardingScaleTrack({
   value,
 }: OnboardingScaleTrackProps) {
   return (
-    <div className={styles.scale} data-compact={compact ? "true" : undefined}>
-      <div
-        aria-hidden={onChangeAction ? undefined : "true"}
-        className={styles.track}
-      >
-        {STEPS.map((step, index) =>
-          onChangeAction ? (
-            <label
-              className={styles.step}
-              data-checked={value === step ? "true" : undefined}
-              data-input="true"
-              key={step}
-            >
-              <input
-                aria-label={stepLabel?.(step)}
-                checked={value === step}
-                id={index === 0 ? id : undefined}
-                name={id}
-                onChange={() => onChangeAction(step)}
-                type="radio"
-              />
-              <span aria-hidden="true">{step}</span>
-            </label>
-          ) : (
-            <span
-              className={styles.step}
-              data-checked={value === step ? "true" : undefined}
-              key={step}
-            >
-              {step}
-            </span>
-          ),
-        )}
-      </div>
-      {low || high ? (
-        <div aria-hidden="true" className={styles.poles}>
-          <span>{low}</span>
-          <span>{high}</span>
-        </div>
-      ) : null}
-    </div>
+    <ScaleControl
+      compact={compact}
+      high={high}
+      id={id}
+      low={low}
+      onChangeAction={onChangeAction}
+      options={STEPS.map((step) => ({
+        value: step,
+        label: step,
+        accessibleLabel: stepLabel?.(step),
+      }))}
+      value={value}
+    />
   );
 }

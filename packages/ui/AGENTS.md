@@ -197,6 +197,6 @@ Aktionen haben vier Stufen. Jede Stufe hat eine benannte Komponente; Apps bauen 
 - `ProcessTrack` setzt die Stile seiner Schritt-Buttons zurück, statt eine eigene Schaltfläche zu nutzen. Die
   Schritte nutzen dafür `variant="quiet"`, nie `ghost`: Ghost verpackt seinen Inhalt in einen Label-Span mit
   Verlaufs-Hover und zerlegt damit das Raster aus Balken und Beschriftung.
-- Im Portal-Bogen macht der Prüfschritt aus `ButtonControl` optisch einen Textlink (`onboarding-submit-step`), ebenso
-  `feedback-item-text`. Weitere Workspace-Module bauen eigene blaue Textlinks. Ziel der späteren Migration sind
-  `TertiaryCta` und `QuaternaryCta` (`as="button"` für Aktionen); der Workspace ist bewusst noch nicht umgestellt.
+- Prüfschritt und Feedback-Aufklappen verwenden `TertiaryCta` bzw. `QuaternaryCta` (`as="button"`). Weitere,
+  noch nicht angefasste Workspace-Module können weiterhin eigene Textlinks enthalten und werden bei ihrer Migration
+  auf diese gemeinsamen Bausteine umgestellt.

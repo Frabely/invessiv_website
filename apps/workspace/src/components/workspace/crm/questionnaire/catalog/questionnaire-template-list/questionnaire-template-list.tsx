@@ -42,7 +42,7 @@ export function QuestionnaireTemplateList({
             </PrimaryCtaLink>
           }
           description={text.noResults.description}
-          icon={<FontAwesomeIcon icon={faClipboardList} />}
+          icon={faClipboardList}
           title={text.noResults.title}
           variant="filtered"
         />
@@ -62,7 +62,7 @@ export function QuestionnaireTemplateList({
           ) : undefined
         }
         description={text.empty.description}
-        icon={<FontAwesomeIcon icon={faClipboardList} />}
+        icon={faClipboardList}
         title={text.empty.title}
       />
     );

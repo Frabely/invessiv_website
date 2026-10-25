@@ -60,6 +60,17 @@
   gap: inherit;
 }
 
+/* Opt-in destructive tools keep their semantic colour in attachment lists. */
+.button[data-tone="danger"],
+.button[data-tone="danger"] .ghostLabel {
+  color: var(--color-danger);
+}
+
+.button[data-tone="danger"] .ghostLabel {
+  background-image: none;
+  -webkit-text-fill-color: currentColor;
+}
+
 /*
  * The text gradient cannot reach an icon, so an icon takes the gradient colour of its side of the
  * label: a leading icon the start, a trailing one the end. An ActionIcon shows the full gradient.

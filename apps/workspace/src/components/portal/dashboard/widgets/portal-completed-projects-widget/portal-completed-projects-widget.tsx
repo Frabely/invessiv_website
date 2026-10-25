@@ -7,7 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalCompletedProjectDto } from "@invessiv/common/contracts/portal/portal-completed-project.dto";
-import { Widget } from "@invessiv/ui";
+import { Widget, QuaternaryCta } from "@invessiv/ui";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PORTAL_WIDGET_ACCENTS } from "@/common/constants/portal/portal-widget-accents";
@@ -35,7 +35,7 @@ export function PortalCompletedProjectsWidget({
             <li className={styles.item} key={project.id}>
               <span className={styles.title}>{project.title}</span>
               {project.previewUrl ? (
-                <a
+                <QuaternaryCta
                   aria-label={formatMessage(content.visitLabel, {
                     name: project.title,
                   })}
@@ -49,7 +49,7 @@ export function PortalCompletedProjectsWidget({
                     aria-hidden="true"
                     icon={faArrowUpRightFromSquare}
                   />
-                </a>
+                </QuaternaryCta>
               ) : null}
             </li>
           ))}

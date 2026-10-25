@@ -162,7 +162,7 @@ export function QuestionnaireBlockEditor({
             <EmptyState
               alignment="start"
               description={text.empty.description}
-              icon={<FontAwesomeIcon icon={faListUl} />}
+              icon={faListUl}
               title={text.empty.title}
             />
           ) : (

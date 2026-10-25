@@ -155,21 +155,22 @@ export function MessageComposer({
       <label className="sr-only" htmlFor={inputId}>
         {labels.inputLabel}
       </label>
-      <div className={styles.field} data-value={draft}>
-        <textarea
-          aria-describedby={describedBy}
-          id={inputId}
-          maxLength={MESSAGE_BODY_MAX_LENGTH}
-          onChange={(event) => setDraft(event.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={labels.inputPlaceholder}
-          rows={1}
-          value={draft}
-        />
+      <div className={styles.fieldFrame}>
+        <div className={styles.field} data-value={draft}>
+          <textarea
+            aria-describedby={describedBy}
+            id={inputId}
+            maxLength={MESSAGE_BODY_MAX_LENGTH}
+            onChange={(event) => setDraft(event.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={labels.inputPlaceholder}
+            rows={1}
+            value={draft}
+          />
+        </div>
       </div>
       <ButtonControl
         aria-label={labels.send}
-        className={styles.send}
         size={ButtonSize.Icon}
         disabled={!canSend}
         title={labels.send}

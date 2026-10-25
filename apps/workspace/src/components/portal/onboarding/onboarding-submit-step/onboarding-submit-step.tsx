@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { QuestionnaireProgressDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-progress.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ButtonControl, ConfirmDialog, PrimaryCtaButton } from "@invessiv/ui";
+import { TertiaryCta, ConfirmDialog, PrimaryCtaButton } from "@invessiv/ui";
 import type { OnboardingMissingAnswer } from "@/common/contracts/portal/onboarding-missing-answer";
 import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
 import { OnboardingProgressBar } from "@/components/shared/onboarding/onboarding-progress-bar/onboarding-progress-bar";
@@ -73,17 +73,17 @@ export function OnboardingSubmitStep({
                 )}
               >
                 {/* A button, not a link: the jump stays on the page and must not ask to leave it. */}
-                <ButtonControl
+                <TertiaryCta
+                  as="button"
                   className={styles.jump}
                   onClick={() => onJumpAction(answer)}
                   type="button"
-                  variant="ghost"
                 >
                   {formatMessage(texts.missingItem, {
                     field: answer.fieldLabel,
                     block: answer.blockTitle,
                   })}
-                </ButtonControl>
+                </TertiaryCta>
               </li>
             ))}
           </ul>

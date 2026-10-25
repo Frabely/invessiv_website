@@ -79,7 +79,7 @@ export function ChatAttachmentMenu({
         aria-controls={both ? menuId : undefined}
         aria-expanded={both ? open : undefined}
         aria-label={labels.attach}
-        className={styles.trigger}
+        size="icon"
         disabled={limitReached}
         onClick={handleTrigger}
         ref={triggerRef}
@@ -93,7 +93,7 @@ export function ChatAttachmentMenu({
         <ul className={styles.options} id={menuId}>
           <li>
             <ButtonControl
-              className={styles.option}
+              size="control"
               onClick={() => choose(onUploadAction)}
               type="button"
               variant="ghost"
@@ -104,7 +104,7 @@ export function ChatAttachmentMenu({
           </li>
           <li>
             <ButtonControl
-              className={styles.option}
+              size="control"
               onClick={() => choose(onPickAction)}
               type="button"
               variant="ghost"

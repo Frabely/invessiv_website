@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { faFolderOpen, faInbox } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
@@ -117,7 +117,7 @@ export function PortalFileTable({
               ? empty.description
               : empty.readOnlyDescription
         }
-        icon={<FontAwesomeIcon icon={fromUs ? faInbox : faFolderOpen} />}
+        icon={fromUs ? faInbox : faFolderOpen}
         title={fromUs ? content.empty.fromUs.title : empty.title}
       />
     );
