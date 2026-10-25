@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { QuaternaryCta } from "@invessiv/ui";
 import type { LinkedInPostExampleSample } from "@/i18n/dictionaries/linkedin-post/example";
 import { LinkedinPost } from "@/components/marketing/linkedin-post/linkedin-post/linkedin-post";
 import styles from "./sample-card.module.css";
@@ -101,18 +102,19 @@ export function SampleCard({
       </div>
 
       <div className={styles.inputDisclosure}>
-        <button
-          aria-expanded={isInputOpen}
-          aria-controls={`input-panel-${sample.id}`}
-          className={styles.inputToggle}
-          onClick={() => setIsInputOpen((current) => !current)}
-          type="button"
-        >
+        <div className={styles.inputToggleRow}>
           <span className={styles.sectionLabel}>{inputLabel}</span>
-          <span className={styles.inputToggleText}>
+          <QuaternaryCta
+            as="button"
+            aria-expanded={isInputOpen}
+            aria-controls={`input-panel-${sample.id}`}
+            aria-label={`${inputLabel} ${isInputOpen ? inputHideLabel : inputShowLabel}`}
+            className={styles.inputToggle}
+            onClick={() => setIsInputOpen((current) => !current)}
+          >
             {isInputOpen ? inputHideLabel : inputShowLabel}
-          </span>
-        </button>
+          </QuaternaryCta>
+        </div>
 
         <div
           className={styles.inputPanel}

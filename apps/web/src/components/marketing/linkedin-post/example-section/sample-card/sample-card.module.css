@@ -65,32 +65,22 @@
   gap: 0.55rem;
 }
 
-.inputToggle {
+.inputToggleRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
   width: 100%;
   margin: 0;
-  padding: 0.8rem 0;
-  border: 0;
+  padding: 0.4rem 0;
   border-top: 1px solid
     color-mix(in srgb, var(--color-border-strong) 48%, transparent);
-  background: none;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
 }
 
-.inputToggle:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 3px;
-}
-
-.inputToggleText {
-  color: color-mix(in srgb, var(--color-cta) 92%, var(--color-text) 8%);
+.inputToggle {
+  align-items: center;
+  min-height: 44px;
   font-size: 0.84rem;
-  font-weight: 700;
   white-space: nowrap;
 }
 

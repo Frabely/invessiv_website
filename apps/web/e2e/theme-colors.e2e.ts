@@ -75,10 +75,13 @@ for (const theme of THEMES) {
       'a[class*="service-action-cta"] [class*="text-cta"][class*="arrow"]',
       '[class*="reference-teaser"][class*="link"] [class*="text-cta"][class*="label"]',
       '[class*="qna-contact-cta"][class*="link"] [class*="text-cta"][class*="label"]',
-      '[class*="contact-consent-field"][class*="link"] [class*="text-cta"][class*="label"]',
     ];
-    const readGradients = () =>
-      page.evaluate(
+    const privacy = page
+      .locator("#contact")
+      .getByRole("link", { name: /Datenschutz/ })
+      .first();
+    const readGradients = async () => [
+      ...(await page.evaluate(
         (items) =>
           items.map((selector) => {
             const element = document.querySelector(selector);
@@ -86,7 +89,12 @@ for (const theme of THEMES) {
             return getComputedStyle(element).backgroundImage;
           }),
         selectors,
-      );
+      )),
+      await privacy
+        .locator(":scope > span")
+        .first()
+        .evaluate((element) => getComputedStyle(element).backgroundImage),
+    ];
     const before = await readGradients();
     for (const gradient of before)
       expect(gradient).toContain("linear-gradient");
@@ -106,9 +114,6 @@ for (const theme of THEMES) {
       expect(gradient).not.toBe(before[index]),
     );
 
-    const privacy = page
-      .locator('a[class*="contact-consent-field"][class*="link"]')
-      .first();
     await privacy.focus();
     await expect(privacy).toHaveCSS("outline-style", "solid");
     await expect(privacy).toHaveCSS("outline-width", "2px");
@@ -382,7 +387,7 @@ for (const theme of THEMES) {
           highlight: css('[data-emphasis="usp"]').color,
           highlightRgb,
           selected: css('#services button[aria-pressed="true"]')
-            .backgroundColor,
+            .backgroundImage,
         };
       });
     const readActionColors = async () => {
@@ -427,11 +432,23 @@ for (const theme of THEMES) {
       expect(afterAction[state].color).not.toBe(beforeAction[state].color);
       expect(afterAction[state].image).not.toBe(beforeAction[state].image);
     }
-    expect(afterAction.focus).not.toBe(beforeAction.focus);
-    expect(afterAction.focus).toBe(afterAction.normal.color);
+    // Focus follows the orange gradient end, independently of the blue action base.
+    expect(afterAction.focus).toBe(beforeAction.focus);
     expect(afterContent.selected).not.toBe(beforeContent.selected);
     expect(afterContent.headline).toBe(beforeContent.headline);
     expect(afterContent.visitor).toBe(beforeContent.visitor);
-    expect(afterContent.highlight).toBe(beforeContent.highlight);
+    expect(afterContent.highlight).not.toBe(beforeContent.highlight);
+    expect(afterContent.highlight).toBe(afterAction.normal.color);
+
+    await page.evaluate(() => {
+      document.documentElement.style.setProperty(
+        "--color-action-accent",
+        "#b386b3",
+      );
+    });
+    const afterAccentChange = await readActionColors();
+    expect(afterAccentChange.focus).not.toBe(afterAction.focus);
+    expect(afterAccentChange.normal.color).toBe(afterAction.normal.color);
+    expect(afterAccentChange.normal.image).not.toBe(afterAction.normal.image);
   });
 }
