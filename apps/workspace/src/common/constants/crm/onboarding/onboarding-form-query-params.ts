@@ -3,6 +3,8 @@ export const OnboardingFormQueryParam = {
   Tab: "tab",
   Block: "block",
   ReviewFilter: "reviewFilter",
+  /** Locale the export endpoint resolves block and field texts in. */
+  Locale: "locale",
 } as const;
 
 export type OnboardingFormQueryParam =

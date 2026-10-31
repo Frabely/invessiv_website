@@ -67,6 +67,10 @@
     "templateNone": "No template",
     "callHeldOn": "Onboarding call",
     "completedAt": "Completion",
+    "export": {
+      "action": "Export answers",
+      "error": "The export didn't work. Try again in a moment."
+    },
     "tabs": {
       "ariaLabel": "Areas of the form",
       "structure": "Structure",

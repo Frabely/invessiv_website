@@ -322,6 +322,11 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
   hinterlässt keinen Parameter). Der Kopf zeigt Call-Datum (`formatCalendarDay`) und Abschluss (`formatMomentDay`),
   der Projektbereich „Abgeschlossen am …“. Aufbau und Prüfung bleiben lesend mit ihren bestehenden Hinweisen.
 
+- **Export (Ordner 32):** „Antworten exportieren“ steht im Seitenkopf in jedem Status und ohne `canWrite`
+  (Lesen genügt). Der Knopf lädt das ZIP über `browserDownload.downloadUrl` mit
+  `crmOnboardingFormExportEndpoint(formId, locale)`; den Dateinamen setzt der Server. Ein Fehler erscheint als
+  `role="alert"` unter den Aktionen.
+
 ## Zugangsdaten (ab Task 18)
 
 Plan: `apps/workspace/plans/crm/19-credentials/18-credentials-ui.md`.

@@ -10,6 +10,11 @@ The Clerk auth routes and the protected workspace shell live in `apps/workspace`
 
 The historical workspace auth manual test report (pre-monorepo) is at `docs/workspace-auth-manual-test-report.md`.
 
+## Onboarding Export
+
+The onboarding questionnaire can be exported from the CRM cockpit as a ZIP (`onboarding.json`, attached files and
+an English `README.md`). Every field and its meaning is explained in `docs/guides/onboarding-export.md`.
+
 ## Lead Database Setup
 
 The contact flow (in `apps/web`) can persist validated leads into Neon/Postgres in addition to sending the existing

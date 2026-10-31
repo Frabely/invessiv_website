@@ -6,6 +6,7 @@ import { useId, useRef, useState } from "react";
 import {
   faArrowLeft,
   faCircleCheck,
+  faFileZipper,
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,7 +22,8 @@ import { summarizeOnboardingReview } from "@invessiv/common/patterns/crm/onboard
 import { toOnboardingCompletenessInput } from "@invessiv/common/patterns/crm/onboarding/onboarding-completeness-input";
 import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { PrimaryCtaButton, TabList } from "@invessiv/ui";
+import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
+import { ButtonControl, PrimaryCtaButton, TabList } from "@invessiv/ui";
 import {
   ONBOARDING_FORM_TAB_VALUES,
   OnboardingFormTab,
@@ -33,6 +35,8 @@ import {
 } from "@/common/patterns/crm/onboarding/onboarding-form-query";
 import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/questionnaire/questionnaire-fixed-choice-labels";
 import { describeOnboardingReviewSummary } from "@/common/patterns/crm/onboarding/onboarding-review-summary-text";
+import { crmOnboardingFormExportEndpoint } from "@/common/patterns/crm/crm-api-endpoints";
+import { browserDownload } from "@/lib/files/browser-download";
 import { OnboardingProgressBar } from "@/components/shared/onboarding/onboarding-progress-bar/onboarding-progress-bar";
 import type { Locale } from "@/config/i18n";
 import type {
@@ -110,6 +114,7 @@ export function OnboardingFormPageView({
     );
   const [releasing, setReleasing] = useState(false);
   const [completing, setCompleting] = useState(false);
+  const [exportFailed, setExportFailed] = useState(false);
   const [announcement, setAnnouncement] = useState("");
   const text = content.form;
   const released = form.status !== OnboardingFormStatus.Draft;
@@ -129,6 +134,15 @@ export function OnboardingFormPageView({
     onboarding: content.errors,
     questionnaire: questionnaireContent.errors,
   };
+
+  function startExport() {
+    setExportFailed(false);
+    browserDownload.downloadUrl(
+      crmOnboardingFormExportEndpoint(form.id, locale),
+      null,
+      () => setExportFailed(true),
+    );
+  }
 
   /** Takes over a form the release answered with, in the head and in the structure editor. */
   function adopt(next: OnboardingFormDto) {
@@ -175,25 +189,32 @@ export function OnboardingFormPageView({
           label={content.status[form.status]}
           status={form.status}
         />
-        {canWrite && !released ? (
-          <PrimaryCtaButton
-            className={styles.release}
-            onClick={() => setReleasing(true)}
+        <div className={styles.actions}>
+          <ButtonControl
+            onClick={startExport}
             type="button"
+            variant={ButtonVariant.Ghost}
           >
-            <FontAwesomeIcon aria-hidden="true" icon={faPaperPlane} />
-            {content.release.action}
-          </PrimaryCtaButton>
-        ) : null}
-        {canWrite && completable ? (
-          <PrimaryCtaButton
-            className={styles.release}
-            onClick={() => setCompleting(true)}
-            type="button"
-          >
-            <FontAwesomeIcon aria-hidden="true" icon={faCircleCheck} />
-            {content.complete.action}
-          </PrimaryCtaButton>
+            <FontAwesomeIcon aria-hidden="true" icon={faFileZipper} />
+            {text.export.action}
+          </ButtonControl>
+          {canWrite && !released ? (
+            <PrimaryCtaButton onClick={() => setReleasing(true)} type="button">
+              <FontAwesomeIcon aria-hidden="true" icon={faPaperPlane} />
+              {content.release.action}
+            </PrimaryCtaButton>
+          ) : null}
+          {canWrite && completable ? (
+            <PrimaryCtaButton onClick={() => setCompleting(true)} type="button">
+              <FontAwesomeIcon aria-hidden="true" icon={faCircleCheck} />
+              {content.complete.action}
+            </PrimaryCtaButton>
+          ) : null}
+        </div>
+        {exportFailed ? (
+          <p className={styles.exportError} role="alert">
+            {text.export.error}
+          </p>
         ) : null}
         {released && form.blocks.length > 0 ? (
           <div className={styles.progress}>

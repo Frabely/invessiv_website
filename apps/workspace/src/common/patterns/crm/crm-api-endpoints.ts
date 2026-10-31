@@ -9,6 +9,8 @@ export function crmServiceRequestAcceptEndpoint(id: string): string {
 import { ConversationApiPath } from "@/common/constants/crm/conversation-api-paths";
 import { CredentialApiPath } from "@/common/constants/credentials/credential-api-paths";
 import { OnboardingApiPath } from "@/common/constants/crm/onboarding-api-paths";
+import { OnboardingFormQueryParam } from "@/common/constants/crm/onboarding/onboarding-form-query-params";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import { QuestionnaireApiPath } from "@/common/constants/crm/questionnaire/questionnaire-api-paths";
 import { ProjectApiPath } from "@/common/constants/crm/project-api-paths";
 import { FeedbackApiPath } from "@/common/constants/feedback/feedback-api-paths";
@@ -176,6 +178,17 @@ export function crmOnboardingFormRequestChangesEndpoint(
 
 export function crmOnboardingFormCompleteEndpoint(formId: string): string {
   return `${crmOnboardingFormEndpoint(formId)}/${OnboardingApiPath.Complete}`;
+}
+
+/** The export archive; labels are resolved in `locale`. */
+export function crmOnboardingFormExportEndpoint(
+  formId: string,
+  locale: Locale,
+): string {
+  const query = new URLSearchParams({
+    [OnboardingFormQueryParam.Locale]: locale,
+  });
+  return `${crmOnboardingFormEndpoint(formId)}/${OnboardingApiPath.Export}?${query}`;
 }
 
 export function crmOnboardingFormBlockReviewEndpoint(

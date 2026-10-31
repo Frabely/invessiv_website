@@ -10,14 +10,18 @@ function openUrl(url: string) {
   anchor.remove();
 }
 
-/** A same-origin frame streams the attachment while exposing a JSON error response to the page. */
+/**
+ * A same-origin frame streams the attachment while exposing a JSON error response to the page.
+ * Without a filename the server names the download.
+ */
 function downloadUrl(
   url: string,
-  filename: string,
+  filename: string | null,
   onError: (code: string | null) => void,
 ) {
   const destination = new URL(url, window.location.href);
-  destination.searchParams.set(FileQueryParam.ArchiveFilename, filename);
+  if (filename !== null)
+    destination.searchParams.set(FileQueryParam.ArchiveFilename, filename);
   const frame = document.createElement("iframe");
   frame.hidden = true;
   frame.setAttribute("aria-hidden", "true");

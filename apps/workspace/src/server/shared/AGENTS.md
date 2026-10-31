@@ -37,7 +37,9 @@ Security-Events (`security-event-service.ts`), das von Handlern beider Welten in
 `files/` hält die Bausteine, die CRM- und Portal-Handler für Dateien teilen: `file-object-service.ts` (Link-Anlage,
 Ticket-Anlage inkl. Pending-Limit, Abschluss inkl. Aktivität, Abbruch offener Uploads, Entfernen mit
 `orphaned_at`-Fallback, Download-URL, Stream und actor-neutrale Aktivitätszeilen), `file-archive-service.ts`
-(ZIP-Spaltenliste, Vorprüfung und Streaming), `file-request-schemas.ts` (gemeinsame Request-Felder),
+(ZIP-Spaltenliste, Vorprüfung und Streaming; optional `folder` je Eintrag, feste `texts` im Archiv-Root und ein
+`manifest`, das nach allen Einträgen mit deren Ergebnis geschrieben wird und dann `_LINKS.txt`/
+`_FEHLENDE-DATEIEN.txt` ersetzt; ein Abbruch wird ohne Inhalt geloggt), `file-request-schemas.ts` (gemeinsame Request-Felder),
 `customer-file-visibility-service.ts` (ab Task 56: einzige Definition „der Kunde könnte diesen Eintrag öffnen“ —
 fertig, nicht verwaist, kundenweit oder in einem portal-sichtbaren Projekt — plus `allMatch` für ID-Listen), dazu
 Validierung und Storage-Zugang. Autorisierung, Sichtbarkeitsfilter, die Sperre der Uploader-Zeile und die Prüfung „nur

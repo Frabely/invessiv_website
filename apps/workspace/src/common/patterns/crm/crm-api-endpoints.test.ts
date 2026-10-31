@@ -13,6 +13,7 @@ import {
   crmOnboardingFormBlocksEndpoint,
   crmOnboardingFormTemplateEndpoint,
   crmOnboardingFormEndpoint,
+  crmOnboardingFormExportEndpoint,
   crmOnboardingFormFieldEndpoint,
   crmOnboardingFormFieldMoveEndpoint,
   crmOnboardingFormFieldUsageEndpoint,
@@ -112,6 +113,12 @@ describe("crm onboarding form endpoints", () => {
     );
     expect(crmOnboardingFormEndpoint("f-1")).toBe(
       "/api/workspace/crm/onboarding/forms/f-1",
+    );
+  });
+
+  it("puts the export below the form and carries the label locale", () => {
+    expect(crmOnboardingFormExportEndpoint("f-1", "en")).toBe(
+      "/api/workspace/crm/onboarding/forms/f-1/export?locale=en",
     );
   });
 
