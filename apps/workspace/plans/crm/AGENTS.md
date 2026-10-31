@@ -15,7 +15,7 @@ Altentscheidung darf übernommen werden, wenn sie nicht in den aktuellen Dateien
 
 **Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–03, 03b–03d, 04–06, 06b, 07, 07a–07c, 08, 12a–12b, 13, 13a, 13c, 13d,
 14, 15, 16, 19–20,
-20a–20e, 21–22, 22a, 23–24, 31) ist die
+20a–20e, 21–22, 22a, 23–24, 31–32) ist die
 Merge-Reihenfolge und kann sich beim
 Neuschnitt verschieben. Die Task-Nummer ist die Identität und bleibt: Task 08 heißt überall Task 08
 und liegt in Ordner 06. Querverweise im Plan nennen deshalb immer die **Task**-Nummer, Reihenfolge-

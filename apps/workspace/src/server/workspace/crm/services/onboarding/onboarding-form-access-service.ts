@@ -9,7 +9,13 @@ import type {
   ContactDatabaseTransaction,
   ContactDatabaseReader,
 } from "@invessiv/db/core";
-import { onboardingForms, projects } from "@invessiv/db/record-configuration";
+import type { OnboardingFormContextDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-context.dto";
+import {
+  customers,
+  onboardingForms,
+  projects,
+  questionnaireTemplates,
+} from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope } from "@/common/patterns/auth/access-scope";
 import { canOn } from "@/common/patterns/auth/can-on";
@@ -43,6 +49,47 @@ async function findReadableForm(
     )
     .limit(1);
   return form ?? null;
+}
+
+/**
+ * Customer, project and template of a readable form. A member bound to the project alone still
+ * reads the customer's name: the customer is the container of that project.
+ */
+async function findReadableContext(
+  executor: ContactDatabaseReader,
+  formId: string,
+  actor: WorkspaceActor,
+): Promise<OnboardingFormContextDto | null> {
+  const [row] = await executor
+    .select({
+      customerId: customers.id,
+      customerName: customers.display_name,
+      projectId: projects.id,
+      projectTitle: projects.title,
+      projectPhase: projects.phase,
+      templateTitle: questionnaireTemplates.title,
+    })
+    .from(onboardingForms)
+    .innerJoin(projects, eq(projects.id, onboardingForms.project_id))
+    .innerJoin(customers, eq(customers.id, onboardingForms.customer_id))
+    .leftJoin(
+      questionnaireTemplates,
+      eq(questionnaireTemplates.id, onboardingForms.source_template_id),
+    )
+    .where(
+      and(
+        eq(onboardingForms.id, formId),
+        crmAccessCondition.forScope(
+          accessScope(actor, Permission.ProjectsRead),
+          {
+            customerId: onboardingForms.customer_id,
+            projectId: onboardingForms.project_id,
+          },
+        ),
+      ),
+    )
+    .limit(1);
+  return row ?? null;
 }
 
 async function findFormOfProject(
@@ -191,6 +238,7 @@ async function lockForStructure(
 export const onboardingFormAccessService = {
   canWrite,
   findFormOfProject,
+  findReadableContext,
   findReadableForm,
   findReadableProject,
   lockForStructure,

@@ -45,6 +45,7 @@ describe("onboarding form constants", () => {
       Tab: "tab",
       Block: "block",
       ReviewFilter: "reviewFilter",
+      Locale: "locale",
     });
   });
 

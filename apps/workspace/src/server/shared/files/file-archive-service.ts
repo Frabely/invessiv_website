@@ -13,10 +13,14 @@ import {
   MAX_ARCHIVE_BYTES,
   MAX_ARCHIVE_FILES,
 } from "@/common/constants/files/file-archive-limits";
+import { FileArchiveEntryStatus } from "@/common/constants/files/file-archive-entry-status";
 import { storageService } from "@/server/shared/files/storage-service";
-import type { ArchiveRow } from "./file-object-service-types";
-
-type ArchiveEntry = Pick<ArchiveRow, "displayName" | "storageKey" | "url">;
+import type {
+  ArchiveEntry,
+  ArchiveEntryOutcome,
+  ArchiveRow,
+  ArchiveStreamOptions,
+} from "./file-object-service-types";
 
 const UUID = z.uuid();
 
@@ -30,15 +34,17 @@ const columns = {
   url: files.url,
 };
 
-function uniqueName(name: string, used: Set<string>): string {
+/** The folder is built by the caller from trusted keys; only the leaf comes from user input. */
+function uniqueName(name: string, used: Set<string>, folder?: string): string {
   const safe = sanitizeFilename(name);
   const dot = safe.lastIndexOf(".");
   const stem = dot > 0 ? safe.slice(0, dot) : safe;
   const ext = dot > 0 ? safe.slice(dot) : "";
-  let candidate = safe;
+  const place = (leaf: string) => (folder ? `${folder}/${leaf}` : leaf);
+  let candidate = place(safe);
   let suffix = 2;
   while (used.has(candidate.toLocaleLowerCase())) {
-    candidate = `${stem} (${suffix++})${ext}`;
+    candidate = place(`${stem} (${suffix++})${ext}`);
   }
   used.add(candidate.toLocaleLowerCase());
   return candidate;
@@ -48,16 +54,66 @@ function uniqueName(name: string, used: Set<string>): string {
 function stream(
   entries: readonly ArchiveEntry[],
   signal: AbortSignal,
-  now: () => number = Date.now,
+  {
+    now = Date.now,
+    deadlineAt = now() + ARCHIVE_TIME_BUDGET_MS,
+    manifest,
+    texts = [],
+  }: ArchiveStreamOptions = {},
 ) {
-  const startedAt = now();
   const output = new PassThrough({ highWaterMark: 64 * 1024 });
+  const fileStop = new AbortController();
+  let timedOut = false;
+  const deadlineTimer = setTimeout(
+    () => {
+      timedOut = true;
+      fileStop.abort();
+    },
+    Math.max(0, deadlineAt - now()),
+  );
+  deadlineTimer.unref();
+  const stopFiles = () => fileStop.abort();
+  output.once("close", stopFiles);
+
+  function checkDeadline() {
+    if (now() >= deadlineAt) {
+      timedOut = true;
+      fileStop.abort();
+    }
+  }
+
+  /** A provider may keep sending chunks forever; only this fixed deadline bounds its reads. */
+  async function readBeforeDeadline<T>(
+    operation: () => Promise<T>,
+  ): Promise<T> {
+    checkDeadline();
+    if (fileStop.signal.aborted)
+      return Promise.reject(new Error("Archive file reading stopped"));
+    let onStop: () => void = () => undefined;
+    const interrupted = new Promise<never>((_, reject) => {
+      onStop = () => reject(new Error("Archive file reading stopped"));
+      fileStop.signal.addEventListener("abort", onStop, { once: true });
+    });
+    try {
+      const result = await Promise.race([operation(), interrupted]);
+      checkDeadline();
+      return fileStop.signal.aborted
+        ? Promise.reject(new Error("Archive file reading stopped"))
+        : result;
+    } finally {
+      fileStop.signal.removeEventListener("abort", onStop);
+    }
+  }
   const zip = new Zip((error, chunk, final) => {
     if (error) output.destroy(error);
     else if (final) output.end(chunk);
     else output.write(chunk);
   });
-  signal.addEventListener("abort", () => output.destroy(), { once: true });
+  const abortOutput = () => {
+    fileStop.abort();
+    output.destroy();
+  };
+  signal.addEventListener("abort", abortOutput, { once: true });
 
   async function push(
     entry: ZipPassThrough,
@@ -78,62 +134,114 @@ function stream(
     }
   }
 
+  // Attach the web stream before producing: a failure before the first await would otherwise
+  // destroy `output` with no error listener and crash the process.
+  const web = Readable.toWeb(output) as ReadableStream<Uint8Array>;
+  if (signal.aborted) abortOutput();
+
   void (async () => {
-    const used = new Set(["_links.txt", "_fehlende-dateien.txt"]);
+    const used = new Set(
+      [
+        ...texts.map((text) => text.name),
+        ...(manifest
+          ? [manifest.name]
+          : ["_links.txt", "_fehlende-dateien.txt"]),
+      ].map((name) => name.toLocaleLowerCase()),
+    );
     const links: string[] = [];
     const missing: string[] = [];
+    const outcomes: ArchiveEntryOutcome[] = [];
     try {
       for (const item of entries) {
         if (output.destroyed) break;
-        const name = uniqueName(item.displayName, used);
+        const name = uniqueName(item.displayName, used, item.folder);
         if (!item.storageKey) {
           if (item.url) links.push(`${name}\n${item.url}`);
+          outcomes.push({ path: name, status: FileArchiveEntryStatus.Link });
           continue;
         }
-        if (now() - startedAt >= ARCHIVE_TIME_BUDGET_MS) {
+        checkDeadline();
+        if (timedOut) {
           missing.push(name);
+          outcomes.push({ path: name, status: FileArchiveEntryStatus.Timeout });
           continue;
         }
         let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
         let part: ZipPassThrough | undefined;
         try {
-          const stream = await storageService
-            .getAdapter()
-            .openReadStream(item.storageKey);
-          reader = stream.getReader();
+          const storageKey = item.storageKey;
+          const activeReader = await readBeforeDeadline(async () => {
+            const source = await storageService
+              .getAdapter()
+              .openReadStream(storageKey);
+            // Opening may settle after the archive has already finished. Never leak that body.
+            if (fileStop.signal.aborted) {
+              void source.cancel().catch(() => undefined);
+              return Promise.reject(new Error("Archive file reading stopped"));
+            }
+            reader = source.getReader();
+            return reader;
+          });
           part = new ZipPassThrough(name);
           zip.add(part);
           while (!output.destroyed) {
-            const next = await reader.read();
+            const next = await readBeforeDeadline(() => activeReader.read());
             if (next.done) break;
             await push(part, next.value, false);
           }
           await push(part, new Uint8Array(), true);
+          outcomes.push({
+            path: name,
+            status: FileArchiveEntryStatus.Included,
+          });
         } catch {
+          checkDeadline();
           missing.push(name);
+          outcomes.push({
+            path: name,
+            status: timedOut
+              ? FileArchiveEntryStatus.Timeout
+              : FileArchiveEntryStatus.Unreadable,
+          });
           if (part && !output.destroyed)
             await push(part, new Uint8Array(), true);
         } finally {
           if (reader) void reader.cancel().catch(() => undefined);
         }
       }
-      if (!output.destroyed && links.length) {
-        const part = new ZipPassThrough("_LINKS.txt");
-        zip.add(part);
-        await push(part, strToU8(links.join("\n\n")), true);
+      const notes: [string, string][] = texts.map((text) => [
+        text.name,
+        text.content,
+      ]);
+      if (manifest) notes.push([manifest.name, manifest.build(outcomes)]);
+      else {
+        if (links.length) notes.push(["_LINKS.txt", links.join("\n\n")]);
+        if (missing.length)
+          notes.push(["_FEHLENDE-DATEIEN.txt", missing.join("\n")]);
       }
-      if (!output.destroyed && missing.length) {
-        const part = new ZipPassThrough("_FEHLENDE-DATEIEN.txt");
+      for (const [name, text] of notes) {
+        if (output.destroyed) break;
+        const part = new ZipPassThrough(name);
         zip.add(part);
-        await push(part, strToU8(missing.join("\n")), true);
+        await push(part, strToU8(text), true);
       }
       if (!output.destroyed) zip.end();
     } catch {
+      // The response has started, so this log is the only trace of a broken archive. No details:
+      // a manifest error may carry customer answers, a provider error a signed URL.
+      console.error("[files] archive stream failed", {
+        manifest: Boolean(manifest),
+      });
       output.destroy(new Error("File archive stream failed"));
+    } finally {
+      clearTimeout(deadlineTimer);
+      fileStop.abort();
+      output.removeListener("close", stopFiles);
+      signal.removeEventListener("abort", abortOutput);
     }
   })();
 
-  return Readable.toWeb(output) as ReadableStream<Uint8Array>;
+  return web;
 }
 
 /** Shape checks before any query: ids, duplicates and count. */

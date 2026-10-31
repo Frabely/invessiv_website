@@ -67,6 +67,10 @@
     "templateNone": "Ohne Vorlage",
     "callHeldOn": "Onboarding-Call",
     "completedAt": "Abschluss",
+    "export": {
+      "action": "Antworten exportieren",
+      "error": "Der Export hat nicht geklappt. Versuch es gleich noch einmal."
+    },
     "tabs": {
       "ariaLabel": "Bereiche des Bogens",
       "structure": "Aufbau",

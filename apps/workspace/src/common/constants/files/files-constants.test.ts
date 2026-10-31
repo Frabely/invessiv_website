@@ -9,6 +9,7 @@ import { FILES_PAGE_SIZE } from "./files-page-size";
 import { FileApiPath } from "./file-api-paths";
 import { FILE_ACTIVITY_ENTITY } from "./file-activity-metadata";
 import { FileThumbnailOutcome } from "./file-thumbnail-outcome";
+import { FileArchiveEntryStatus } from "./file-archive-entry-status";
 
 describe("shared files constants", () => {
   it("keeps the activity entity stable for existing timeline entries", () => {
@@ -50,5 +51,15 @@ describe("shared files constants", () => {
       Failed: "failed",
     });
     expect(new Set(Object.values(FileThumbnailOutcome)).size).toBe(3);
+  });
+
+  it("defines unique archive entry statuses", () => {
+    expect(FileArchiveEntryStatus).toEqual({
+      Included: "included",
+      Link: "link",
+      Timeout: "timeout",
+      Unreadable: "unreadable",
+    });
+    expect(new Set(Object.values(FileArchiveEntryStatus)).size).toBe(4);
   });
 });

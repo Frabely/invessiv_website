@@ -14,6 +14,22 @@ import {
 import { PROJECT_LINE_ITEM_STATUS_VALUES } from "../project-line-item-statuses";
 import { ONBOARDING_ELIGIBLE_PROJECT_STATUS_VALUES } from "./onboarding-eligible-project-statuses";
 import {
+  ONBOARDING_EXPORT_ANSWER_KIND_VALUES,
+  OnboardingExportAnswerKind,
+} from "./onboarding-export-answer-kinds";
+import {
+  ONBOARDING_EXPORT_FILE_STATUS_VALUES,
+  OnboardingExportFileStatus,
+} from "./onboarding-export-file-statuses";
+import {
+  ONBOARDING_EXPORT_ENTRY_FOLDER_PREFIX,
+  ONBOARDING_EXPORT_FILES_FOLDER,
+  ONBOARDING_EXPORT_MANIFEST_NAME,
+  ONBOARDING_EXPORT_SCHEMA_VERSION,
+  ONBOARDING_EXPORT_README_NAME,
+  ONBOARDING_EXPORT_SHARED_FOLDER,
+} from "./onboarding-export-format";
+import {
   ONBOARDING_CUSTOMER_EDITABLE_STATUS_VALUES,
   ONBOARDING_FORM_STATUS_VALUES,
   ONBOARDING_PORTAL_VISIBLE_STATUS_VALUES,
@@ -40,9 +56,42 @@ describe("onboarding const objects", () => {
     [OnboardingClarificationMode, ONBOARDING_CLARIFICATION_MODE_VALUES],
     [PortalOnboardingErrorCode, PORTAL_ONBOARDING_ERROR_CODE_VALUES],
     [OnboardingReleaseWarningKind, ONBOARDING_RELEASE_WARNING_KIND_VALUES],
+    [OnboardingExportAnswerKind, ONBOARDING_EXPORT_ANSWER_KIND_VALUES],
+    [OnboardingExportFileStatus, ONBOARDING_EXPORT_FILE_STATUS_VALUES],
   ] as const)("lists every value exactly once", (constObject, values) => {
     expect([...values]).toEqual(Object.values(constObject));
     expect(new Set(values).size).toBe(values.length);
+  });
+});
+
+describe("onboarding export constants", () => {
+  it("names the answer kinds and file statuses of the export file", () => {
+    expect(OnboardingExportAnswerKind).toEqual({
+      Text: "text",
+      Choice: "choice",
+      Scale: "scale",
+      Confirmation: "confirmation",
+      Files: "files",
+      Group: "group",
+    });
+    expect(OnboardingExportFileStatus).toEqual({
+      Included: "included",
+      Link: "link",
+      NoAccess: "no_access",
+      Video: "video",
+      SizeLimit: "size_limit",
+      Timeout: "timeout",
+      Unreadable: "unreadable",
+    });
+  });
+
+  it("keeps the archive layout stable", () => {
+    expect(ONBOARDING_EXPORT_SCHEMA_VERSION).toBe(1);
+    expect(ONBOARDING_EXPORT_MANIFEST_NAME).toBe("onboarding.json");
+    expect(ONBOARDING_EXPORT_FILES_FOLDER).toBe("files");
+    expect(ONBOARDING_EXPORT_ENTRY_FOLDER_PREFIX).toBe("entry-");
+    expect(ONBOARDING_EXPORT_SHARED_FOLDER).toBe("shared");
+    expect(ONBOARDING_EXPORT_README_NAME).toBe("README.md");
   });
 });
 

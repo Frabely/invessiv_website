@@ -10,6 +10,7 @@ export const OnboardingApiPath = {
   Review: "review",
   RequestChanges: "request-changes",
   Complete: "complete",
+  Export: "export",
 } as const;
 
 export type OnboardingApiPath =

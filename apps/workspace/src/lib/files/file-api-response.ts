@@ -95,7 +95,7 @@ export function fileArchiveResponse(
 ): Response {
   const filename = requestedFilename?.toLowerCase().endsWith(".zip")
     ? sanitizeFilename(requestedFilename)
-    : "dateien.zip";
+    : "files.zip";
   const encoded = encodeURIComponent(filename).replace(
     /['()*]/g,
     (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`,
@@ -103,7 +103,7 @@ export function fileArchiveResponse(
   return new Response(stream, {
     headers: {
       [HttpHeaderName.ContentType]: MediaType.Zip,
-      [HttpHeaderName.ContentDisposition]: `attachment; filename="dateien.zip"; filename*=UTF-8''${encoded}`,
+      [HttpHeaderName.ContentDisposition]: `attachment; filename="files.zip"; filename*=UTF-8''${encoded}`,
     },
   });
 }

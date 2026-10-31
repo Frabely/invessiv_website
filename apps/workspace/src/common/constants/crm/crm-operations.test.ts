@@ -76,6 +76,7 @@ describe("CrmOperation", () => {
       "onboarding-form-blocks.review",
       "onboarding-forms.request-changes",
       "onboarding-forms.complete",
+      "onboarding-forms.export",
       "hour-purchases.create",
       "hour-allocations.create",
       "time-entries.list",

@@ -265,6 +265,30 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
 - `getOnboardingFormContext` liefert zusätzlich `projectPhase`, damit der Abschlussdialog den Phasenwechsel nur
   anbietet, solange das Projekt in `onboarding` steht. Die Entscheidung trifft trotzdem der Server.
 
+## Onboarding-Export (Ordner 32)
+
+Plan: `apps/workspace/plans/crm/32-onboarding-export/README.md`.
+
+- `exportOnboardingForm` liefert in **jedem Status** ein ZIP aus `onboarding.json` (`OnboardingExportDto`) und den
+  Dateien unter `files/`. Lesen genügt (`CrmEndpointAccessRule.OnboardingForm`, `projects.read`); Dateien folgen
+  `fileAccessService.readableCondition` wie im Antworten-Tab, eine nicht lesbare Datei erscheint nur als
+  `no_access` ohne Namen.
+- **Alle Fragen stehen im Export**, auch unbeantwortete und per Bedingung ausgeblendete (`visible: false`).
+  `isQuestionnaireFieldVisible` liefert nur dieses Flag und filtert nie. Auswahlfragen listen alle Optionen mit
+  `selected`, Gruppen ihre Unterfragen unter `questions`.
+- Bogen → JSON ausschließlich über `onboardingExportMappingService.map`, Datei → Eintrag über `toExportFile`,
+  Ablage je Datei über `toFileLocations` (Block-Key/Feld-Key, in Gruppen `entry-<n>/<child-key>`).
+- **Eine Datei wird einmal gepackt.** Geplant und gezählt wird je `file.id`; nutzen mehrere Fragen dieselbe Datei,
+  liegt sie unter `files/shared/`, und jede Frage nennt sie mit derselben `fileId`, demselben `path` und `usedIn`.
+- **Das ZIP erklärt sich selbst:** `README.md` aus `ONBOARDING_EXPORT_README`; die deutsche Fassung für das Team
+  steht in `docs/guides/onboarding-export.md`. Wer `OnboardingExportDto` ändert, passt beide an (`onboarding-export-readme.test.ts` prüft jede Property und jeden Wert) und erhöht bei einer
+  Formänderung `ONBOARDING_EXPORT_SCHEMA_VERSION`.
+- **Der Export scheitert nie an Dateien.** Links, Videos, Byte- oder Anzahl-Limit (`size_limit`) entscheidet der
+  Handler vor dem Stream; Zeitbudget und Lesefehler meldet der Stream. Das Manifest wird zuletzt geschrieben
+  (`ArchiveManifest`), damit `status` und `path` den echten Inhalt des ZIPs zeigen.
+- Kopf (Kunde, Projekt, Vorlage) über `onboardingFormAccessService.findReadableContext`, den auch
+  `getOnboardingFormContext` nutzt. Kein Inhalt in Logs oder Activities.
+
 ## Zugangsdaten (ab Task 18)
 
 Plan: `apps/workspace/plans/crm/19-credentials/18-credentials-ui.md`.

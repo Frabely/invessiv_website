@@ -820,6 +820,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 24   | offen        | `24-zustaendigkeitszugriff-absicherung`  | Owner-Wechsel und Übergaben verhindern Zuständigkeiten ohne wirksamen Zugriff                                                                                                                                                |         40–70 |   2–3 T. |
 | 28   | läuft        | `28-feedback-rueckfragen`                | Rückfragen je Feedbackpunkt, „Noch offen“ und interne Ergebnishistorie; 28.1 (Task 78) umgesetzt, 28.2 (Task 79) und 28.3 (Task 80) im Review                                                                                |       150–190 |   6–9 T. |
 | 31   | offen        | `31-portal-hinweise`                     | Portal-Hinweise für alle Kunden oder einen Kunden als Dashboard-Widget, nur bei aktivem Hinweis sichtbar; zwei Teil-PRs (31.1 Text mit Task 81, 31.2 Screenshot mit Task 82)                                                 |       110–140 |   3–4 T. |
+| 32   | gemerged     | `32-onboarding-export`                   | Onboardingbogen in jedem Status als ZIP exportierbar (`onboarding.json` mit allen Fragen + `files/`), als Grundlage für ein KI-Projektbriefing; aus `feat/onboarding-export` in `master` gemerged am 31.10.2026              |          ≈ 55 |   1–2 T. |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`. Beim Merge werden die Tabelle und der
 Status in der Ordner-README gemeinsam aktualisiert.
