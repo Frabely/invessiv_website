@@ -34,6 +34,7 @@ const SINGLE_LINE_KINDS: Partial<
 const COUNTER_FROM_RATIO = 0.8;
 
 export type OnboardingTextFieldProps = {
+  disabled?: boolean;
   /** Why the typed text is not saved, already worded; null while it is fine. */
   errorMessage: string | null;
   field: QuestionnaireResolvedField;
@@ -48,6 +49,7 @@ export type OnboardingTextFieldProps = {
 
 /** Short and long text, e-mail, phone and link. Invalid text stays in the input with its reason. */
 export function OnboardingTextField({
+  disabled = false,
   errorMessage,
   field,
   id,
@@ -77,6 +79,7 @@ export function OnboardingTextField({
     reserveErrorSpace: false,
   };
   const control = {
+    disabled,
     "aria-required": required,
     id,
     onBlur: onCommitAction,
@@ -84,7 +87,7 @@ export function OnboardingTextField({
   };
   const kind = SINGLE_LINE_KINDS[field.type];
 
-  return kind ? (
+  return kind && !disabled ? (
     <FormField
       {...shared}
       inputProps={{

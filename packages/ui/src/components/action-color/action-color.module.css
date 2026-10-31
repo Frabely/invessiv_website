@@ -23,6 +23,7 @@
       :disabled,
       [aria-disabled="true"],
       [data-disabled="true"],
+      :has(input:disabled, textarea:disabled),
       [aria-pressed="true"],
       [data-selected="true"]
     )
@@ -37,6 +38,7 @@
         :disabled,
         [aria-disabled="true"],
         [data-disabled="true"],
+        :has(input:disabled, textarea:disabled),
         [aria-pressed="true"],
         [data-selected="true"]
       )
@@ -51,6 +53,7 @@
       :disabled,
       [aria-disabled="true"],
       [data-disabled="true"],
+      :has(input:disabled, textarea:disabled),
       [aria-pressed="true"],
       [data-selected="true"]
     )
@@ -73,6 +76,7 @@
         :disabled,
         [aria-disabled="true"],
         [data-disabled="true"],
+        :has(input:disabled, textarea:disabled),
         [aria-pressed="true"],
         [data-selected="true"]
       )
@@ -92,6 +96,7 @@
           :disabled,
           [aria-disabled="true"],
           [data-disabled="true"],
+          :has(input:disabled, textarea:disabled),
           [aria-pressed="true"],
           [data-selected="true"]
         )
@@ -130,6 +135,7 @@
       :disabled,
       [aria-disabled="true"],
       [data-disabled="true"],
+      :has(input:disabled, textarea:disabled),
       [aria-pressed="true"],
       [data-selected="true"]
     )
@@ -151,6 +157,7 @@
         :disabled,
         [aria-disabled="true"],
         [data-disabled="true"],
+        :has(input:disabled, textarea:disabled),
         [aria-pressed="true"],
         [data-selected="true"]
       )

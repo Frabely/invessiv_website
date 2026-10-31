@@ -7,6 +7,7 @@ import { ColorField } from "@invessiv/ui";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
 
 export type OnboardingColorFieldProps = {
+  disabled?: boolean;
   /** Why the typed text is not saved, already worded; null while it is fine. */
   errorMessage: string | null;
   field: QuestionnaireResolvedField;
@@ -20,6 +21,7 @@ export type OnboardingColorFieldProps = {
 };
 
 export function OnboardingColorField({
+  disabled = false,
   errorMessage,
   field,
   id,
@@ -30,6 +32,7 @@ export function OnboardingColorField({
 }: OnboardingColorFieldProps) {
   return (
     <ColorField
+      disabled={disabled}
       errorMessage={errorMessage ?? undefined}
       hint={field.help ?? undefined}
       id={id}

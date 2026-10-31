@@ -132,6 +132,53 @@
   color: color-mix(in srgb, var(--color-text) 48%, var(--color-text-muted) 52%);
 }
 
+/* Disabled answers use the theme's muted text while hidden selection controls stay untouched. */
+.control
+  :global(
+    input:disabled:not([type="checkbox"], [type="radio"], [type="color"])
+  ),
+.control :global(textarea:disabled) {
+  color: var(--color-text-muted);
+  -webkit-text-fill-color: var(--color-text-muted);
+  opacity: 1;
+  cursor: default;
+}
+
+.control :global(textarea:disabled) {
+  max-height: none;
+  resize: none;
+}
+
+/* A hidden text mirror sizes locked values even without field-sizing support. */
+.inputShell[data-value]:has(textarea:disabled) {
+  display: grid;
+  min-width: 0;
+}
+
+.inputShell[data-value]:has(textarea:disabled)::before {
+  content: attr(data-value) " ";
+  visibility: hidden;
+  grid-area: 1 / 1;
+  min-width: 0;
+  min-height: var(--control-height);
+  border: 1px solid transparent;
+  padding: 0.45rem 0.5rem;
+  padding-block: calc((var(--control-height) - 2px - 1.55em) / 2);
+  font-size: var(--font-size-body-md);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.inputShell[data-value] :global(textarea:disabled) {
+  grid-area: 1 / 1;
+  height: 100%;
+  field-sizing: fixed;
+  font-family: inherit;
+  letter-spacing: inherit;
+  overflow-wrap: anywhere;
+}
+
 @media (min-width: 1100px) {
   .label {
     font-size: var(--form-label-size, 0.95rem);
@@ -144,5 +191,9 @@
 
   .control :global(textarea) {
     min-height: 180px;
+  }
+
+  .inputShell[data-value]:has(textarea:disabled)::before {
+    padding-inline: 0.53rem;
   }
 }

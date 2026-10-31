@@ -1,3 +1,7 @@
+.field {
+  min-width: 0;
+}
+
 /* The chip is the native picker itself, so the browser paints the chosen colour without inline styles. */
 .swatch {
   display: block;
@@ -78,16 +82,27 @@
 }
 
 @media (hover: hover) {
-  .swatch:hover {
+  .swatch:not(:disabled):hover {
     box-shadow:
       0 0 0 2px var(--color-surface-1),
       0 0 0 3px color-mix(in srgb, var(--color-text) 34%, transparent);
   }
 
-  .pickerAction:hover {
+  .field:not(:has(input:disabled)) .pickerAction:hover {
     border-color: color-mix(in srgb, var(--color-cta) 40%, transparent);
     color: var(--color-text);
   }
+}
+
+.swatch:disabled,
+.field:has(input:disabled) .pickerAction {
+  cursor: default;
+}
+
+.field:has(input:disabled) .pickerAction {
+  color: var(--color-text-muted);
+  opacity: var(--button-disabled-opacity, 0.5);
+  filter: var(--button-disabled-filter, saturate(0.7));
 }
 
 /* On narrow screens the icon alone opens the picker; the chip keeps the accessible name. */

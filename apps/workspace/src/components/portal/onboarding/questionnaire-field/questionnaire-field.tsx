@@ -7,6 +7,11 @@ import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/
 import { isQuestionnaireFieldVisible } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { OnboardingFieldFormContext } from "@/common/contracts/portal/onboarding-field-form-context";
+import type { OnboardingFieldReadContext } from "@/common/contracts/portal/onboarding-field-read-context";
+import type { OnboardingReadFiles } from "@/common/contracts/shared/onboarding-read-files";
+import { OnboardingReadFilesField } from "../fields/onboarding-read-files-field/onboarding-read-files-field";
+import styles from "./questionnaire-field.module.css";
+import { getOnboardingAnswerFileSlot } from "@/common/patterns/shared/onboarding-answer-file-slot";
 import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
 import { onboardingFieldDomId } from "@/common/patterns/portal/onboarding-field-dom-id";
 import { onboardingFieldSpan } from "@/common/patterns/portal/onboarding-field-span";
@@ -23,8 +28,11 @@ import { OnboardingFieldCell } from "../onboarding-field-grid/onboarding-field-g
 
 export type QuestionnaireFieldProps = {
   field: QuestionnaireResolvedField;
-  /** Everything a field reads from and writes to the form it sits in; the same for every field. */
-  form: OnboardingFieldFormContext;
+  /** Display data, shared by editable and locked fields. */
+  form: OnboardingFieldReadContext;
+  /** Absent in locked blocks and the reader; neither mounts autosave nor exposes commands. */
+  editor?: OnboardingFieldFormContext;
+  files?: OnboardingReadFiles;
   /** Entry a sub-field is answered for; null on block level. */
   groupEntryId: string | null;
 };
@@ -37,19 +45,21 @@ export type QuestionnaireFieldProps = {
 export function QuestionnaireField({
   field,
   form,
+  editor,
+  files,
   groupEntryId,
 }: QuestionnaireFieldProps) {
   const slot = { fieldId: field.id, groupEntryId };
   const key = onboardingAnswerDrafts.slotKey(field.id, groupEntryId);
   const id = onboardingFieldDomId(key);
   const entries = form.drafts.get(key) ?? [];
-  const invalid = form.invalid.get(key) ?? null;
+  const invalid = editor?.invalid.get(key) ?? null;
   const { content } = form;
   const texts = content.field;
   const errorMessage = invalid ? texts.errors[invalid] : null;
   const change = (next: readonly string[], options?: { immediate?: boolean }) =>
-    form.onChangeAction(key, next, options);
-  const commit = () => form.onCommitAction(key);
+    editor?.onChangeAction(key, next, options);
+  const commit = () => editor?.onCommitAction(key);
   let control: React.ReactNode = null;
 
   switch (field.type) {
@@ -60,6 +70,7 @@ export function QuestionnaireField({
     case QuestionnaireFieldType.Url:
       control = (
         <OnboardingTextField
+          disabled={!editor}
           errorMessage={errorMessage}
           field={field}
           id={id}
@@ -74,6 +85,7 @@ export function QuestionnaireField({
     case QuestionnaireFieldType.YesNo:
       control = (
         <OnboardingChoiceField
+          disabled={!editor}
           field={field}
           id={id}
           onChangeAction={(choiceIds) => change(choiceIds, { immediate: true })}
@@ -85,6 +97,7 @@ export function QuestionnaireField({
     case QuestionnaireFieldType.MultiChoice:
       control = (
         <OnboardingMultiChoiceField
+          disabled={!editor}
           field={field}
           id={id}
           onChangeAction={(choiceIds) => change(choiceIds, { immediate: true })}
@@ -96,6 +109,7 @@ export function QuestionnaireField({
     case QuestionnaireFieldType.Confirmation:
       control = (
         <OnboardingConfirmationField
+          disabled={!editor}
           checked={entries[0] === QUESTIONNAIRE_CONFIRMED_VALUE}
           field={field}
           id={id}
@@ -110,6 +124,7 @@ export function QuestionnaireField({
     case QuestionnaireFieldType.Color:
       control = (
         <OnboardingColorField
+          disabled={!editor}
           errorMessage={errorMessage}
           field={field}
           id={id}
@@ -123,6 +138,7 @@ export function QuestionnaireField({
     case QuestionnaireFieldType.Scale:
       control = (
         <OnboardingScaleField
+          disabled={!editor}
           field={field}
           id={id}
           onChangeAction={(value) =>
@@ -133,56 +149,61 @@ export function QuestionnaireField({
         />
       );
       break;
-    case QuestionnaireFieldType.Files:
-      control = (
+    case QuestionnaireFieldType.Files: {
+      const fileSlot = getOnboardingAnswerFileSlot(
+        form.answerFiles,
+        form.hiddenAnswerFiles,
+        slot,
+      );
+      control = editor ? (
         <OnboardingFilesField
-          canAttach={form.canAttach}
-          canUpload={form.canUpload}
+          canAttach={editor.canAttach}
+          canUpload={editor.canUpload}
           content={content}
-          customerId={form.customerId}
+          customerId={editor.customerId}
           field={field}
-          filesContent={form.filesContent}
-          hiddenCount={
-            form.hiddenAnswerFiles.filter(
-              (link) =>
-                link.fieldId === field.id && link.groupEntryId === groupEntryId,
-            ).length
-          }
+          filesContent={editor.filesContent}
+          hiddenCount={fileSlot.hiddenCount}
           id={id}
-          links={form.answerFiles
-            .filter(
-              (link) =>
-                link.fieldId === field.id && link.groupEntryId === groupEntryId,
-            )
-            .sort((left, right) => left.position - right.position)}
+          links={fileSlot.links}
           locale={form.locale}
           onActivityChangeAction={(active) =>
-            form.onUploadActivityAction(key, active)
+            editor.onUploadActivityAction(key, active)
           }
-          onAnnounceAction={form.onAnnounceAction}
-          onAttachAction={(file) => form.onAttachFileAction(slot, file)}
-          onDetachAction={form.onDetachFileAction}
-          projectId={form.projectId}
+          onAnnounceAction={editor.onAnnounceAction}
+          onAttachAction={(file) => editor.onAttachFileAction(slot, file)}
+          onDetachAction={editor.onDetachFileAction}
+          projectId={editor.projectId}
+        />
+      ) : (
+        <OnboardingReadFilesField
+          field={field}
+          files={files}
+          form={form}
+          groupEntryId={groupEntryId}
+          id={id}
         />
       );
       break;
+    }
     case QuestionnaireFieldType.ProjectServices:
       control = (
         <OnboardingProjectServicesField
           confirmed={form.input.servicesConfirmed}
           errorMessage={
-            form.servicesError ? content.errors[form.servicesError] : null
+            editor?.servicesError ? content.errors[editor.servicesError] : null
           }
           field={field}
           id={id}
           note={form.servicesNote}
-          onRemarkOpenAction={form.onOpenServicesRemarkAction}
-          remarkOpen={form.servicesRemarkOpen}
+          disabled={!editor}
+          onRemarkOpenAction={() => editor?.onOpenServicesRemarkAction()}
+          remarkOpen={editor?.servicesRemarkOpen ?? false}
           onConfirmAction={async (note) => {
-            const confirmed = await form.onConfirmServicesAction(note);
+            const confirmed = await editor?.onConfirmServicesAction(note);
             if (confirmed)
-              form.onAnnounceAction(content.announcements.servicesConfirmed);
-            return confirmed;
+              editor?.onAnnounceAction(content.announcements.servicesConfirmed);
+            return confirmed ?? false;
           }}
           services={form.services}
           texts={texts.services}
@@ -193,10 +214,11 @@ export function QuestionnaireField({
       const groupEntries = form.input.groupEntries
         .filter((entry) => entry.fieldId === field.id)
         .sort((left, right) => left.position - right.position);
-      const error = form.errors.get(field.id);
+      const error = editor?.errors.get(field.id);
       control = (
         <OnboardingGroupField
-          busy={form.busy}
+          busy={editor?.busy ?? false}
+          disabled={!editor}
           entries={groupEntries}
           errorMessage={error ? content.errors[error] : null}
           field={field}
@@ -210,16 +232,19 @@ export function QuestionnaireField({
           }
           id={id}
           onAddAction={() => {
-            const entryId = form.onAddEntryAction(field.id);
-            form.onAnnounceAction(
+            if (!editor) return;
+            const entryId = editor.onAddEntryAction(field.id);
+            editor.onAnnounceAction(
               formatMessage(content.announcements.entryAdded, {
                 number: groupEntries.length + 1,
               }),
             );
             return entryId;
           }}
-          onMoveAction={form.onMoveEntryAction}
-          onRemoveAction={form.onRemoveEntryAction}
+          onMoveAction={(entry, direction) =>
+            editor?.onMoveEntryAction(entry, direction)
+          }
+          onRemoveAction={(entry) => editor?.onRemoveEntryAction(entry)}
           renderFieldAction={(child, entry) =>
             isQuestionnaireFieldVisible(child, form.input, entry.id) ? (
               <OnboardingFieldCell
@@ -229,6 +254,8 @@ export function QuestionnaireField({
                 <QuestionnaireField
                   field={child}
                   form={form}
+                  editor={editor}
+                  files={files}
                   groupEntryId={entry.id}
                 />
               </OnboardingFieldCell>
@@ -247,5 +274,20 @@ export function QuestionnaireField({
       console.warn(`[onboarding] no control for field type "${field.type}"`);
   }, [field.type, unknown]);
 
-  return control;
+  // File actions stay available for reading, including files inside a locked group.
+  if (
+    field.type === QuestionnaireFieldType.Files ||
+    field.type === QuestionnaireFieldType.Group ||
+    unknown
+  )
+    return control;
+  return (
+    <fieldset
+      aria-label={field.label}
+      className={styles.control}
+      disabled={!editor}
+    >
+      {control}
+    </fieldset>
+  );
 }

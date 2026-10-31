@@ -26,6 +26,28 @@ function renderField(value: string) {
 describe("ColorField", () => {
   afterEach(cleanup);
 
+  it.each([false, true])(
+    "disables both colour inputs with inherited=%s",
+    (inherited) => {
+      render(
+        <fieldset disabled={inherited}>
+          <ColorField
+            disabled={!inherited}
+            id="locked"
+            label="Locked colour"
+            value="#123456"
+            onChangeAction={vi.fn()}
+            onPickAction={vi.fn()}
+            pickerLabel="Locked picker"
+            pickerActionLabel="Pick colour"
+          />
+        </fieldset>,
+      );
+      expect(screen.getByLabelText("Locked colour")).toBeDisabled();
+      expect(screen.getByLabelText("Locked picker")).toBeDisabled();
+    },
+  );
+
   it("reports typed text and picked colours through separate callbacks", () => {
     const { onChangeAction, onPickAction } = renderField("");
 

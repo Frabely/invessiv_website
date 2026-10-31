@@ -8,6 +8,7 @@ import { FormFieldLabel, FormHint, OptionTile } from "@invessiv/ui";
 import styles from "./onboarding-confirmation-field.module.css";
 
 export type OnboardingConfirmationFieldProps = {
+  disabled?: boolean;
   checked: boolean;
   field: QuestionnaireResolvedField;
   /** DOM id of the checkbox; a jump to this field focuses it. */
@@ -17,6 +18,7 @@ export type OnboardingConfirmationFieldProps = {
 
 /** One statement the customer confirms with a tick; the statement itself is the label. */
 export function OnboardingConfirmationField({
+  disabled = false,
   checked,
   field,
   id,
@@ -28,6 +30,7 @@ export function OnboardingConfirmationField({
   return (
     <div className={styles.field}>
       <OptionTile
+        disabled={disabled}
         aria-describedby={field.help ? helpId : undefined}
         aria-required={required}
         checked={checked}

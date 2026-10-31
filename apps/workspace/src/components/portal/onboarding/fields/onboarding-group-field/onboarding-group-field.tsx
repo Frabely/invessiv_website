@@ -44,6 +44,7 @@ type PendingFocus =
   | { kind: typeof PendingFocusKind.Removed; entryId: string };
 
 export type OnboardingGroupFieldProps = {
+  disabled?: boolean;
   /** True while a command of the form is on its way; moving and removing wait for it. */
   busy: boolean;
   /** The entries of this group in display order. */
@@ -56,7 +57,7 @@ export type OnboardingGroupFieldProps = {
   /** DOM id of the add button; a jump to this field focuses it. */
   id: string;
   /** Adds an entry and returns its id, so the focus can move into it. */
-  onAddAction: () => string;
+  onAddAction: () => string | undefined;
   onMoveAction: (entry: QuestionnaireGroupEntryDto, direction: -1 | 1) => void;
   onRemoveAction: (entry: QuestionnaireGroupEntryDto) => void;
   /** Renders one sub-field for one entry; the group itself knows no field types. */
@@ -74,6 +75,7 @@ export type OnboardingGroupFieldProps = {
  * removal.
  */
 export function OnboardingGroupField({
+  disabled = false,
   busy,
   entries,
   errorMessage,
@@ -114,7 +116,7 @@ export function OnboardingGroupField({
     }
 
     // A move or a removal shows once the server answered; until then the focus stays put.
-    if (busy) return;
+    if (busy || disabled) return;
     focusRef.current = null;
     if (pending.kind === PendingFocusKind.Removed) {
       if (!present) frame.querySelector<HTMLElement>("[data-add]")?.focus();
@@ -129,10 +131,10 @@ export function OnboardingGroupField({
       )
       .find((button) => button && !button.disabled)
       ?.focus();
-  }, [busy, entries]);
+  }, [busy, disabled, entries]);
 
   function move(entry: QuestionnaireGroupEntryDto, direction: -1 | 1) {
-    if (busy) return;
+    if (busy || disabled) return;
     focusRef.current = {
       kind: PendingFocusKind.Moved,
       entryId: entry.id,
@@ -142,7 +144,7 @@ export function OnboardingGroupField({
   }
 
   function remove(entry: QuestionnaireGroupEntryDto) {
-    if (busy) return;
+    if (busy || disabled) return;
     focusRef.current = {
       kind: PendingFocusKind.Removed,
       entryId: entry.id,
@@ -178,7 +180,7 @@ export function OnboardingGroupField({
                         aria-disabled={busy || undefined}
                         aria-label={formatMessage(texts.moveUp, { number })}
                         data-move="-1"
-                        disabled={index === 0}
+                        disabled={disabled || index === 0}
                         onClick={() => move(entry, -1)}
                         type="button"
                         size={ButtonSize.Icon}
@@ -190,7 +192,7 @@ export function OnboardingGroupField({
                         aria-disabled={busy || undefined}
                         aria-label={formatMessage(texts.moveDown, { number })}
                         data-move="1"
-                        disabled={index === entries.length - 1}
+                        disabled={disabled || index === entries.length - 1}
                         onClick={() => move(entry, 1)}
                         type="button"
                         size={ButtonSize.Icon}
@@ -204,8 +206,9 @@ export function OnboardingGroupField({
                       <ButtonControl
                         aria-disabled={busy || undefined}
                         aria-label={formatMessage(texts.remove, { number })}
+                        disabled={disabled}
                         onClick={() => {
-                          if (busy) return;
+                          if (busy || disabled) return;
                           if (hasContentAction(entry)) setRemoving(entry);
                           else remove(entry);
                         }}
@@ -233,12 +236,15 @@ export function OnboardingGroupField({
       <div className={styles.add}>
         <ButtonControl
           data-add
-          disabled={full}
+          disabled={disabled || full}
           id={id}
           onClick={() => {
+            if (disabled) return;
+            const entryId = onAddAction();
+            if (!entryId) return;
             focusRef.current = {
               kind: PendingFocusKind.Entry,
-              entryId: onAddAction(),
+              entryId,
             };
           }}
           size={ButtonSize.Control}

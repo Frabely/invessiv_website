@@ -354,7 +354,9 @@ export function OnboardingFormEditor({
         <OnboardingBlockStep
           block={block}
           content={content}
-          editable={form.editableBlockIds.includes(block.id)}
+          editor={
+            form.editableBlockIds.includes(block.id) ? fieldForm : undefined
+          }
           files={files}
           focusFieldId={step.fieldId}
           form={fieldForm}

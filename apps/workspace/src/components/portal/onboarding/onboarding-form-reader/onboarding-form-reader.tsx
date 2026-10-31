@@ -31,7 +31,9 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonLink } from "@invessiv/ui";
 import { PORTAL_ONBOARDING_STATUS_SECTION } from "@/common/constants/portal/portal-onboarding-query-params";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
-import { OnboardingAnswerReadView } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
+import { OnboardingBlockStep } from "../onboarding-block-step/onboarding-block-step";
+import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
+import type { OnboardingFieldReadContext } from "@/common/contracts/portal/onboarding-field-read-context";
 import type { OnboardingReadFiles } from "@/common/contracts/shared/onboarding-read-files";
 import type { Locale } from "@/config/i18n";
 import { usePortalOnboardingStep } from "@/hooks/portal/use-portal-onboarding-step";
@@ -131,8 +133,8 @@ export type OnboardingFormReaderProps = {
 
 /**
  * A form nobody may write into right now, laid out like the form itself: the status first, with
- * what happens next, then one block per step with its answers as text. Reading needs no inputs,
- * so answers stay at full contrast and long text is never cut off.
+ * what happens next, then one block per step using the editor's disabled controls. Stored text
+ * wraps to remain fully readable; reading mounts neither autosave nor editing commands.
  */
 export function OnboardingFormReader({
   backHref,
@@ -150,7 +152,25 @@ export function OnboardingFormReader({
   const bodyRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const ownerNoticeId = useId();
-  const blockHeadingId = useId();
+  const fieldForm = useMemo<OnboardingFieldReadContext>(
+    () => ({
+      answerFiles: form.answerFiles,
+      hiddenAnswerFiles: form.hiddenAnswerFiles,
+      content,
+      drafts: onboardingAnswerDrafts.fromAnswers(form.answers),
+      input: {
+        blocks: form.blocks,
+        answers: form.answers,
+        answerFiles: [...form.answerFiles, ...form.hiddenAnswerFiles],
+        groupEntries: form.groupEntries,
+        servicesConfirmed: form.servicesConfirmed,
+      },
+      locale,
+      services: form.services,
+      servicesNote: form.servicesNote,
+    }),
+    [form, content, locale],
+  );
   const [navigated, setNavigated] = useState(false);
   const sections = useMemo(
     () => [
@@ -210,28 +230,17 @@ export function OnboardingFormReader({
 
   function renderBlockStep(shown: PortalOnboardingBlockDto) {
     return (
-      <section
-        aria-labelledby={blockHeadingId}
-        className={styles.step}
+      <OnboardingBlockStep
+        block={shown}
+        content={content}
+        files={files}
+        focusFieldId={null}
+        form={fieldForm}
         key={shown.id}
-      >
-        <PortalStepHeading id={blockHeadingId} ref={headingRef}>
-          {shown.title}
-        </PortalStepHeading>
-        <OnboardingAnswerReadView
-          answerFiles={form.answerFiles}
-          answers={form.answers}
-          blocks={[shown]}
-          files={files}
-          groupEntries={form.groupEntries}
-          hiddenAnswerFiles={form.hiddenAnswerFiles}
-          services={form.services}
-          servicesConfirmed={form.servicesConfirmed}
-          servicesNote={form.servicesNote}
-          showBlockTitles={false}
-          texts={content.read}
-        />
-      </section>
+        locale={locale}
+        moveFocus={navigated}
+        showLockedNotice={false}
+      />
     );
   }
 
