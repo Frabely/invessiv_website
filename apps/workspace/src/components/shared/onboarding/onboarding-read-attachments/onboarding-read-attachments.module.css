@@ -1,0 +1,17 @@
+.names {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+  list-style: none;
+  overflow-wrap: anywhere;
+}
+
+.hidden {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+}

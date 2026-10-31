@@ -19,7 +19,17 @@ const Choice = {
 
 type Choice = (typeof Choice)[keyof typeof Choice];
 
+function confirmedChoice(
+  note: string | null,
+  confirmed: boolean,
+): Choice | null {
+  if (note !== null) return Choice.Remark;
+  if (confirmed) return Choice.Fits;
+  return null;
+}
+
 export type OnboardingProjectServicesFieldProps = {
+  disabled?: boolean;
   /** Whether the services are confirmed on the server. */
   confirmed: boolean;
   /** Why the last confirmation was not saved, already worded; null while it is fine. */
@@ -44,6 +54,7 @@ export type OnboardingProjectServicesFieldProps = {
  * remark. Nothing here changes the services; a remark is cleared up before the work starts.
  */
 export function OnboardingProjectServicesField({
+  disabled = false,
   confirmed,
   errorMessage,
   field,
@@ -55,14 +66,11 @@ export function OnboardingProjectServicesField({
   services,
   texts,
 }: OnboardingProjectServicesFieldProps) {
-  const [choice, setChoice] = useState<Choice | null>(
-    remarkOpen || note !== null
-      ? Choice.Remark
-      : confirmed
-        ? Choice.Fits
-        : null,
+  const [draftChoice, setChoice] = useState<Choice | null>(
+    remarkOpen ? Choice.Remark : confirmedChoice(note, confirmed),
   );
   const [text, setText] = useState(note ?? "");
+  const choice = disabled ? confirmedChoice(note, confirmed) : draftChoice;
   const [noteMissing, setNoteMissing] = useState(false);
   const required = field.requirement === QuestionnaireFieldRequirement.Required;
 
@@ -71,6 +79,7 @@ export function OnboardingProjectServicesField({
    * otherwise stay in force, although the customer has just said something else.
    */
   function saveRemark() {
+    if (disabled) return note ?? "";
     const trimmed = text.trim();
     if (trimmed === "") onRemarkOpenAction();
     else if (trimmed !== note || remarkOpen) void onConfirmAction(trimmed);
@@ -78,6 +87,7 @@ export function OnboardingProjectServicesField({
   }
 
   function choose(next: Choice) {
+    if (disabled) return;
     setChoice(next);
     setNoteMissing(false);
     if (next === Choice.Fits) void onConfirmAction(null);
@@ -115,6 +125,7 @@ export function OnboardingProjectServicesField({
         <p className={styles.question}>{texts.question}</p>
         <OptionTile
           checked={choice === Choice.Fits}
+          disabled={disabled}
           id={id}
           kind={OptionTileKind.Radio}
           name={id}
@@ -124,6 +135,7 @@ export function OnboardingProjectServicesField({
         </OptionTile>
         <OptionTile
           checked={choice === Choice.Remark}
+          disabled={disabled}
           kind={OptionTileKind.Radio}
           name={id}
           onChange={() => choose(Choice.Remark)}
@@ -133,17 +145,19 @@ export function OnboardingProjectServicesField({
       </OnboardingOptionGroup>
       {choice === Choice.Remark ? (
         <FormField
+          autoGrow={disabled}
           errorMessage={noteMissing ? texts.noteRequired : undefined}
           hint={texts.noteHint}
           kind={FormFieldKind.Textarea}
           label={texts.noteLabel}
           required
           textareaProps={{
+            disabled,
             "aria-required": true,
             maxLength: QUESTIONNAIRE_LIMITS.noteMaxLength,
             onBlur: saveNote,
             onChange: (event) => setText(event.target.value),
-            value: text,
+            value: disabled ? (note ?? "") : text,
           }}
         />
       ) : null}

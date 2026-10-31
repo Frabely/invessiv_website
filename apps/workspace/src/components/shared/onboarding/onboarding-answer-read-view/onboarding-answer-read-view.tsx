@@ -1,3 +1,4 @@
+import { getOnboardingAnswerFileSlot } from "@/common/patterns/shared/onboarding-answer-file-slot";
 import type { ReactNode } from "react";
 import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-requirements";
 import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
@@ -16,7 +17,7 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { FormRequiredMarker, LinkedText } from "@invessiv/ui";
 import type { OnboardingReadFiles } from "@/common/contracts/shared/onboarding-read-files";
 import type { OnboardingReadTexts } from "@/common/contracts/shared/onboarding-read-texts";
-import { FileAttachmentList } from "@/components/shared/files/file-attachment-list/file-attachment-list";
+import { OnboardingReadAttachments } from "../onboarding-read-attachments/onboarding-read-attachments";
 import { OnboardingReadValue } from "../onboarding-read-value/onboarding-read-value";
 import styles from "./onboarding-answer-read-view.module.css";
 
@@ -100,43 +101,22 @@ export function OnboardingAnswerReadView({
     const slotKey = questionnaireSlotKey(field.id, groupEntryId);
 
     if (field.type === QuestionnaireFieldType.Files) {
-      const attached = answerFiles
-        .filter(
-          (link) =>
-            link.fieldId === field.id && link.groupEntryId === groupEntryId,
-        )
-        .sort((left, right) => left.position - right.position)
-        .map((link) => link.file);
-      const hidden = hiddenAnswerFiles.some(
-        (link) =>
-          link.fieldId === field.id && link.groupEntryId === groupEntryId,
-      );
+      const { attachments: attached, hiddenCount } =
+        getOnboardingAnswerFileSlot(answerFiles, hiddenAnswerFiles, {
+          fieldId: field.id,
+          groupEntryId,
+        });
+      const hidden = hiddenCount > 0;
       if (attached.length === 0 && !hidden) return none(slotKey);
       const label = formatMessage(texts.filesLabel, { field: field.label });
       return (
-        <>
-          {attached.length === 0 ? null : files ? (
-            <FileAttachmentList
-              attachments={attached}
-              label={label}
-              loadPreviewAction={files.loadPreviewAction}
-              locale={files.locale}
-              onDownloadAction={files.onDownloadAction}
-              texts={files.texts}
-            />
-          ) : (
-            <ul aria-label={label} className={styles.names}>
-              {attached.map((file) => (
-                <li key={file.id}>{file.displayName}</li>
-              ))}
-            </ul>
-          )}
-          {hidden ? (
-            <span className={styles.none} data-state="empty">
-              {texts.filesHidden}
-            </span>
-          ) : null}
-        </>
+        <OnboardingReadAttachments
+          attachments={attached}
+          files={files}
+          hidden={hidden}
+          hiddenText={texts.filesHidden}
+          label={label}
+        />
       );
     }
 

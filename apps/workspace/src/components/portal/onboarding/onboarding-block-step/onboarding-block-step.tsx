@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import type { PortalOnboardingBlockDto } from "@invessiv/common/contracts/portal/portal-onboarding-block.dto";
 import { isQuestionnaireFieldVisible } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
@@ -8,7 +8,7 @@ import { languageName } from "@invessiv/common/patterns/i18n/language-name";
 import type { OnboardingFieldFormContext } from "@/common/contracts/portal/onboarding-field-form-context";
 import { onboardingFieldDomId } from "@/common/patterns/portal/onboarding-field-dom-id";
 import { onboardingFieldSpan } from "@/common/patterns/portal/onboarding-field-span";
-import { OnboardingAnswerReadView } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
+import type { OnboardingFieldReadContext } from "@/common/contracts/portal/onboarding-field-read-context";
 import type { OnboardingReadFiles } from "@/common/contracts/shared/onboarding-read-files";
 import type { Locale } from "@/config/i18n";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
@@ -23,14 +23,15 @@ import styles from "./onboarding-block-step.module.css";
 export type OnboardingBlockStepProps = {
   block: PortalOnboardingBlockDto;
   content: PortalOnboardingDictionary;
-  /** False during a change request for blocks the team did not hand back. */
-  editable: boolean;
+  /** Commands are only provided for blocks the server allows the contact to edit. */
+  editor?: OnboardingFieldFormContext;
+  showLockedNotice?: boolean;
   /** How attached files open while the block is read-only. */
   files: OnboardingReadFiles | undefined;
   /** Slot to focus instead of the heading, after a jump from the list of missing answers. */
   focusFieldId: string | null;
-  /** What every field of the step reads from and writes to. */
-  form: OnboardingFieldFormContext;
+  /** Display data for every field, independent of editing permissions. */
+  form: OnboardingFieldReadContext;
   locale: Locale;
   /** Whether the step was reached by navigating; a fresh page load leaves the focus alone. */
   moveFocus: boolean;
@@ -43,7 +44,8 @@ export type OnboardingBlockStepProps = {
 export function OnboardingBlockStep({
   block,
   content,
-  editable,
+  editor,
+  showLockedNotice = true,
   files,
   focusFieldId,
   form,
@@ -51,6 +53,7 @@ export function OnboardingBlockStep({
   moveFocus,
 }: OnboardingBlockStepProps) {
   const { input } = form;
+  const headingId = useId();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const texts = content.block;
   const fields = block.fields.filter((field) =>
@@ -68,8 +71,10 @@ export function OnboardingBlockStep({
   }, []);
 
   return (
-    <section className={styles.step}>
-      <PortalStepHeading ref={headingRef}>{block.title}</PortalStepHeading>
+    <section aria-labelledby={headingId} className={styles.step}>
+      <PortalStepHeading id={headingId} ref={headingRef}>
+        {block.title}
+      </PortalStepHeading>
       {block.intro ? <p className={styles.intro}>{block.intro}</p> : null}
       {block.reviewNote ? (
         <div className={styles.review}>
@@ -87,44 +92,30 @@ export function OnboardingBlockStep({
       {block.prefilled ? (
         <p className={styles.note}>{texts.prefilled}</p>
       ) : null}
-      {editable ? (
-        fields.length > 0 ? (
-          <div className={styles.fields}>
-            <OnboardingFieldGrid>
-              {fields.map((field) => (
-                <OnboardingFieldCell
-                  key={field.id}
-                  span={onboardingFieldSpan(field)}
-                >
-                  <QuestionnaireField
-                    field={field}
-                    form={form}
-                    groupEntryId={null}
-                  />
-                </OnboardingFieldCell>
-              ))}
-            </OnboardingFieldGrid>
-          </div>
-        ) : (
-          <p className={styles.note}>{texts.empty}</p>
-        )
+      {!editor && showLockedNotice ? (
+        <p className={styles.note}>{texts.locked}</p>
+      ) : null}
+      {fields.length > 0 ? (
+        <div className={styles.fields}>
+          <OnboardingFieldGrid>
+            {fields.map((field) => (
+              <OnboardingFieldCell
+                key={field.id}
+                span={onboardingFieldSpan(field)}
+              >
+                <QuestionnaireField
+                  field={field}
+                  form={form}
+                  editor={editor}
+                  files={files}
+                  groupEntryId={null}
+                />
+              </OnboardingFieldCell>
+            ))}
+          </OnboardingFieldGrid>
+        </div>
       ) : (
-        <>
-          <p className={styles.note}>{texts.locked}</p>
-          <OnboardingAnswerReadView
-            answerFiles={form.answerFiles}
-            hiddenAnswerFiles={form.hiddenAnswerFiles}
-            answers={input.answers}
-            blocks={[block]}
-            files={files}
-            groupEntries={input.groupEntries}
-            services={form.services}
-            servicesConfirmed={input.servicesConfirmed}
-            servicesNote={form.servicesNote}
-            showBlockTitles={false}
-            texts={content.read}
-          />
-        </>
+        <p className={styles.note}>{texts.empty}</p>
       )}
     </section>
   );

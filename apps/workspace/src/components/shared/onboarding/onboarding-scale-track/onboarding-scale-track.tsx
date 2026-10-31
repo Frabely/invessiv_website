@@ -7,6 +7,7 @@ const STEPS = Array.from(
 );
 
 export type OnboardingScaleTrackProps = {
+  disabled?: boolean;
   /** A size down, for an answer that is read rather than given. */
   compact?: boolean;
   /** Label of the upper pole; null when the field names none. */
@@ -29,6 +30,7 @@ export type OnboardingScaleTrackProps = {
  * only, the track is a picture; the caller says the level in words for screen readers.
  */
 export function OnboardingScaleTrack({
+  disabled = false,
   compact = false,
   high,
   id,
@@ -39,6 +41,7 @@ export function OnboardingScaleTrack({
 }: OnboardingScaleTrackProps) {
   return (
     <ScaleControl
+      disabled={disabled}
       compact={compact}
       high={high}
       id={id}

@@ -10,6 +10,7 @@ import { OnboardingOptionGroup } from "../onboarding-option-group/onboarding-opt
 import styles from "./onboarding-multi-choice-field.module.css";
 
 export type OnboardingMultiChoiceFieldProps = {
+  disabled?: boolean;
   field: QuestionnaireResolvedField;
   /** DOM id of the first option; a jump to this field focuses it. */
   id: string;
@@ -20,6 +21,7 @@ export type OnboardingMultiChoiceFieldProps = {
 
 /** Several options out of a list. Once the field's maximum is reached, the rest is locked. */
 export function OnboardingMultiChoiceField({
+  disabled = false,
   field,
   id,
   onChangeAction,
@@ -70,7 +72,7 @@ export function OnboardingMultiChoiceField({
         return (
           <OptionTile
             checked={checked}
-            disabled={full && !checked}
+            disabled={disabled || (full && !checked)}
             id={index === 0 ? id : undefined}
             key={choice.id}
             kind={OptionTileKind.Checkbox}

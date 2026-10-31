@@ -11,7 +11,7 @@
   cursor: pointer;
 }
 
-.root[data-disabled="true"] {
+.root:is([data-disabled="true"], :has(> input:disabled)) {
   cursor: default;
 }
 
@@ -54,14 +54,14 @@
     color-mix(in srgb, var(--color-action-accent) 16%, transparent);
 }
 
-.root[data-disabled="true"] .dot {
+.root:is([data-disabled="true"], :has(> input:disabled)) .dot {
   border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
   background: color-mix(in srgb, var(--color-surface-1) 84%, transparent);
   box-shadow: none;
 }
 
 /* Disabled but selected: the same gradient, faded like a disabled button. */
-.root[data-disabled="true"] .input:checked + .dot {
+.root:is([data-disabled="true"], :has(> input:disabled)) .input:checked + .dot {
   border-color: transparent;
   background:
     radial-gradient(circle, var(--color-on-cta) 0 32%, transparent 36%),

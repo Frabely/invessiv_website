@@ -985,6 +985,85 @@ describe("OnboardingFormView field types of the full form", () => {
   });
 
   describe("read view after the submission", () => {
+    it.each([
+      T.ShortText,
+      T.LongText,
+      T.Email,
+      T.Phone,
+      T.Url,
+      T.Choice,
+      T.YesNo,
+      T.MultiChoice,
+      T.Color,
+      T.Scale,
+      T.Confirmation,
+    ])("disables %s controls without saving", async (type) => {
+      window.history.replaceState(null, "", PATH + "?section=Company");
+      renderView(
+        formOf(
+          [
+            field("Question", {
+              type,
+              choices: choices("Question", "Yes", "No"),
+            }),
+          ],
+          {
+            editableBlockIds: [],
+            canSubmit: false,
+          },
+        ),
+      );
+      const region = screen.getByRole("region", { name: "Company" });
+      const inputs = region.querySelectorAll("input, textarea, select");
+      expect(inputs.length).toBeGreaterThan(0);
+      for (const input of inputs) expect(input).toBeDisabled();
+      const text = region.querySelector('input[type="text"], textarea');
+      if (text) {
+        fireEvent.change(text, { target: { value: "Changed" } });
+        fireEvent.blur(text);
+      }
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(2000);
+      });
+      expect(mocks.saveAnswer).not.toHaveBeenCalled();
+      expect(mocks.submit).not.toHaveBeenCalled();
+    });
+
+    it("keeps file actions inside a disabled group available and hides upload actions", () => {
+      window.history.replaceState(null, "", PATH + "?section=Company");
+      renderView(
+        formOf(
+          [
+            field("Team", {
+              type: T.Group,
+              children: [
+                field("Logo", { type: T.Files, parentFieldId: "Team" }),
+              ],
+            }),
+          ],
+          {
+            editableBlockIds: [],
+            groupEntries: [entry("e-1", 0)],
+            answerFiles: [
+              link("link-1", "file-1", "logo.png", { groupEntryId: "e-1" }),
+            ],
+            hiddenAnswerFiles: [{ fieldId: "Logo", groupEntryId: "e-1" }],
+          },
+        ),
+      );
+      const actions = screen.getByRole("group", {
+        name: "Actions for logo.png",
+      });
+      for (const button of within(actions).getAllByRole("button"))
+        expect(button).toBeEnabled();
+      expect(screen.getByText(content.read.filesHidden)).toBeVisible();
+      expect(
+        screen.getByRole("button", { name: content.field.group.add }),
+      ).toBeDisabled();
+      expect(document.querySelector('input[type="file"]')).toBeNull();
+      expect(mocks.queueOptions).toHaveLength(0);
+    });
+
     it("shows entries, files, services, confirmation, colour and scale", async () => {
       renderView(
         formOf(
@@ -1046,17 +1125,47 @@ describe("OnboardingFormView field types of the full form", () => {
       const answers = screen.getByRole("region", { name: "Company" });
 
       expect(answers).toHaveTextContent("Entry 1");
-      expect(answers).toHaveTextContent("Ada");
+      expect(
+        within(answers).getByRole("textbox", { name: /Member name/ }),
+      ).toHaveValue("Ada");
       expect(
         within(answers).getByRole("list", { name: "Files for “Logo”" }),
       ).toHaveTextContent("logo.png");
       expect(answers).toHaveTextContent("Landing page");
-      expect(answers).toHaveTextContent(content.read.servicesConfirmed);
-      expect(answers).toHaveTextContent("Please add a blog.");
-      expect(answers).toHaveTextContent(content.read.confirmed);
-      expect(answers).toHaveTextContent("#1A2B3C");
-      expect(answers).toHaveTextContent("4 of 5");
-      expect(screen.queryByRole("textbox")).toBeNull();
+      expect(
+        within(answers).getByRole("radio", {
+          name: content.field.services.remark,
+        }),
+      ).toBeChecked();
+      expect(
+        within(answers).getByRole("textbox", {
+          name: new RegExp(content.field.services.noteLabel),
+        }),
+      ).toHaveValue("Please add a blog.");
+      expect(
+        within(answers).getByRole("checkbox", { name: /Image rights/ }),
+      ).toBeChecked();
+      expect(
+        within(answers).getByRole("textbox", { name: /Brand colour/ }),
+      ).toHaveValue("#1A2B3C");
+      expect(
+        within(answers).getByRole("radio", { name: "Level 4 of 5" }),
+      ).toBeChecked();
+      for (const input of answers.querySelectorAll("input, textarea, select"))
+        expect(input).toBeDisabled();
+      for (const action of [
+        mocks.saveAnswer,
+        mocks.submit,
+        mocks.addGroupEntry,
+        mocks.removeGroupEntry,
+        mocks.moveGroupEntry,
+        mocks.attachFile,
+        mocks.detachFile,
+        mocks.confirmServices,
+      ])
+        expect(action).not.toHaveBeenCalled();
+      expect(document.querySelector('input[type="file"]')).toBeNull();
+      expect(mocks.queueOptions).toHaveLength(0);
     });
   });
 });

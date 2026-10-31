@@ -12,6 +12,7 @@ import styles from "./color-field.module.css";
 const PICKER_FALLBACK = "#000000";
 
 export type ColorFieldProps = {
+  disabled?: boolean;
   errorMessage?: string;
   hint?: ReactNode;
   /** DOM id of the hex input; the label and a jump to the field point here. */
@@ -38,6 +39,7 @@ export type ColorFieldProps = {
  * a hatched "empty" pattern instead of the picker's fallback black.
  */
 export function ColorField({
+  disabled = false,
   errorMessage,
   hint,
   id,
@@ -58,6 +60,7 @@ export function ColorField({
 
   return (
     <FormField
+      className={styles.field}
       errorMessage={errorMessage}
       hint={hint}
       inputAction={
@@ -70,6 +73,7 @@ export function ColorField({
         <input
           aria-label={pickerLabel}
           className={styles.swatch}
+          disabled={disabled}
           data-empty={valid ? undefined : "true"}
           id={pickerId}
           onChange={(event) => onPickAction(event.target.value)}
@@ -78,6 +82,7 @@ export function ColorField({
         />
       }
       inputProps={{
+        disabled,
         "aria-required": required,
         autoCapitalize: "characters",
         autoComplete: "off",

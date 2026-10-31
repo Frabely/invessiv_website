@@ -283,8 +283,12 @@ test.describe.serial("portal onboarding", () => {
       await contact
         .getByRole("button", { name: `Weiter: Unternehmen ${suffix}` })
         .click();
-      await expect(contact.getByText(`Ada ${suffix}`)).toBeVisible();
-      await expect(contact.getByRole("textbox")).toHaveCount(0);
+      await expect(
+        contact.getByRole("textbox", { name: /Name der Person/ }),
+      ).toHaveValue(`Ada ${suffix}`);
+      await expect(
+        contact.getByRole("textbox", { name: /Name der Person/ }),
+      ).toBeDisabled();
 
       // A contact of another company gets nothing, whatever it guesses.
       const foreign = await contact.goto(
@@ -484,12 +488,14 @@ test.describe.serial("portal onboarding", () => {
         .getByRole("button", { name: `Weiter: Unternehmen ${suffix}` })
         .click();
       await expect(
-        contact.getByText(`Nordlicht Coaching GmbH ${suffix}`),
-      ).toBeVisible();
+        contact.getByRole("textbox", { name: /Firmenname/ }),
+      ).toHaveValue(`Nordlicht Coaching GmbH ${suffix}`);
       await expect(
         contact.getByRole("list", { name: "Dateien zu „Briefing“" }),
       ).toContainText(`briefing-${suffix}.txt`);
-      await expect(contact.getByRole("textbox")).toHaveCount(0);
+      await expect(
+        contact.getByRole("textbox", { name: /Firmenname/ }),
+      ).toBeDisabled();
       const locked = await contact.request.put(
         `/api/portal/${customer}/onboarding/${formId}/answers`,
         {

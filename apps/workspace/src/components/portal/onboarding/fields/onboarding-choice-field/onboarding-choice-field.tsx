@@ -9,6 +9,7 @@ import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
 import { OnboardingOptionGroup } from "../onboarding-option-group/onboarding-option-group";
 
 export type OnboardingChoiceFieldProps = {
+  disabled?: boolean;
   field: QuestionnaireResolvedField;
   /** DOM id of the first option; a jump to this field focuses it. */
   id: string;
@@ -20,6 +21,7 @@ export type OnboardingChoiceFieldProps = {
 
 /** One option out of several, also for yes/no. An optional answer can be taken back. */
 export function OnboardingChoiceField({
+  disabled = false,
   field,
   id,
   onChangeAction,
@@ -34,6 +36,7 @@ export function OnboardingChoiceField({
         !required && selected.length > 0 ? (
           <div>
             <SecondaryCtaButton
+              disabled={disabled}
               onClick={() => onChangeAction([])}
               size={ButtonSize.Control}
               type="button"
@@ -49,6 +52,7 @@ export function OnboardingChoiceField({
     >
       {field.choices.map((choice, index) => (
         <OptionTile
+          disabled={disabled}
           checked={selected.includes(choice.id)}
           id={index === 0 ? id : undefined}
           key={choice.id}

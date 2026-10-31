@@ -278,7 +278,18 @@ function renderTextarea(
     .join(" ");
 
   return (
-    <span className={styles.inputShell}>
+    <span
+      className={styles.inputShell}
+      data-value={
+        props.autoGrow
+          ? String(
+              props.textareaProps?.value ??
+                props.textareaProps?.defaultValue ??
+                "",
+            )
+          : undefined
+      }
+    >
       <textarea
         rows={props.autoGrow ? 1 : undefined}
         {...props.textareaProps}

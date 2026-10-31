@@ -11,6 +11,7 @@ import { OnboardingScaleTrack } from "@/components/shared/onboarding/onboarding-
 import styles from "./onboarding-scale-field.module.css";
 
 export type OnboardingScaleFieldProps = {
+  disabled?: boolean;
   field: QuestionnaireResolvedField;
   /** DOM id of the first level; a jump to this field focuses it. */
   id: string;
@@ -26,6 +27,7 @@ export type OnboardingScaleFieldProps = {
  * the level. Native radios carry the keyboard: arrows move along the track.
  */
 export function OnboardingScaleField({
+  disabled = false,
   field,
   id,
   onChangeAction,
@@ -47,6 +49,7 @@ export function OnboardingScaleField({
         !required && value !== "" ? (
           <div>
             <SecondaryCtaButton
+              disabled={disabled}
               onClick={() => onChangeAction("")}
               size={ButtonSize.Control}
               type="button"
@@ -62,6 +65,7 @@ export function OnboardingScaleField({
       role="radiogroup"
     >
       <OnboardingScaleTrack
+        disabled={disabled}
         high={high}
         id={id}
         low={low}

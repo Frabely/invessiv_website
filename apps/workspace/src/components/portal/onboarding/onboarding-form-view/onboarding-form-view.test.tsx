@@ -565,10 +565,11 @@ describe("OnboardingFormView", () => {
     ).toBeNull();
 
     fireEvent.click(stepButton("Company"));
-    expect(screen.queryByRole("textbox")).toBeNull();
-    expect(screen.getByText("Acme")).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: /Name/ })).toBeDisabled();
+    expect(screen.getByRole("textbox", { name: /Name/ })).toHaveValue("Acme");
     fireEvent.click(stepButton("Brand"));
-    expect(screen.getByText(content.read.unanswered)).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: /Claim/ })).toBeDisabled();
+    expect(screen.getByRole("textbox", { name: /Claim/ })).toHaveValue("");
   });
 
   it("gives the owner view the answers and the way into the CRM, never the form", () => {
@@ -604,8 +605,8 @@ describe("OnboardingFormView", () => {
 
     fireEvent.click(stepButton("Company"));
     expect(screen.getByText(content.block.locked)).toBeInTheDocument();
-    expect(screen.queryByRole("textbox", { name: /Name/ })).toBeNull();
-    expect(screen.getByText("Acme")).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: /Name/ })).toBeDisabled();
+    expect(screen.getByRole("textbox", { name: /Name/ })).toHaveValue("Acme");
   });
 
   it("names a block whose texts fell back to another language", () => {

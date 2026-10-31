@@ -27,7 +27,7 @@
 }
 
 /* Chosen: a gradient frame on the unchanged surface, like an open question on the website. */
-.tile:has(input:checked) {
+.tile:has(input:checked):not(:has(input:disabled)) {
   border-color: transparent;
   background:
     linear-gradient(var(--tile-surface), var(--tile-surface)) padding-box,

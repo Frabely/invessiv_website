@@ -90,8 +90,10 @@ describe("OnboardingFormView after completion", () => {
     expect(
       screen.getByRole("heading", { level: 2, name: "Company" }),
     ).toHaveFocus();
-    expect(screen.getByText("Nordlicht")).toBeVisible();
-    expect(screen.queryByRole("textbox")).toBeNull();
+    expect(screen.getByRole("textbox", { name: /Name/ })).toHaveValue(
+      "Nordlicht",
+    );
+    expect(screen.getByRole("textbox", { name: /Name/ })).toBeDisabled();
     expect(screen.queryByRole("button", { name: content.submit.action })).toBe(
       null,
     );
